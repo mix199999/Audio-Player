@@ -20,6 +20,4 @@ Jeżeli będziecie korzystać z bibliotek / zasobów (plików muzycznych) / czeg
 
 # Lista bibliotek / narzędzi / zasobów
 - .NET framework, https://dotnet.microsoft.com/ - MIT License
-- .NET MAUI, https://dotnet.microsoft.com/en-us/apps/maui - MIT License
-- Blazor, (część ASP.NET core, pisze ze jest Apache 2.0 ale ASP.NET to jest MIT wiec wtf?), Apache 2.0
 - <zasób>, <skąd to wzieliście>>
