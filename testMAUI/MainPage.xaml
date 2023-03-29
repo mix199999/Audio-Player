@@ -9,12 +9,42 @@
         </Grid.ColumnDefinitions>
 
         <!-- Menu nawigacyjne -->
-        <StackLayout 
-        Grid.Column="0" 
-        VerticalOptions="FillAndExpand" 
-        HorizontalOptions="FillAndExpand" 
-        BackgroundColor="Gray">
-           
+        <StackLayout Grid.Column="0" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Gray">
+            <StackLayout Orientation="Vertical" Spacing="10">
+                <!-- Wyszukiwarka -->
+                <SearchBar Placeholder="Szukaj" BackgroundColor="White" />
+                <StackLayout Orientation="Horizontal" Spacing="10" >
+                    <!-- linki do stronek -->
+                    <Button Text="Strona główna" BackgroundColor="White" TextColor="Black" HorizontalOptions="FillAndExpand"/>
+                    
+                    <Button Text="Ustawienia" BackgroundColor="White" TextColor="Black" HorizontalOptions="FillAndExpand"  />
+                </StackLayout>
+                <!-- Lista ulubionych plejlist -->
+                <ScrollView VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                    <ListView ItemsSource="{Binding Favorites}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand">
+
+                                        <!-- lakies tam jabele -->
+                                    </StackLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </ScrollView>
+                <!-- track info -->
+                <StackLayout Grid.Column="0" VerticalOptions="End" HorizontalOptions="FillAndExpand" BackgroundColor="Gray">
+                    <StackLayout Orientation="Vertical" Spacing="10">
+                        <Image x:Name="CurrentTrackCover"  VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="128" HeightRequest="128" />
+                        <Label x:Name="CurrentTrackTitle"  VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="White"/>
+                        <Label x:Name="CurrentTrackArtist" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="White"/>
+                        <Label x:Name="CurrentTrackAlbum" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="White"/>
+                    </StackLayout>
+                </StackLayout>
+
+            </StackLayout>
         </StackLayout>
 
         <!-- Lista utworów -->
@@ -67,8 +97,9 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Image x:Name="CurrentAlbumImageControl" Source="{Binding CurrentAlbumImage}" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="40" HeightRequest="40" Grid.Column="0" />
+                    <Image x:Name="CurrentAlbumImageControl"  VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="40" HeightRequest="40" Grid.Column="0" />
                     <Slider x:Name="VolumeSlider" Maximum="100" Minimum="0" ValueChanged="Slider_ValueChanged" VerticalOptions="Center"  Grid.Column="1" ToolTipProperties.Text="Set the volume"  />
 
                     <Image Source="backwardsolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="2" ToolTipProperties.Text="Previous track">
@@ -116,8 +147,8 @@
                         <TapGestureRecognizer Tapped="saveListBtn_Clicked" />
                     </Image.GestureRecognizers>
                     </Image>
-                    <Label x:Uid="CurrentTime" VerticalOptions="Center" HorizontalOptions="End" TextColor="White" Grid.Column="11" />
-                    
+                    <Label x:Name="CurrentTimeLabel"  VerticalOptions="Center" HorizontalOptions="Center" TextColor="White" Grid.Column="11"  />
+                    <ProgressBar x:Name="TrackProgressBar" Progress="0" Grid.Column="12" VerticalOptions="Center"  />
 
                 </Grid>
             </StackLayout>

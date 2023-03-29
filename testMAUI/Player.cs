@@ -27,7 +27,6 @@ namespace testMAUI
         private WaveOutEvent _waveOut;
         private AudioFileReader _audioFile;
 
-       
         public playerStatus status { get; set; }
         public TimeSpan _totalTime { get; set; }
         public TimeSpan currentTime { get; set; }
@@ -61,7 +60,7 @@ namespace testMAUI
         {
             _waveOut.Play();
             OnStartedPlaying(EventArgs.Empty);
-
+           
             // asynchronicznie co sekunde aktualizuje se czas odtwarzania 
             Task.Run(() =>
             {
@@ -69,6 +68,7 @@ namespace testMAUI
                 {
                     currentTime = _audioFile.CurrentTime;
                     Task.Delay(1000).Wait();
+
                    
                 }
             });

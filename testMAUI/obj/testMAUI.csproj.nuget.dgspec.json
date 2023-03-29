@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mix19\\source\\repos\\testMAUI\\testMAUI\\testMAUI.csproj": {}
+    "C:\\Users\\mix19\\OneDrive - Politechnika Śląska\\projekt SM\\Audio-Player\\testMAUI\\testMAUI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mix19\\source\\repos\\testMAUI\\testMAUI\\testMAUI.csproj": {
+    "C:\\Users\\mix19\\OneDrive - Politechnika Śląska\\projekt SM\\Audio-Player\\testMAUI\\testMAUI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mix19\\source\\repos\\testMAUI\\testMAUI\\testMAUI.csproj",
+        "projectUniqueName": "C:\\Users\\mix19\\OneDrive - Politechnika Śląska\\projekt SM\\Audio-Player\\testMAUI\\testMAUI.csproj",
         "projectName": "testMAUI",
-        "projectPath": "C:\\Users\\mix19\\source\\repos\\testMAUI\\testMAUI\\testMAUI.csproj",
+        "projectPath": "C:\\Users\\mix19\\OneDrive - Politechnika Śląska\\projekt SM\\Audio-Player\\testMAUI\\testMAUI.csproj",
         "packagesPath": "C:\\Users\\mix19\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mix19\\source\\repos\\testMAUI\\testMAUI\\obj\\",
+        "outputPath": "C:\\Users\\mix19\\OneDrive - Politechnika Śląska\\projekt SM\\Audio-Player\\testMAUI\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [
