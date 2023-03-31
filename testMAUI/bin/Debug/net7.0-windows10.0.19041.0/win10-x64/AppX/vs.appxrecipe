@@ -30,13 +30,13 @@
     <AppXManifest Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\bin\Debug\net7.0-windows10.0.19041.0\win10-x64\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2023-03-29T19:09:41.294</Modified>
+      <Modified>2023-03-31T16:44:49.539</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\bin\Debug\net7.0-windows10.0.19041.0\win10-x64\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2023-03-29T19:09:40.682</Modified>
+      <Modified>2023-03-31T16:44:48.490</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\bin\Debug\net7.0-windows10.0.19041.0\win10-x64\testMAUI.runtimeconfig.json">
       <PackagePath>testMAUI.runtimeconfig.json</PackagePath>
@@ -2068,7 +2068,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\testMAUI.deps.json">
       <PackagePath>testMAUI.deps.json</PackagePath>
-      <Modified>2023-03-29T19:09:41.123</Modified>
+      <Modified>2023-03-31T16:44:49.327</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files\dotnet\packs\Microsoft.Maui.Controls.Ref.win\7.0.59\ref\net7.0-windows10.0.19041\Microsoft.Maui.Controls.Compatibility.pri">
       <PackagePath>Microsoft.Maui.Controls.Compatibility.pri</PackagePath>
