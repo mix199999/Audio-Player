@@ -154,7 +154,7 @@ public partial class MainPage : ContentPage
         {
             Title = track.GetTitle(),
             Duration = track.GetDuration().ToString("hh\\:mm\\:ss"),
-            Album = track.GetAlbum(),
+b            Album = track.GetAlbum(),
             Artist = track.GetArtist(),
             Path = track.GetFilePath(),
             Cover = track.GetCover()
