@@ -2,6 +2,14 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
           x:Class="testMAUI.MainPage">
+    <ContentPage.Resources>
+        <Style x:Key="TrackProgressBar" TargetType="ProgressBar">
+            <Setter Property="ProgressColor" Value="DarkViolet"/>
+        </Style>
+        <Style TargetType="Image">
+            <Setter Property="Opacity" Value="0.75"/>
+        </Style>
+    </ContentPage.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20*" />
@@ -13,12 +21,21 @@
             <StackLayout Orientation="Vertical" Spacing="10">
                 <!-- Wyszukiwarka -->
                 <SearchBar Placeholder="Szukaj" BackgroundColor="White" />
-                <StackLayout Orientation="Horizontal" Spacing="10" >
-                    <!-- linki do stronek -->
-                    <Button Text="Strona główna" BackgroundColor="White" TextColor="Black" HorizontalOptions="FillAndExpand"/>
-                    
-                    <Button Text="Ustawienia" BackgroundColor="White" TextColor="Black" HorizontalOptions="FillAndExpand"  />
-                </StackLayout>
+                <!-- linki do stronek -->
+                <VerticalStackLayout Spacing="10">
+                    <Button Text="Strona główna" BackgroundColor="White" TextColor="Black" />
+                    <BoxView
+                        Color="White"
+                        Margin="10,-12,10,0"
+                        HeightRequest="2"
+                        HorizontalOptions="Fill"/>
+                    <Button Text="Ustawienia" BackgroundColor="White" TextColor="Black"/>
+                    <BoxView
+                        Color="White"
+                        Margin="10,-12,10,0"
+                        HeightRequest="2"
+                        HorizontalOptions="Fill" />
+                </VerticalStackLayout>
                 <!-- Lista ulubionych plejlist -->
                 <ScrollView VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                     <ListView ItemsSource="{Binding Favorites}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
@@ -61,94 +78,107 @@
                 <Label Text="Album" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="White" />
                 <Label Text="Czas trwania" VerticalOptions="Center" HorizontalOptions="End" TextColor="White" />
             </StackLayout>
-            
+
             <ScrollView VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" x:Name="test" >
                 <ListView x:Name="playlistView" SelectionMode="Single" ItemSelected="OnItemSelected"   SelectedItem="{Binding SelectedItem}" >
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <ViewCell>
-                                    <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand" >
-                                        <Label Text="{Binding Title}" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="White"/>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand" >
+                                    <Label Text="{Binding Title}" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="White"/>
                                     <Label Text="{Binding Artist}" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="White"/>
                                     <Label Text="{Binding Album}" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="White" />
                                     <Label Text="{Binding Duration}" VerticalOptions="Center" HorizontalOptions="End" TextColor="White" />
-                                    </StackLayout>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </ScrollView>
 
-            
+
 
             <!-- Sterowanie odtwarzaniem -->
-            <StackLayout VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Gray" HeightRequest="60">
-                <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <StackLayout VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Gray" HeightRequest="70">
+                <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" ColumnSpacing="20">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="0.1*" />
+                        <ColumnDefinition Width="0.2*" />
+                        <ColumnDefinition Width="0.6*" />
+                        <ColumnDefinition Width="0.1*" />
                     </Grid.ColumnDefinitions>
                     <Image x:Name="CurrentAlbumImageControl"  VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="40" HeightRequest="40" Grid.Column="0" />
                     <Slider x:Name="VolumeSlider" Maximum="100" Minimum="0" ValueChanged="Slider_ValueChanged" VerticalOptions="Center"  Grid.Column="1" ToolTipProperties.Text="Set the volume"  />
 
-                    <Image Source="backwardsolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="2" ToolTipProperties.Text="Previous track">
-                        <Image.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="prevBtn_Clicked" />
-                        </Image.GestureRecognizers>
-                    </Image>
-                    <Image Source="backward.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="3" ToolTipProperties.Text="Skip backward for 15 seconds">
-                        <Image.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="backwardBtn_Clicked" />
-                        </Image.GestureRecognizers>
-                    </Image>
-                    <Image Source="playsolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="4" ToolTipProperties.Text="Play track">
-                        <Image.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="playBtn_Clicked" />
-                        </Image.GestureRecognizers>
-                    </Image>
-                    <Image Source="pausesolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="5" ToolTipProperties.Text="Pause track">
-                        <Image.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="stopBtn_Clicked" />
-                        </Image.GestureRecognizers>
-                    </Image>
-                    <Image Source="forward.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="6" ToolTipProperties.Text="Skip forward for 15 seconds">
-                        <Image.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="forwardBtn_Clicked" />
-                        </Image.GestureRecognizers>
-                    </Image>
-                    <Image Source="forwardsolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="7" ToolTipProperties.Text="Next track">
-                        <Image.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="nextBtn_Clicked" />
-                        </Image.GestureRecognizers>
-                    </Image>
-                    <Image Source="plussolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="8" ToolTipProperties.Text="Add tracks">
-                        <Image.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="filesBtn_Clicked" />
-                        </Image.GestureRecognizers>
-                    </Image>
-                    <Image Source="listsolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="9" ToolTipProperties.Text="Load playlist">
-                        <Image.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="loadListBtn_Clicked" />
-                        </Image.GestureRecognizers>
-                    </Image>
-                    <Image Source="downloadsolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="10" ToolTipProperties.Text="Save playlist">
-                    <Image.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="saveListBtn_Clicked" />
-                    </Image.GestureRecognizers>
-                    </Image>
-                    <Label x:Name="CurrentTimeLabel"  VerticalOptions="Center" HorizontalOptions="Center" TextColor="White" Grid.Column="11"  />
-                    <ProgressBar x:Name="TrackProgressBar" Progress="0" Grid.Column="12" VerticalOptions="Center"  />
+                    <Grid Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.7*" />
+                            <RowDefinition Height="0.3*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Source="backwardsolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="0" ToolTipProperties.Text="Previous track">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="prevBtn_Clicked" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <Image Source="backward.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="1" ToolTipProperties.Text="Skip backward for 15 seconds">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="backwardBtn_Clicked" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <Image Source="playsolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="2" ToolTipProperties.Text="Play track">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="playBtn_Clicked" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <Image Source="pausesolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="3" ToolTipProperties.Text="Pause track">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="stopBtn_Clicked" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <Image Source="forward.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="4" ToolTipProperties.Text="Skip forward for 15 seconds">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="forwardBtn_Clicked" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <Image Source="forwardsolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="5" ToolTipProperties.Text="Next track">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="nextBtn_Clicked" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <Image Source="plussolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="6" ToolTipProperties.Text="Add tracks">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="filesBtn_Clicked" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <Image Source="listsolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="7" ToolTipProperties.Text="Load playlist">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="loadListBtn_Clicked" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <Image Source="downloadsolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="8" ToolTipProperties.Text="Save playlist">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="saveListBtn_Clicked" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </Grid>
+                        <ProgressBar x:Name="TrackProgressBar" Progress="0" Grid.Row="1" VerticalOptions="Start"  />
+                    </Grid>
+
+
+                    <Label x:Name="CurrentTimeLabel"  VerticalOptions="Center" HorizontalOptions="Center" TextColor="White" Grid.Column="3"  />
+
 
                 </Grid>
             </StackLayout>

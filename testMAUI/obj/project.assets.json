@@ -30235,24 +30235,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\mix19\\.nuget\\packages\\": {},
+    "C:\\Users\\Admin\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\mix19\\OneDrive - Politechnika Śląska\\projekt SM\\Audio-Player\\testMAUI\\testMAUI.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\Source\\Repos\\Audio-Player\\testMAUI\\testMAUI.csproj",
       "projectName": "testMAUI",
-      "projectPath": "C:\\Users\\mix19\\OneDrive - Politechnika Śląska\\projekt SM\\Audio-Player\\testMAUI\\testMAUI.csproj",
-      "packagesPath": "C:\\Users\\mix19\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\mix19\\OneDrive - Politechnika Śląska\\projekt SM\\Audio-Player\\testMAUI\\obj\\",
+      "projectPath": "C:\\Users\\Admin\\Source\\Repos\\Audio-Player\\testMAUI\\testMAUI.csproj",
+      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Admin\\Source\\Repos\\Audio-Player\\testMAUI\\obj\\",
       "projectStyle": "PackageReference",
       "crossTargeting": true,
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\mix19\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
