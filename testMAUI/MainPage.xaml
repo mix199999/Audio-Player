@@ -18,49 +18,57 @@
 
         <!-- Menu nawigacyjne -->
         <StackLayout Grid.Column="0" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Gray">
-            <StackLayout Orientation="Vertical" Spacing="10">
+            <StackLayout Orientation="Vertical" Spacing="10" Padding="5">
                 <!-- Wyszukiwarka -->
-                <SearchBar Placeholder="Szukaj" BackgroundColor="White" />
-                <!-- linki do stronek -->
-                <VerticalStackLayout Spacing="10">
-                    <Button Text="Strona główna" BackgroundColor="White" TextColor="Black" />
-                    <BoxView
-                        Color="White"
-                        Margin="10,-12,10,0"
-                        HeightRequest="2"
-                        HorizontalOptions="Fill"/>
-                    <Button Text="Ustawienia" BackgroundColor="White" TextColor="Black"/>
-                    <BoxView
-                        Color="White"
-                        Margin="10,-12,10,0"
-                        HeightRequest="2"
-                        HorizontalOptions="Fill" />
-                </VerticalStackLayout>
-                <!-- Lista ulubionych plejlist -->
-                <ScrollView VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-                    <ListView ItemsSource="{Binding Favorites}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <ViewCell>
-                                    <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand">
+                <Frame CornerRadius="10" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" >
 
-                                        <!-- lakies tam jabele -->
-                                    </StackLayout>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </ScrollView>
-                <!-- track info -->
-                <StackLayout Grid.Column="0" VerticalOptions="End" HorizontalOptions="FillAndExpand" BackgroundColor="Gray">
-                    <StackLayout Orientation="Vertical" Spacing="10">
-                        <Image x:Name="CurrentTrackCover"  VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="128" HeightRequest="128" />
-                        <Label x:Name="CurrentTrackTitle"  VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="White"/>
-                        <Label x:Name="CurrentTrackArtist" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="White"/>
-                        <Label x:Name="CurrentTrackAlbum" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="White"/>
+                    <SearchBar  Placeholder="Szukaj" BackgroundColor="#5f8f8f" PlaceholderColor="#4f4f4f"/>
+                </Frame>
+                <StackLayout Orientation="Vertical" Spacing="10" >
+                    <!-- linki do stronek -->
+                    <Button Text="Strona główna" BackgroundColor="#3f6f6f" TextColor="Black" HorizontalOptions="FillAndExpand"/>
+
+                    <Button Text="Ustawienia" BackgroundColor="#3f6f6f" TextColor="Black" HorizontalOptions="FillAndExpand"  />
+                </StackLayout>
+                
+                <!-- Lista ulubionych plejlist -->
+
+                
+
+                <Frame CornerRadius="10" Padding="0" BackgroundColor="Transparent" HeightRequest="240" BorderColor="Transparent" >
+
+                    <StackLayout Orientation="Vertical" Spacing="0" VerticalOptions="Start"  HorizontalOptions="FillAndExpand" BackgroundColor="#2f4f4f">
+                        <Label Text="Twoje składanki" FontSize="24" TextColor="LightGrey" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                        <ScrollView  HeightRequest="210"  >
+
+                            <StackLayout Orientation="Vertical"  HorizontalOptions="Fill" Spacing="10" Padding="5">
+                                <!-- lakies tam jabele -->
+                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                            </StackLayout>
+
+                        </ScrollView>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+            <!-- track info -->
+            <StackLayout Grid.Column="0" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="#2f4f4f" Opacity="0.8" HeightRequest="60">
+                <StackLayout Orientation="Horizontal" Spacing="2" >
+                    <Image x:Name="CurrentTrackCover"  VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="46" HeightRequest="46" />
+                    <StackLayout Orientation="Vertical" >
+                        <Label x:Name="CurrentTrackTitle"  VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="White" FontSize="16"/>
+                        <Label x:Name="CurrentTrackArtist" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="White" FontSize="12"/>
+                        <Label x:Name="CurrentTrackAlbum" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="LightGrey" FontSize="12"/>
+
                     </StackLayout>
                 </StackLayout>
-
             </StackLayout>
         </StackLayout>
 

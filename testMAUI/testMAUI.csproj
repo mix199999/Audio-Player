@@ -54,6 +54,7 @@
 	  <None Remove="Resources\Images\downloadsolid.png" />
 	  <None Remove="Resources\Images\forward-solid.svg" />
 	  <None Remove="Resources\Images\list-solid.svg" />
+	  <None Remove="Resources\Images\note_icon.png" />
 	  <None Remove="Resources\Images\pause-solid.svg" />
 	  <None Remove="Resources\Images\play-solid.svg" />
 	  <None Remove="Resources\Images\plus-solid.svg" />
