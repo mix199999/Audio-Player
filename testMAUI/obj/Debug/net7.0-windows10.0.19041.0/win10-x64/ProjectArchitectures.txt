@@ -1,1 +1,0 @@
-C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\testMAUI.csproj;x64
