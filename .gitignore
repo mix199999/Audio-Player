@@ -475,3 +475,10 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# MAUI temp files
+.vs/ProjectEvaluation/testmaui.metadata.v6.1
+.vs/ProjectEvaluation/testmaui.projects.v6.1
+.vs/testMAUI/DesignTimeBuild/.dtbcache.v2
+.vs/testMAUI/v17/.futdcache.v2
+.vs/testMAUI/v17/.suo
