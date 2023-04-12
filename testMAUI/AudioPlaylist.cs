@@ -106,22 +106,29 @@ namespace testMAUI
             {
                 if (entries[i].StartsWith("#EXTINF"))
                 {
-                    var durationTitle = entries[i].Substring(8);                                   
-                  
+                    var durationTitle = entries[i].Substring(8);
 
                     if (i + 1 < entries.Length && !entries[i + 1].StartsWith("#EXT"))
                     {
-                        var track = new AudioFile(entries[i + 1]);
-                        
-                       // track.SetTitle(title);
-                        _tracks.Add(track);
-                        added++;
+                        var audioFilePath = entries[i + 1];
+
+                        if (System.IO.File.Exists(audioFilePath))
+                        {
+                            var track = new AudioFile(audioFilePath);
+                            _tracks.Add(track);
+                            added++;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"File not found: {audioFilePath}");
+                        }
                     }
                 }
             }
 
             return added;
         }
+
 
 
 

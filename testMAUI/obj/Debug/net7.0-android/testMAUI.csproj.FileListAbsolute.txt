@@ -49,3 +49,4 @@ C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI
 C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-android\resizetizer\r\mipmap-xxxhdpi\appicon_background.png
 C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-android\resizetizer\r\mipmap-xxxhdpi\appicon_foreground.png
 C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-android\mauiimage.stamp
+C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-android\resizetizer\r\drawable\cover.png

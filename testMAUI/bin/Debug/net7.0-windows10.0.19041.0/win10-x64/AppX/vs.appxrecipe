@@ -30,13 +30,13 @@
     <AppXManifest Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\bin\Debug\net7.0-windows10.0.19041.0\win10-x64\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2023-03-31T18:31:47.457</Modified>
+      <Modified>2023-04-12T14:34:24.360</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\bin\Debug\net7.0-windows10.0.19041.0\win10-x64\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2023-03-31T18:31:46.576</Modified>
+      <Modified>2023-04-12T14:34:23.696</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\bin\Debug\net7.0-windows10.0.19041.0\win10-x64\testMAUI.runtimeconfig.json">
       <PackagePath>testMAUI.runtimeconfig.json</PackagePath>
@@ -44,11 +44,11 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\bin\Debug\net7.0-windows10.0.19041.0\win10-x64\testMAUI.dll">
       <PackagePath>testMAUI.dll</PackagePath>
-      <Modified>2023-03-31T18:31:45.635</Modified>
+      <Modified>2023-04-12T14:34:22.964</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\apphost.exe">
       <PackagePath>testMAUI.exe</PackagePath>
-      <Modified>2023-03-31T18:31:45.655</Modified>
+      <Modified>2023-04-12T14:34:22.971</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\.nuget\packages\microsoft.netcore.app.runtime.win-x64\7.0.4\runtimes\win-x64\lib\net7.0\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -2068,7 +2068,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\testMAUI.deps.json">
       <PackagePath>testMAUI.deps.json</PackagePath>
-      <Modified>2023-03-31T18:31:47.241</Modified>
+      <Modified>2023-04-12T14:34:24.120</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files\dotnet\packs\Microsoft.Maui.Controls.Ref.win\7.0.59\ref\net7.0-windows10.0.19041\Microsoft.Maui.Controls.Compatibility.pri">
       <PackagePath>Microsoft.Maui.Controls.Compatibility.pri</PackagePath>
@@ -2116,187 +2116,187 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appicon.ico">
       <PackagePath>appicon.ico</PackagePath>
-      <Modified>2023-03-29T18:55:38.354</Modified>
+      <Modified>2023-04-12T14:30:13.182</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLargeTile.scale-100.png">
       <PackagePath>appiconLargeTile.scale-100.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.529</Modified>
+      <Modified>2023-04-12T14:30:13.349</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLargeTile.scale-125.png">
       <PackagePath>appiconLargeTile.scale-125.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.538</Modified>
+      <Modified>2023-04-12T14:30:13.357</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLargeTile.scale-150.png">
       <PackagePath>appiconLargeTile.scale-150.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.545</Modified>
+      <Modified>2023-04-12T14:30:13.365</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLargeTile.scale-200.png">
       <PackagePath>appiconLargeTile.scale-200.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.559</Modified>
+      <Modified>2023-04-12T14:30:13.378</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLargeTile.scale-400.png">
       <PackagePath>appiconLargeTile.scale-400.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.608</Modified>
+      <Modified>2023-04-12T14:30:13.427</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.altform-lightunplated_targetsize-16.png">
       <PackagePath>appiconLogo.altform-lightunplated_targetsize-16.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.401</Modified>
+      <Modified>2023-04-12T14:30:13.224</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.altform-lightunplated_targetsize-24.png">
       <PackagePath>appiconLogo.altform-lightunplated_targetsize-24.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.404</Modified>
+      <Modified>2023-04-12T14:30:13.226</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.altform-lightunplated_targetsize-256.png">
       <PackagePath>appiconLogo.altform-lightunplated_targetsize-256.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.412</Modified>
+      <Modified>2023-04-12T14:30:13.235</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.altform-lightunplated_targetsize-32.png">
       <PackagePath>appiconLogo.altform-lightunplated_targetsize-32.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.405</Modified>
+      <Modified>2023-04-12T14:30:13.228</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.altform-lightunplated_targetsize-48.png">
       <PackagePath>appiconLogo.altform-lightunplated_targetsize-48.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.407</Modified>
+      <Modified>2023-04-12T14:30:13.230</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.altform-unplated_targetsize-16.png">
       <PackagePath>appiconLogo.altform-unplated_targetsize-16.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.387</Modified>
+      <Modified>2023-04-12T14:30:13.212</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.altform-unplated_targetsize-24.png">
       <PackagePath>appiconLogo.altform-unplated_targetsize-24.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.389</Modified>
+      <Modified>2023-04-12T14:30:13.214</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.altform-unplated_targetsize-256.png">
       <PackagePath>appiconLogo.altform-unplated_targetsize-256.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.399</Modified>
+      <Modified>2023-04-12T14:30:13.223</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.altform-unplated_targetsize-32.png">
       <PackagePath>appiconLogo.altform-unplated_targetsize-32.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.391</Modified>
+      <Modified>2023-04-12T14:30:13.216</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.altform-unplated_targetsize-48.png">
       <PackagePath>appiconLogo.altform-unplated_targetsize-48.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.393</Modified>
+      <Modified>2023-04-12T14:30:13.218</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.scale-100.png">
       <PackagePath>appiconLogo.scale-100.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.360</Modified>
+      <Modified>2023-04-12T14:30:13.188</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.scale-125.png">
       <PackagePath>appiconLogo.scale-125.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.363</Modified>
+      <Modified>2023-04-12T14:30:13.190</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.scale-150.png">
       <PackagePath>appiconLogo.scale-150.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.364</Modified>
+      <Modified>2023-04-12T14:30:13.192</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.scale-200.png">
       <PackagePath>appiconLogo.scale-200.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.367</Modified>
+      <Modified>2023-04-12T14:30:13.194</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.scale-400.png">
       <PackagePath>appiconLogo.scale-400.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.370</Modified>
+      <Modified>2023-04-12T14:30:13.198</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.targetsize-16.png">
       <PackagePath>appiconLogo.targetsize-16.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.373</Modified>
+      <Modified>2023-04-12T14:30:13.200</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.targetsize-24.png">
       <PackagePath>appiconLogo.targetsize-24.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.375</Modified>
+      <Modified>2023-04-12T14:30:13.202</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.targetsize-256.png">
       <PackagePath>appiconLogo.targetsize-256.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.385</Modified>
+      <Modified>2023-04-12T14:30:13.210</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.targetsize-32.png">
       <PackagePath>appiconLogo.targetsize-32.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.377</Modified>
+      <Modified>2023-04-12T14:30:13.204</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.targetsize-48.png">
       <PackagePath>appiconLogo.targetsize-48.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.379</Modified>
+      <Modified>2023-04-12T14:30:13.206</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconMediumTile.scale-100.png">
       <PackagePath>appiconMediumTile.scale-100.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.445</Modified>
+      <Modified>2023-04-12T14:30:13.266</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconMediumTile.scale-125.png">
       <PackagePath>appiconMediumTile.scale-125.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.448</Modified>
+      <Modified>2023-04-12T14:30:13.269</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconMediumTile.scale-150.png">
       <PackagePath>appiconMediumTile.scale-150.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.452</Modified>
+      <Modified>2023-04-12T14:30:13.274</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconMediumTile.scale-200.png">
       <PackagePath>appiconMediumTile.scale-200.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.459</Modified>
+      <Modified>2023-04-12T14:30:13.280</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconMediumTile.scale-400.png">
       <PackagePath>appiconMediumTile.scale-400.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.470</Modified>
+      <Modified>2023-04-12T14:30:13.294</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconSmallTile.scale-100.png">
       <PackagePath>appiconSmallTile.scale-100.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.428</Modified>
+      <Modified>2023-04-12T14:30:13.250</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconSmallTile.scale-125.png">
       <PackagePath>appiconSmallTile.scale-125.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.430</Modified>
+      <Modified>2023-04-12T14:30:13.252</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconSmallTile.scale-150.png">
       <PackagePath>appiconSmallTile.scale-150.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.433</Modified>
+      <Modified>2023-04-12T14:30:13.255</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconSmallTile.scale-200.png">
       <PackagePath>appiconSmallTile.scale-200.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.436</Modified>
+      <Modified>2023-04-12T14:30:13.258</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconSmallTile.scale-400.png">
       <PackagePath>appiconSmallTile.scale-400.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.442</Modified>
+      <Modified>2023-04-12T14:30:13.263</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconStoreLogo.scale-100.png">
       <PackagePath>appiconStoreLogo.scale-100.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.415</Modified>
+      <Modified>2023-04-12T14:30:13.237</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconStoreLogo.scale-125.png">
       <PackagePath>appiconStoreLogo.scale-125.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.417</Modified>
+      <Modified>2023-04-12T14:30:13.239</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconStoreLogo.scale-150.png">
       <PackagePath>appiconStoreLogo.scale-150.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.419</Modified>
+      <Modified>2023-04-12T14:30:13.242</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconStoreLogo.scale-200.png">
       <PackagePath>appiconStoreLogo.scale-200.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.422</Modified>
+      <Modified>2023-04-12T14:30:13.244</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconStoreLogo.scale-400.png">
       <PackagePath>appiconStoreLogo.scale-400.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.425</Modified>
+      <Modified>2023-04-12T14:30:13.248</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconWideTile.scale-100.png">
       <PackagePath>appiconWideTile.scale-100.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.476</Modified>
+      <Modified>2023-04-12T14:30:13.298</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconWideTile.scale-125.png">
       <PackagePath>appiconWideTile.scale-125.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.483</Modified>
+      <Modified>2023-04-12T14:30:13.303</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconWideTile.scale-150.png">
       <PackagePath>appiconWideTile.scale-150.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.489</Modified>
+      <Modified>2023-04-12T14:30:13.310</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconWideTile.scale-200.png">
       <PackagePath>appiconWideTile.scale-200.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.498</Modified>
+      <Modified>2023-04-12T14:30:13.319</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconWideTile.scale-400.png">
       <PackagePath>appiconWideTile.scale-400.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.523</Modified>
+      <Modified>2023-04-12T14:30:13.343</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\backward.scale-100.png">
       <PackagePath>backward.scale-100.png</PackagePath>
@@ -2332,23 +2332,23 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-100.png">
       <PackagePath>dotnet_bot.scale-100.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.338</Modified>
+      <Modified>2023-04-12T14:30:13.167</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-125.png">
       <PackagePath>dotnet_bot.scale-125.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.348</Modified>
+      <Modified>2023-04-12T14:30:13.174</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-150.png">
       <PackagePath>dotnet_bot.scale-150.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.357</Modified>
+      <Modified>2023-04-12T14:30:13.185</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-200.png">
       <PackagePath>dotnet_bot.scale-200.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.371</Modified>
+      <Modified>2023-04-12T14:30:13.199</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-400.png">
       <PackagePath>dotnet_bot.scale-400.png</PackagePath>
-      <Modified>2023-03-29T18:55:38.407</Modified>
+      <Modified>2023-04-12T14:30:13.231</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\downloadsolid.scale-100.png">
       <PackagePath>downloadsolid.scale-100.png</PackagePath>
@@ -2401,6 +2401,10 @@
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\listsolid.scale-400.png">
       <PackagePath>listsolid.scale-400.png</PackagePath>
       <Modified>2023-03-29T15:52:02.238</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\note_icon.scale-100.png">
+      <PackagePath>note_icon.scale-100.png</PackagePath>
+      <Modified>2023-04-12T14:27:50.731</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\pausesolid.scale-100.png">
       <PackagePath>pausesolid.scale-100.png</PackagePath>

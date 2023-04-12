@@ -44,3 +44,4 @@ C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI
 C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-maccatalyst\maccatalyst-x64\testMAUI.AssemblyInfoInputs.cache
 C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-maccatalyst\maccatalyst-x64\testMAUI.AssemblyInfo.cs
 C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-maccatalyst\maccatalyst-x64\testMAUI.csproj.CoreCompileInputs.cache
+C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-maccatalyst\maccatalyst-x64\resizetizer\r\Resources\cover.png

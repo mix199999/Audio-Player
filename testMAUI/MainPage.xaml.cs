@@ -47,15 +47,30 @@ public partial class MainPage : ContentPage
 
     private async void filesBtn_Clicked(object sender, EventArgs e)
     {
+       // var allowedExtensions = new[] { ".mp3", ".mp4", ".wave", ".flac" };
+       // var files = await FilePicker.PickMultipleAsync();
 
-        var files = await FilePicker.PickMultipleAsync();
+        var m3uPicker = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+        {
+            {DevicePlatform.WinUI, new[]{ ".mp3", ".mp4", ".wave", ".flac" } }
+        });
+
+        var files = await FilePicker.PickMultipleAsync(new PickOptions
+        {
+            FileTypes = m3uPicker
+        });
+
+        trackTimer.Stop();
+        player.Pause();
+
         foreach (var file in files)
         {
-            AudioFile audioFile = new AudioFile(file.FullPath);
-            playlist.AddTrack(audioFile);
-
+           
+                AudioFile audioFile = new AudioFile(file.FullPath);
+                playlist.AddTrack(audioFile);
+            
         }
-        // zrobic jedna funkcje
+
         playlistView.ItemsSource = playlist.Tracks.Select(track => new
         {
             Title = track.GetTitle(),
@@ -65,9 +80,8 @@ public partial class MainPage : ContentPage
             Path = track.GetFilePath(),
             Cover = track.GetCover()
         });
-
-
     }
+
 
     private void nextBtn_Clicked(object sender, EventArgs e)
     {
@@ -146,19 +160,27 @@ public partial class MainPage : ContentPage
             FileTypes = m3uPicker
         });
 
+
+
         if (playlistFile != null)
-            playlist.clearList();
-        playlist.LoadFromM3U(playlistFile.FullPath);
-        playlistView.ItemsSource = null;
-        playlistView.ItemsSource = playlist.Tracks.Select(track => new
         {
-            Title = track.GetTitle(),
-            Duration = track.GetDuration().ToString("hh\\:mm\\:ss"),
-            Album = track.GetAlbum(),
-            Artist = track.GetArtist(),
-            Path = track.GetFilePath(),
-            Cover = track.GetCover()
-        });
+            trackTimer.Stop();
+            player.Pause();
+
+            playlist.clearList();
+            playlist.LoadFromM3U(playlistFile.FullPath);
+            playlistView.ItemsSource = null;
+            playlistView.ItemsSource = playlist.Tracks.Select(track => new
+            {
+                Title = track.GetTitle(),
+                Duration = track.GetDuration().ToString("hh\\:mm\\:ss"),
+                Album = track.GetAlbum(),
+                Artist = track.GetArtist(),
+                Path = track.GetFilePath(),
+                Cover = track.GetCover()
+            });
+
+        }
 
     }
     private async void saveListBtn_Clicked(object sender, TappedEventArgs e)
@@ -207,6 +229,7 @@ public partial class MainPage : ContentPage
         await Device.InvokeOnMainThreadAsync(() =>
         {
             currentTrackTime += TimeSpan.FromSeconds(1);
+
             string durationString = ((dynamic)playlistView.SelectedItem).Duration;
             CurrentTimeLabel.Text = currentTrackTime.ToString("mm\\:ss");
             TimeSpan duration = TimeSpan.Parse(durationString);
@@ -223,7 +246,7 @@ public partial class MainPage : ContentPage
            CurrentTrackAlbum.Text = ((dynamic)playlist.GetCurrentTrack().GetAlbum());
            CurrentTrackArtist.Text = ((dynamic)playlist.GetCurrentTrack().GetArtist());
            CurrentTrackTitle.Text = ((dynamic)playlist.GetCurrentTrack().GetTitle());
-            CurrentTrackCover.Source = "cover.png";
+            CurrentTrackCover.Source = (dynamic)playlist.GetCurrentTrack().GetCoverUrl();
         });
     }
 

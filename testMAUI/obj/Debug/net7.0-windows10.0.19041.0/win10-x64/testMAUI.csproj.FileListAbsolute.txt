@@ -1291,3 +1291,4 @@ C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI
 C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\MultipleQualifiersPerDimensionFound.txt
 C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\ProjectArchitectures.txt
 C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\cover.scale-100.png
+C:\Users\mix19\OneDrive - Politechnika Śląska\projekt SM\Audio-Player\testMAUI\obj\Debug\net7.0-windows10.0.19041.0\win10-x64\resizetizer\r\note_icon.scale-100.png
