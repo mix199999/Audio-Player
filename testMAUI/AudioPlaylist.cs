@@ -27,6 +27,9 @@ namespace testMAUI
             _tracks.Add(track);
         }
 
+        public int GetCurrentTrackIndex()
+        { return _currentIndex; }
+
 
        
 

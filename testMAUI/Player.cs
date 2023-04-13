@@ -27,7 +27,7 @@ namespace testMAUI
         private WaveOutEvent _waveOut;
         private AudioFileReader _audioFile;
 
-        public playerStatus status { get; set; }
+        public playerStatus _status { get; set; }
         public TimeSpan _totalTime { get; set; }
         public TimeSpan currentTime { get; set; }
 
@@ -60,7 +60,7 @@ namespace testMAUI
         {
             _waveOut.Play();
             OnStartedPlaying(EventArgs.Empty);
-           
+            _status = playerStatus.IsPlaying;
             // asynchronicznie co sekunde aktualizuje se czas odtwarzania 
             Task.Run(() =>
             {
@@ -80,12 +80,16 @@ namespace testMAUI
             _waveOut.Stop();
             _audioFile.Position = 0;
             OnStoppedPlaying(EventArgs.Empty);
+            _status = playerStatus.IsNotPlaying;
+
         }
 
         public void Pause()
         {
             _waveOut.Pause();
             OnPaused(EventArgs.Empty);
+            _status = playerStatus.IsNotPlaying;
+
         }
 
         protected virtual void OnStartedPlaying(EventArgs e)
@@ -126,6 +130,11 @@ namespace testMAUI
             {
                 _audioFile.CurrentTime = newTime;
             }
+        }
+
+        public void SetTime(double time)
+        {
+            _audioFile.CurrentTime = TimeSpan.FromSeconds(time);
         }
 
 
