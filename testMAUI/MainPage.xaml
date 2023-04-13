@@ -102,6 +102,7 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+                
             </ScrollView>
 
 
@@ -120,8 +121,8 @@
 
                     <Grid Grid.Column="2">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="0.7*" />
-                            <RowDefinition Height="0.3*"/>
+                            <RowDefinition Height="0.5*" />
+                            <RowDefinition Height="0.5*"/>
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0">
                             <Grid.ColumnDefinitions>
@@ -181,11 +182,17 @@
                                 </Image.GestureRecognizers>
                             </Image>
                         </Grid>
-                        <ProgressBar x:Name="TrackProgressBar" Progress="0" Grid.Row="1" VerticalOptions="Start"  />
+                        <Grid Grid.Row="1">
+                            <Slider x:Name="TrackProgressBarSlider" Maximum="100" Minimum="0" ValueChanged="TrackProgressBarSlider_ValueChanged"  VerticalOptions="Center"  Grid.Column="1" ToolTipProperties.Text="Set the time" ThumbColor="Aquamarine"  />
+
+                        </Grid>
+
                     </Grid>
 
 
                     <Label x:Name="CurrentTimeLabel"  VerticalOptions="Center" HorizontalOptions="Center" TextColor="White" Grid.Column="3"  />
+                    <!--   <Label x:Name="testCurrentTimeLabel"  TextColor="White" Grid.Column="3"  /> -->
+
 
 
                 </Grid>

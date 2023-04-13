@@ -26,12 +26,15 @@ public partial class MainPage : ContentPage
     private AudioPlaylist playlist;
     CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
     private System.Timers.Timer trackTimer = new System.Timers.Timer();
+    private double currentTrackProgress;
+    private bool ValueChangedEnabled = true;
 
 
     public MainPage(IFileSaver fileSaver)
     {
         InitializeComponent();
         player = new Player();
+        player._status = playerStatus.IsNotPlaying;
         playlist = new AudioPlaylist();
 
         playlistView.ItemsSource = playlist.Tracks;
@@ -41,8 +44,18 @@ public partial class MainPage : ContentPage
         VolumeSlider.Value = 100;
         trackTimer.Interval = 1000;
         trackTimer.Elapsed += TimerTick;
+        TrackProgressBarSlider.Value = 0;
+        //SizeChanged += (sender, e) => setHeight();
+        //SearchBarSection
+        setHeight();
     }
-
+    private void setHeight()
+    {
+       // SearchBarSection.HeightRequest = this.HeightRequest ;
+       // /ButtonsSection.HeightRequest = this.Height * 0.2;
+      // / PlaylistSection.HeightRequest = this.Height * 0.5;
+       
+    }
 
 
     private async void filesBtn_Clicked(object sender, EventArgs e)
@@ -83,8 +96,9 @@ public partial class MainPage : ContentPage
     }
 
 
-    private void nextBtn_Clicked(object sender, EventArgs e)
+    private void nextTrack()
     {
+        //if()
         playlist.Next();
         currentTrackTime = TimeSpan.Zero;
         AudioFile audioFile = playlist.GetCurrentTrack();
@@ -98,16 +112,16 @@ public partial class MainPage : ContentPage
         }
     }
 
+    private void nextBtn_Clicked(object sender, EventArgs e)=>nextTrack();
+   
+
     private void stopBtn_Clicked(object sender, EventArgs e)
     {
         trackTimer.Stop();
         player.Pause();
     }
-    private void playBtn_Clicked(object sender, EventArgs e)
-    {
-
-        playAudio();
-    }
+    private void playBtn_Clicked(object sender, EventArgs e) => playAudio();
+    
 
     private void prevBtn_Clicked(object sender, EventArgs e)
     {
@@ -195,13 +209,16 @@ public partial class MainPage : ContentPage
         if (playlistView.SelectedItem != null)
         {
             trackTimer.Start();
+
             string path = ((dynamic)playlistView.SelectedItem).Path;
             setCurrentTrackInfo();
             AudioFile audioFile = new AudioFile(path);
             player.Load(audioFile.GetFilePath());
             player.Play();
-            player.status = playerStatus.IsPlaying;
+           
+           // player.status = playerStatus.IsPlaying;
             player._totalTime = audioFile.GetDuration();
+            TrackProgressBarSlider.Maximum = audioFile.GetDuration().TotalSeconds;
         }
     }
 
@@ -212,47 +229,71 @@ public partial class MainPage : ContentPage
 
     private void backwardBtn_Clicked(object sender, TappedEventArgs e)
     {
-        currentTrackTime += TimeSpan.FromSeconds(-15);
+        currentTrackTime -= TimeSpan.FromSeconds(15);
         player.SkipBackward();
+        currentTrackProgress -= 15;
     }
 
     private void forwardBtn_Clicked(object sender, TappedEventArgs e)
     {
         currentTrackTime += TimeSpan.FromSeconds(15);
         player.SkipForward();
-       // CurrentTrackTitle.Text = "test";
+       
+        currentTrackProgress += 15;
     }
 
 
     private async void TimerTick(object sender, ElapsedEventArgs e)
     {
-        await Device.InvokeOnMainThreadAsync(() =>
+        await Dispatcher.DispatchAsync(() =>
         {
             currentTrackTime += TimeSpan.FromSeconds(1);
+            TimeSpan durationTime = playlist.GetCurrentTrack().GetDuration();
+            currentTrackProgress = durationTime.TotalSeconds - currentTrackTime.TotalSeconds;
 
-            string durationString = ((dynamic)playlistView.SelectedItem).Duration;
-            CurrentTimeLabel.Text = currentTrackTime.ToString("mm\\:ss");
-            TimeSpan duration = TimeSpan.Parse(durationString);
-            double progress = currentTrackTime.TotalSeconds / duration.TotalSeconds;
-            TrackProgressBar.Progress = progress;
+            if (currentTrackProgress <= 0){nextTrack();}
+            else
+            {
+                CurrentTimeLabel.Text = currentTrackTime.ToString("mm\\:ss");
+                //testCurrentTimeLabel.Text = currentTrackProgress.ToString();
+                ValueChangedEnabled = false;
+                TrackProgressBarSlider.Value = currentTrackTime.TotalSeconds;
+                ValueChangedEnabled = true;
+            }
         });
     }
 
 
     private async void setCurrentTrackInfo()
-    {  
-        await Device.InvokeOnMainThreadAsync(() =>
+    {
+        await Dispatcher.DispatchAsync(() =>
         {
-           CurrentTrackAlbum.Text = ((dynamic)playlist.GetCurrentTrack().GetAlbum());
-           CurrentTrackArtist.Text = ((dynamic)playlist.GetCurrentTrack().GetArtist());
-           CurrentTrackTitle.Text = ((dynamic)playlist.GetCurrentTrack().GetTitle());
+            CurrentTrackAlbum.Text = ((dynamic)playlist.GetCurrentTrack().GetAlbum());
+            CurrentTrackArtist.Text = ((dynamic)playlist.GetCurrentTrack().GetArtist());
+            CurrentTrackTitle.Text = ((dynamic)playlist.GetCurrentTrack().GetTitle());
             CurrentTrackCover.Source = (dynamic)playlist.GetCurrentTrack().GetCoverUrl();
         });
     }
 
+    private void TrackProgressBarSlider_ValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        if(ValueChangedEnabled && player._status == playerStatus.IsPlaying)
+        {
+            currentTrackTime = TimeSpan.FromSeconds(TrackProgressBarSlider.Value);
+            player.SetTime(TrackProgressBarSlider.Value);
 
+        }
+    }
 
+    private bool ReplayPlaylist()
+    {
+        return true; 
 
+    }
 
+    private void PlayRandom()
+    {
+
+    }
 }
 
