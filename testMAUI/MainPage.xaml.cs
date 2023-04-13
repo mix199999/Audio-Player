@@ -49,6 +49,7 @@ public partial class MainPage : ContentPage
         //SearchBarSection
         setHeight();
     }
+
     private void setHeight()
     {
        // SearchBarSection.HeightRequest = this.HeightRequest ;
