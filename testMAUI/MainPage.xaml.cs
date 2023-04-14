@@ -28,9 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-using CommunityToolkit.Maui.Core;
-using CommunityToolkit.Maui.Alerts;
- private List<string> foldersList = new List<string>();
+
 
 public partial class MainPage : ContentPage
 {
@@ -46,6 +44,7 @@ public partial class MainPage : ContentPage
     private bool ValueChangedEnabled = true;
     private IConfiguration _configuration;
     private List<AudioPlaylist> _playlist;
+    private List<string> foldersList = new List<string>();
 
 
     public MainPage(IFileSaver fileSaver, IConfiguration configuration)
@@ -158,7 +157,7 @@ public partial class MainPage : ContentPage
         AudioPlayingImageControl.Opacity = 1;
     }
 
-    private void playBtn_Clicked(object sender, EventArgs e) => playAudio();
+   
 
 
     private void prevBtn_Clicked(object sender, EventArgs e)
