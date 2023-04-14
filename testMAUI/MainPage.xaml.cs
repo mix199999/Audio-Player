@@ -5,7 +5,7 @@
 using Microsoft.Maui.Controls.PlatformConfiguration;
 
 namespace testMAUI;
-
+using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls.Internals;
 using Microsoft.Maui.Storage;
 using System.Collections;
@@ -17,6 +17,11 @@ using CommunityToolkit.Maui.Storage;
 using System.Timers;
 using Microsoft.Maui.Animations;
 using Microsoft.Extensions.Configuration;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Alerts;
+
+
+
 
 public partial class MainPage : ContentPage
 {
@@ -26,13 +31,21 @@ public partial class MainPage : ContentPage
     TimeSpan currentTrackTime = TimeSpan.Zero;
     private AudioPlaylist playlist;
     CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+    CancellationToken cancellationToken = new CancellationToken();
     private System.Timers.Timer trackTimer = new System.Timers.Timer();
     private double currentTrackProgress;
     private bool ValueChangedEnabled = true;
+    private IConfiguration _configuration;
+    private List<AudioPlaylist> _playlist;
+    private bool testProgram = false;
 
-
-    public MainPage(IFileSaver fileSaver)
+    public MainPage(IFileSaver fileSaver, IConfiguration configuration)
     {
+        _configuration = configuration;
+        // tu pole
+        var listaConfig = _configuration.GetSection("Path");
+
+        
         InitializeComponent();
         player = new Player();
         player._status = playerStatus.IsNotPlaying;
@@ -45,11 +58,14 @@ public partial class MainPage : ContentPage
         VolumeSlider.Value = 100;
         trackTimer.Interval = 1000;
         trackTimer.Elapsed += TimerTick;
-        TrackProgressBarSlider.Value = 0;       
-       
-    }
- 
+        TrackProgressBarSlider.Value = 0;
 
+      
+
+
+    }
+
+   
 
     private async void filesBtn_Clicked(object sender, EventArgs e)
     {
@@ -101,7 +117,7 @@ public partial class MainPage : ContentPage
             player.Play();
             setCurrentTrackInfo();
 
-
+          
         }
     }
 
@@ -148,7 +164,6 @@ public partial class MainPage : ContentPage
         int selectedIndex = list.IndexOf(e.SelectedItem);
 
         playlist.SetCurrentTrack(selectedIndex);
-            setCurrentTrackInfo();
 
 
     }
@@ -213,7 +228,12 @@ public partial class MainPage : ContentPage
             player._totalTime = audioFile.GetDuration();
             TrackProgressBarSlider.Maximum = audioFile.GetDuration().TotalSeconds;
         }
+
+
     }
+
+
+   
 
     private async void Slider_ValueChanged(object sender, ValueChangedEventArgs e)
     {
@@ -257,7 +277,7 @@ public partial class MainPage : ContentPage
     }
 
 
-    private async void setCurrentTrackInfo()
+    private async Task setCurrentTrackInfo()
     {
         await Dispatcher.DispatchAsync(() =>
         {
@@ -265,6 +285,7 @@ public partial class MainPage : ContentPage
             CurrentTrackArtist.Text = ((dynamic)playlist.GetCurrentTrack().GetArtist());
             CurrentTrackTitle.Text = ((dynamic)playlist.GetCurrentTrack().GetTitle());
             CurrentTrackCover.Source = (dynamic)playlist.GetCurrentTrack().GetCoverUrl();
+            showToastInfo();
         });
     }
 
@@ -304,6 +325,46 @@ public partial class MainPage : ContentPage
             Cover = track.GetCover()
         });
     }
+
+
+    private async Task ShowPopupInfo()
+    {
+        var popup = new Popup();
+        popup.Size = new Size(300, 300);
+       
+        var stackLayout = new VerticalStackLayout();
+        var image = new Image { Source = playlist.GetCurrentTrack().GetCoverUrl() };
+        var label = new Label
+        {
+            Text = $"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
+            $" Artist - {((dynamic)playlist.GetCurrentTrack().GetArtist())}\n\r" +
+            $" Album - {((dynamic)playlist.GetCurrentTrack().GetAlbum())}\n\r",
+            VerticalTextAlignment = TextAlignment.Center
+        };
+
+        stackLayout.Children.Add(image);
+        stackLayout.Children.Add(label);
+        popup.Content = stackLayout;
+        await this.ShowPopupAsync(popup);
+
+    }
+
+
+
+    private async void showToastInfo()
+    {
+        await Toast.Make($"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
+            $" Artist - {((dynamic)playlist.GetCurrentTrack().GetArtist())}\n\r" +
+            $" Album - {((dynamic)playlist.GetCurrentTrack().GetAlbum())}\n\r",
+            ToastDuration.Short).Show(cancellationToken);
+
+    }
+
+
+  
+
+
+
 
 
 }
