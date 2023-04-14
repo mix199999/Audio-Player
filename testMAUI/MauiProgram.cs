@@ -26,6 +26,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
         builder.Services.AddTransient<MainPage>();
 
+
         var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
         if (!File.Exists(appSettingsPath))
         {
