@@ -16,6 +16,7 @@ using System.Text;
 using CommunityToolkit.Maui.Storage;
 using System.Timers;
 using Microsoft.Maui.Animations;
+using Microsoft.Extensions.Configuration;
 
 public partial class MainPage : ContentPage
 {
@@ -44,18 +45,10 @@ public partial class MainPage : ContentPage
         VolumeSlider.Value = 100;
         trackTimer.Interval = 1000;
         trackTimer.Elapsed += TimerTick;
-        TrackProgressBarSlider.Value = 0;
-        //SizeChanged += (sender, e) => setHeight();
-        //SearchBarSection
-        setHeight();
-    }
-    private void setHeight()
-    {
-       // SearchBarSection.HeightRequest = this.HeightRequest ;
-       // /ButtonsSection.HeightRequest = this.Height * 0.2;
-      // / PlaylistSection.HeightRequest = this.Height * 0.5;
+        TrackProgressBarSlider.Value = 0;       
        
     }
+ 
 
 
     private async void filesBtn_Clicked(object sender, EventArgs e)
