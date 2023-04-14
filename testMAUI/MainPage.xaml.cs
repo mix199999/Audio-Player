@@ -17,11 +17,20 @@ using CommunityToolkit.Maui.Storage;
 using System.Timers;
 using Microsoft.Maui.Animations;
 using Microsoft.Extensions.Configuration;
+
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+using Microsoft.Extensions.Configuration.Json;
+using System.Text.Json;
+using System.Xml;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Alerts;
-
-
-
+ private List<string> foldersList = new List<string>();
 
 public partial class MainPage : ContentPage
 {
@@ -37,15 +46,13 @@ public partial class MainPage : ContentPage
     private bool ValueChangedEnabled = true;
     private IConfiguration _configuration;
     private List<AudioPlaylist> _playlist;
-    private bool testProgram = false;
 
     public MainPage(IFileSaver fileSaver, IConfiguration configuration)
     {
         _configuration = configuration;
-        // tu pole
-        var listaConfig = _configuration.GetSection("Path");
+        _configuration.GetSection("FolderList").Bind(foldersList);
 
-        
+
         InitializeComponent();
         player = new Player();
         player._status = playerStatus.IsNotPlaying;
@@ -60,17 +67,22 @@ public partial class MainPage : ContentPage
         trackTimer.Elapsed += TimerTick;
         TrackProgressBarSlider.Value = 0;
 
-      
 
-
+        foreach (var Folder in foldersList)
+        {
+            loadToListView(Folder);
+        }
+        if(foldersList.Count == 0) foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
     }
+
+
 
    
 
     private async void filesBtn_Clicked(object sender, EventArgs e)
     {
-       // var allowedExtensions = new[] { ".mp3", ".mp4", ".wave", ".flac" };
-       // var files = await FilePicker.PickMultipleAsync();
+        // var allowedExtensions = new[] { ".mp3", ".mp4", ".wave", ".flac" };
+        // var files = await FilePicker.PickMultipleAsync();
 
         var m3uPicker = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
         {
@@ -87,10 +99,10 @@ public partial class MainPage : ContentPage
 
         foreach (var file in files)
         {
-           
-                AudioFile audioFile = new AudioFile(file.FullPath);
-                playlist.AddTrack(audioFile);
-            
+
+            AudioFile audioFile = new AudioFile(file.FullPath);
+            playlist.AddTrack(audioFile);
+
         }
 
         playlistView.ItemsSource = playlist.Tracks.Select(track => new
@@ -121,8 +133,8 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private void nextBtn_Clicked(object sender, EventArgs e)=>nextTrack();
-   
+    private void nextBtn_Clicked(object sender, EventArgs e) => nextTrack();
+
 
     private void stopBtn_Clicked(object sender, EventArgs e)
     {
@@ -130,7 +142,7 @@ public partial class MainPage : ContentPage
         player.Pause();
     }
     private void playBtn_Clicked(object sender, EventArgs e) => playAudio();
-    
+
 
     private void prevBtn_Clicked(object sender, EventArgs e)
     {
@@ -164,6 +176,9 @@ public partial class MainPage : ContentPage
         int selectedIndex = list.IndexOf(e.SelectedItem);
 
         playlist.SetCurrentTrack(selectedIndex);
+
+        setCurrentTrackInfo();
+
 
 
     }
@@ -223,8 +238,8 @@ public partial class MainPage : ContentPage
             AudioFile audioFile = new AudioFile(path);
             player.Load(audioFile.GetFilePath());
             player.Play();
-           
-           // player.status = playerStatus.IsPlaying;
+
+            // player.status = playerStatus.IsPlaying;
             player._totalTime = audioFile.GetDuration();
             TrackProgressBarSlider.Maximum = audioFile.GetDuration().TotalSeconds;
         }
@@ -251,7 +266,7 @@ public partial class MainPage : ContentPage
     {
         currentTrackTime += TimeSpan.FromSeconds(15);
         player.SkipForward();
-       
+
         currentTrackProgress += 15;
     }
 
@@ -264,7 +279,7 @@ public partial class MainPage : ContentPage
             TimeSpan durationTime = playlist.GetCurrentTrack().GetDuration();
             currentTrackProgress = durationTime.TotalSeconds - currentTrackTime.TotalSeconds;
 
-            if (currentTrackProgress <= 0){nextTrack();}
+            if (currentTrackProgress <= 0) { nextTrack(); }
             else
             {
                 CurrentTimeLabel.Text = currentTrackTime.ToString("mm\\:ss");
@@ -291,7 +306,7 @@ public partial class MainPage : ContentPage
 
     private void TrackProgressBarSlider_ValueChanged(object sender, ValueChangedEventArgs e)
     {
-        if(ValueChangedEnabled && player._status == playerStatus.IsPlaying)
+        if (ValueChangedEnabled && player._status == playerStatus.IsPlaying)
         {
             currentTrackTime = TimeSpan.FromSeconds(TrackProgressBarSlider.Value);
             player.SetTime(TrackProgressBarSlider.Value);
@@ -301,7 +316,7 @@ public partial class MainPage : ContentPage
 
     private bool ReplayPlaylist()
     {
-        return true; 
+        return true;
 
     }
 
@@ -310,10 +325,15 @@ public partial class MainPage : ContentPage
 
     }
 
-    private void Button_Clicked(object sender, EventArgs e)
+    private async void Button_Clicked(object sender, EventArgs e)
+    {
+        PickFolder(cancellationToken);
+    }
+
+    private void loadToListView(string Path)
     {
         string musicPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
-        playlist.LoadFromDirectory(musicPath);
+        playlist.LoadFromDirectory(Path);
         playlistView.ItemsSource = null;
         playlistView.ItemsSource = playlist.Tracks.Select(track => new
         {
@@ -326,6 +346,36 @@ public partial class MainPage : ContentPage
         });
     }
 
+    async Task PickFolder(CancellationToken cancellationToken)
+    {
+        var result = await FolderPicker.Default.PickAsync(cancellationToken);
+        if (result.IsSuccessful)
+        {
+            if (foldersList.Contains(result.Folder.Path))
+            {
+                await Toast.Make($"The selected folder {result.Folder.Path} is already added.").Show(cancellationToken);
+            }
+            else
+            {
+                foldersList.Add(result.Folder.Path);
+                loadToListView(result.Folder.Path);
+                SaveFoldersList();
+            }
+        }
+        else
+        {
+            await Toast.Make($"The folder was not picked with error: {result.Exception.Message}").Show(cancellationToken);
+        }
+    }
+    private void SaveFoldersList()
+    {
+        var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
+
+        var foldersSettings = new Configuration{ FolderList = foldersList };
+        var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
+
+        System.IO.File.WriteAllText(appSettingsPath, json);
+    }
 
     private async Task ShowPopupInfo()
     {
