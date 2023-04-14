@@ -153,7 +153,7 @@ namespace testMAUI
 
                 foreach (string file in files)
                 {
-                    string extension = Path.GetExtension(file).ToLower();
+                    string extension = System.IO.Path.GetExtension(file).ToLower();
                     if (extension == ".mp3" || extension == ".mp4" || extension == ".wave" || extension == ".wav" || extension == ".flac")
                     {
                         musicFiles.Add(file);
