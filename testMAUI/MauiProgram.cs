@@ -1,4 +1,7 @@
 ﻿using CommunityToolkit.Maui.Storage;
+
+using CommunityToolkit.Maui;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
@@ -13,6 +16,7 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
+			.UseMauiCommunityToolkit()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -21,10 +25,12 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
 		builder.Services.AddTransient<MainPage>();
 
+
         var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
         using var stream = File.Open(appSettingsPath, FileMode.Open);
         var config = new ConfigurationBuilder().AddJsonStream(stream).Build();
         builder.Configuration.AddConfiguration(config);
+
 
 #if DEBUG
         builder.Logging.AddDebug();

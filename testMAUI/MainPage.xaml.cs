@@ -5,7 +5,7 @@
 using Microsoft.Maui.Controls.PlatformConfiguration;
 
 namespace testMAUI;
-
+using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls.Internals;
 using Microsoft.Maui.Storage;
 using System.Collections;
@@ -17,6 +17,7 @@ using CommunityToolkit.Maui.Storage;
 using System.Timers;
 using Microsoft.Maui.Animations;
 using Microsoft.Extensions.Configuration;
+
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using Microsoft.Extensions.Configuration.Json;
@@ -26,6 +27,10 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Alerts;
+ private List<string> foldersList = new List<string>();
 
 public partial class MainPage : ContentPage
 {
@@ -41,11 +46,12 @@ public partial class MainPage : ContentPage
     private bool ValueChangedEnabled = true;
     private IConfiguration _configuration;
     private List<AudioPlaylist> _playlist;
-    private List<string> foldersList = new List<string>();
+
     public MainPage(IFileSaver fileSaver, IConfiguration configuration)
     {
         _configuration = configuration;
         _configuration.GetSection("FolderList").Bind(foldersList);
+
 
         InitializeComponent();
         player = new Player();
@@ -61,6 +67,7 @@ public partial class MainPage : ContentPage
         trackTimer.Elapsed += TimerTick;
         TrackProgressBarSlider.Value = 0;
 
+
         foreach (var Folder in foldersList)
         {
             loadToListView(Folder);
@@ -69,6 +76,8 @@ public partial class MainPage : ContentPage
     }
 
 
+
+   
 
     private async void filesBtn_Clicked(object sender, EventArgs e)
     {
@@ -120,7 +129,7 @@ public partial class MainPage : ContentPage
             player.Play();
             setCurrentTrackInfo();
 
-
+          
         }
     }
 
@@ -167,7 +176,9 @@ public partial class MainPage : ContentPage
         int selectedIndex = list.IndexOf(e.SelectedItem);
 
         playlist.SetCurrentTrack(selectedIndex);
+
         setCurrentTrackInfo();
+
 
 
     }
@@ -232,7 +243,12 @@ public partial class MainPage : ContentPage
             player._totalTime = audioFile.GetDuration();
             TrackProgressBarSlider.Maximum = audioFile.GetDuration().TotalSeconds;
         }
+
+
     }
+
+
+   
 
     private async void Slider_ValueChanged(object sender, ValueChangedEventArgs e)
     {
@@ -276,7 +292,7 @@ public partial class MainPage : ContentPage
     }
 
 
-    private async void setCurrentTrackInfo()
+    private async Task setCurrentTrackInfo()
     {
         await Dispatcher.DispatchAsync(() =>
         {
@@ -284,6 +300,7 @@ public partial class MainPage : ContentPage
             CurrentTrackArtist.Text = ((dynamic)playlist.GetCurrentTrack().GetArtist());
             CurrentTrackTitle.Text = ((dynamic)playlist.GetCurrentTrack().GetTitle());
             CurrentTrackCover.Source = (dynamic)playlist.GetCurrentTrack().GetCoverUrl();
+            showToastInfo();
         });
     }
 
@@ -359,6 +376,46 @@ public partial class MainPage : ContentPage
 
         System.IO.File.WriteAllText(appSettingsPath, json);
     }
+
+    private async Task ShowPopupInfo()
+    {
+        var popup = new Popup();
+        popup.Size = new Size(300, 300);
+       
+        var stackLayout = new VerticalStackLayout();
+        var image = new Image { Source = playlist.GetCurrentTrack().GetCoverUrl() };
+        var label = new Label
+        {
+            Text = $"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
+            $" Artist - {((dynamic)playlist.GetCurrentTrack().GetArtist())}\n\r" +
+            $" Album - {((dynamic)playlist.GetCurrentTrack().GetAlbum())}\n\r",
+            VerticalTextAlignment = TextAlignment.Center
+        };
+
+        stackLayout.Children.Add(image);
+        stackLayout.Children.Add(label);
+        popup.Content = stackLayout;
+        await this.ShowPopupAsync(popup);
+
+    }
+
+
+
+    private async void showToastInfo()
+    {
+        await Toast.Make($"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
+            $" Artist - {((dynamic)playlist.GetCurrentTrack().GetArtist())}\n\r" +
+            $" Album - {((dynamic)playlist.GetCurrentTrack().GetAlbum())}\n\r",
+            ToastDuration.Short).Show(cancellationToken);
+
+    }
+
+
+  
+
+
+
+
 
 }
 
