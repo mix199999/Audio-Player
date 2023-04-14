@@ -41,6 +41,7 @@ public partial class MainPage : ContentPage
     private bool ValueChangedEnabled = true;
     private IConfiguration _configuration;
     private List<AudioPlaylist> _playlist;
+    private List<string> foldersList = new List<string>();
 
     public MainPage(IFileSaver fileSaver, IConfiguration configuration)
     {
@@ -394,30 +395,6 @@ public partial class MainPage : ContentPage
 
     }
 
-    private async Task ShowPopupInfo()
-    {
-        var popup = new Popup();
-        popup.Size = new Size(300, 300);
-       
-        var stackLayout = new VerticalStackLayout();
-        var image = new Image { Source = playlist.GetCurrentTrack().GetCoverUrl() };
-        var label = new Label
-        {
-            Text = $"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
-            $" Artist - {((dynamic)playlist.GetCurrentTrack().GetArtist())}\n\r" +
-            $" Album - {((dynamic)playlist.GetCurrentTrack().GetAlbum())}\n\r",
-            VerticalTextAlignment = TextAlignment.Center
-        };
-
-        stackLayout.Children.Add(image);
-        stackLayout.Children.Add(label);
-        popup.Content = stackLayout;
-        await this.ShowPopupAsync(popup);
-
-    }
-
-
-
     private async void showToastInfo()
     {
         await Toast.Make($"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
@@ -426,13 +403,5 @@ public partial class MainPage : ContentPage
             ToastDuration.Short).Show(cancellationToken);
 
     }
-
-
-  
-
-
-
-
-
 }
 
