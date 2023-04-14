@@ -29,7 +29,6 @@ public partial class MainPage : ContentPage
     private double currentTrackProgress;
     private bool ValueChangedEnabled = true;
 
-
     public MainPage(IFileSaver fileSaver)
     {
         InitializeComponent();
@@ -119,9 +118,14 @@ public partial class MainPage : ContentPage
     private void stopBtn_Clicked(object sender, EventArgs e)
     {
         trackTimer.Stop();
+        CurrentTimeLabel.Opacity = 0.7;
         player.Pause();
     }
-    private void playBtn_Clicked(object sender, EventArgs e) => playAudio();
+    private void playBtn_Clicked(object sender, EventArgs e)
+    {
+        playAudio();
+        CurrentTimeLabel.Opacity = 1;
+    }
     
 
     private void prevBtn_Clicked(object sender, EventArgs e)
