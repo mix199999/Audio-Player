@@ -40,7 +40,10 @@ public partial class MainPage : ContentPage
 
         this.fileSaver = fileSaver;
 
-        VolumeSlider.Value = 100;
+        VolumeSlider.Value = 0;
+        player.SetVolume(0);
+
+        AudioPlayingImageControl.Opacity = 0;
         trackTimer.Interval = 1000;
         trackTimer.Elapsed += TimerTick;
         TrackProgressBarSlider.Value = 0;
@@ -120,11 +123,14 @@ public partial class MainPage : ContentPage
         trackTimer.Stop();
         CurrentTimeLabel.Opacity = 0.7;
         player.Pause();
+        AudioPlayingImageControl.Opacity = 0;
     }
     private void playBtn_Clicked(object sender, EventArgs e)
     {
         playAudio();
         CurrentTimeLabel.Opacity = 1;
+        if(playlist.Tracks.Count == 0) { return; }
+        AudioPlayingImageControl.Opacity = 1;
     }
     
 
@@ -148,9 +154,11 @@ public partial class MainPage : ContentPage
         if (e.SelectedItem == null)
             return;
 
+
         var list = new List<object>();
         currentTrackTime = TimeSpan.Zero;
         playAudio();
+        AudioPlayingImageControl.Opacity = 1;
 
         if (playlistView.ItemsSource is IEnumerable<object> enumerable)
         {
@@ -247,6 +255,9 @@ public partial class MainPage : ContentPage
         currentTrackProgress += 15;
     }
 
+    private void replayBtn_Clicked(object sender, TappedEventArgs e) => ReplayPlaylist(sender);
+
+    private void shuffleBtn_Clicked(Object sender, TappedEventArgs e) => PlayRandom(sender);
 
     private async void TimerTick(object sender, ElapsedEventArgs e)
     {
@@ -290,15 +301,24 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private bool ReplayPlaylist()
+    private bool ReplayPlaylist(object s)
     {
+        if(s is Image)
+        {
+            Image img = (Image)s;
+            if(img.Opacity == 0.75) { img.Opacity = 0.4; } else { img.Opacity = 0.75; }
+        }
         return true; 
 
     }
 
-    private void PlayRandom()
+    private void PlayRandom(object s)
     {
-
+        if (s is Image)
+        {
+            Image img = (Image)s;
+            if (img.Opacity == 0.75) { img.Opacity = 0.4; } else { img.Opacity = 0.75; }
+        }
     }
 }
 
