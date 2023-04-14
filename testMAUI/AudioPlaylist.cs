@@ -5,14 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 using TagLib.Mpeg;
 using System.IO;
+using System.Text.Json.Serialization;
+
 namespace testMAUI
 {
     internal class AudioPlaylist
     {
+        [JsonIgnore]
         private List<AudioFile> _tracks;
+        [JsonIgnore]
         private int _currentIndex;
-
+        [JsonIgnore]
         public List<AudioFile> Tracks => _tracks;
+
+        public string Name { get; set; }
+        public string Path { get; set; }
+
 
 
 

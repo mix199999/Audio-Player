@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Storage;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace testMAUI;
@@ -22,6 +23,10 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
-		return builder.Build();
+        var configuration = new ConfigurationBuilder()
+		.AddJsonFile("appSettings.json", optional: false, reloadOnChange: true)
+		.Build();
+        var folders = configuration.GetSection("folders").Get<List<string>>();
+        return builder.Build();
 	}
 }
