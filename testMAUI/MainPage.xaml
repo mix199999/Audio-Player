@@ -27,7 +27,7 @@
                 <StackLayout Orientation="Vertical" Spacing="10" >
                     <!-- linki do stronek -->
                     <Button Text="Strona główna" BackgroundColor="#3f6f6f" TextColor="Black" HorizontalOptions="FillAndExpand"/>
-
+                    <Button Text="test" BackgroundColor="#3f6f6f" TextColor="Black" HorizontalOptions="FillAndExpand" Clicked="Button_Clicked"  />
                     <Button Text="Ustawienia" BackgroundColor="#3f6f6f" TextColor="Black" HorizontalOptions="FillAndExpand"  />
                 </StackLayout>
                 
