@@ -288,5 +288,23 @@ public partial class MainPage : ContentPage
     {
 
     }
+
+    private void Button_Clicked(object sender, EventArgs e)
+    {
+        string musicPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+        playlist.LoadFromDirectory(musicPath);
+        playlistView.ItemsSource = null;
+        playlistView.ItemsSource = playlist.Tracks.Select(track => new
+        {
+            Title = track.GetTitle(),
+            Duration = track.GetDuration().ToString("hh\\:mm\\:ss"),
+            Album = track.GetAlbum(),
+            Artist = track.GetArtist(),
+            Path = track.GetFilePath(),
+            Cover = track.GetCover()
+        });
+    }
+
+
 }
 
