@@ -5,14 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 using TagLib.Mpeg;
 using System.IO;
+
+using System.Text.Json.Serialization;
+
+
 namespace testMAUI
 {
     internal class AudioPlaylist
     {
+        [JsonIgnore]
         private List<AudioFile> _tracks;
+        [JsonIgnore]
         private int _currentIndex;
-
+        [JsonIgnore]
         public List<AudioFile> Tracks => _tracks;
+
+        public string Name { get; set; }
+        public string Path { get; set; }
+
 
 
 
@@ -133,10 +143,38 @@ namespace testMAUI
         }
 
 
+        public void LoadFromDirectory(string directory)
+        {
+            if (Directory.Exists(directory))
+            {
+                string[] files = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories);
 
+                List<string> musicFiles = new List<string>();
 
+                foreach (string file in files)
+                {
+                    string extension = System.IO.Path.GetExtension(file).ToLower();
+                    if (extension == ".mp3" || extension == ".mp4" || extension == ".wave" || extension == ".wav" || extension == ".flac")
+                    {
+                        musicFiles.Add(file);
+                    }
+                }
 
+                foreach (string file in musicFiles)
+                {
+                    if (System.IO.File.Exists(file))
+                    {
+                        var track = new AudioFile(file);
+                        _tracks.Add(track);                       
+                    }
+                }
+            }
+        }
 
 
     }
+
+
+
+
 }
