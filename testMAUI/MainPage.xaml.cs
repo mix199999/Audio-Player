@@ -442,5 +442,12 @@ public partial class MainPage : ContentPage
 
     }
 
+    private void settingsButtonClicked(object sender, EventArgs e)
+    {
+        Navigation.PushAsync(new SettingsPage());
+        //ustawienia.IsVisible = true;
+        //glowny.IsVisible = false;
+    }
+
 }
 
