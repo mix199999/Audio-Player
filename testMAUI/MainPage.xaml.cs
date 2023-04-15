@@ -45,6 +45,7 @@ public partial class MainPage : ContentPage
     private IConfiguration _configuration;
     private List<AudioPlaylist> _playlist;
     private List<string> foldersList = new List<string>();
+    private bool _visibility = true;
 
 
     public MainPage(IFileSaver fileSaver, IConfiguration configuration)
@@ -71,6 +72,8 @@ public partial class MainPage : ContentPage
         trackTimer.Elapsed += TimerTick;
         TrackProgressBarSlider.Value = 0;
 
+        this.Unfocused += callPopup;
+        this.Unfocused += hidePopup;
 
 
         foreach (var Folder in foldersList)
@@ -80,8 +83,6 @@ public partial class MainPage : ContentPage
         if(foldersList.Count == 0) foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
 
     }
-
-
 
    
 
@@ -126,6 +127,7 @@ public partial class MainPage : ContentPage
     private void nextTrack()
     {
         //if()
+        
         playlist.Next();
         currentTrackTime = TimeSpan.Zero;
         AudioFile audioFile = playlist.GetCurrentTrack();
@@ -135,7 +137,6 @@ public partial class MainPage : ContentPage
             player.Play();
             setCurrentTrackInfo();
 
-          
         }
     }
 
@@ -315,14 +316,16 @@ public partial class MainPage : ContentPage
 
     private async Task setCurrentTrackInfo()
     {
+       
         await Dispatcher.DispatchAsync(() =>
         {
             CurrentTrackAlbum.Text = ((dynamic)playlist.GetCurrentTrack().GetAlbum());
             CurrentTrackArtist.Text = ((dynamic)playlist.GetCurrentTrack().GetArtist());
             CurrentTrackTitle.Text = ((dynamic)playlist.GetCurrentTrack().GetTitle());
             CurrentTrackCover.Source = (dynamic)playlist.GetCurrentTrack().GetCoverUrl();
-            showToastInfo();
+           
         });
+        if (!_visibility) showToastInfo();
     }
 
     private void TrackProgressBarSlider_ValueChanged(object sender, ValueChangedEventArgs e)
@@ -435,12 +438,22 @@ public partial class MainPage : ContentPage
 
     private async void showToastInfo()
     {
-        await Toast.Make($"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
-            $" Artist - {((dynamic)playlist.GetCurrentTrack().GetArtist())}\n\r" +
-            $" Album - {((dynamic)playlist.GetCurrentTrack().GetAlbum())}\n\r",
-            ToastDuration.Short).Show(cancellationToken);
+        var toast = Toast.Make($"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
+           $" Artist - {((dynamic)playlist.GetCurrentTrack().GetArtist())}\n\r" +
+           $" Album - {((dynamic)playlist.GetCurrentTrack().GetAlbum())}\n\r",
+           ToastDuration.Short );          
+            await toast.Show(cancellationToken);
 
     }
+
+
+    private void callPopup(object sender, FocusEventArgs e)=>
+        _visibility = true;
+    
+
+    private void hidePopup(object sender, FocusEventArgs e)=>
+        _visibility = false;
+    
 
 }
 
