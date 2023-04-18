@@ -3,11 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
        x:Class="testMAUI.PopupTrackInfo"
-          CanBeDismissedByTappingOutsideOfPopup="True" >
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+          CanBeDismissedByTappingOutsideOfPopup="False" >
+    <VerticalStackLayout VerticalOptions="FillAndExpand">
+        <Entry Placeholder="Enter playlist name" x:Name="PlaylistNameEntry"/>
+
+        <Button Text="Save playlist" Clicked="SavePlaylistButton_Clicked"
+                VerticalOptions="End"/>
     </VerticalStackLayout>
 </mct:Popup>

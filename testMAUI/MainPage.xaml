@@ -222,7 +222,7 @@
                             </Image>
                             <Image Source="downloadsolid.png" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="10" ToolTipProperties.Text="Save playlist">
                                 <Image.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="saveListBtn_Clicked" />
+                                    <TapGestureRecognizer Tapped="SaveListBtn_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
                             <Image Source="replaysolid.png" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="11" ToolTipProperties.Text="Save playlist">

@@ -27,7 +27,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-
+using CommunityToolkit.Mvvm.Messaging;
 
 
 public partial class MainPage : ContentPage
@@ -44,7 +44,7 @@ public partial class MainPage : ContentPage
     private bool ValueChangedEnabled = true;
     private IConfiguration _configuration;
     private List<AudioPlaylist> _playlist;
-    private List<string> foldersList = new List<string>();
+    private List<string> _foldersList = new List<string>();
     private bool _visibility = true;
 
 
@@ -52,7 +52,7 @@ public partial class MainPage : ContentPage
 
     {
         _configuration = configuration;
-        _configuration.GetSection("FolderList").Bind(foldersList);
+        _configuration.GetSection("FolderList").Bind(_foldersList);
 
 
         InitializeComponent();
@@ -76,15 +76,33 @@ public partial class MainPage : ContentPage
         this.Unfocused += hidePopup;
 
 
-        foreach (var Folder in foldersList)
+        foreach (var Folder in _foldersList)
         {
             loadToListView(Folder);
         }
-        if(foldersList.Count == 0) foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
+        if(_foldersList.Count == 0) _foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
+
+
+
+        MessagingCenter.Subscribe<SettingsPage, List<string>>(this, "FoldersList", (sender, foldersList) =>
+        {
+            if (foldersList != null)
+            {
+                this._foldersList = foldersList;
+                foreach (var Folder in _foldersList) { loadToListView(Folder); }
+                SaveFoldersList();
+            }
+
+        });
+
+
+
+
+
 
     }
 
-   
+
 
     private async void filesBtn_Clicked(object sender, EventArgs e)
     {
@@ -239,11 +257,7 @@ public partial class MainPage : ContentPage
         }
 
     }
-    private async void saveListBtn_Clicked(object sender, TappedEventArgs e)
-    {
-        using var stream = new MemoryStream(Encoding.Default.GetBytes(playlist.SaveToM3U()));
-        var path = await fileSaver.SaveAsync(".M3U", stream, cancellationTokenSource.Token);
-    }
+   
 
 
     private void playAudio()
@@ -367,6 +381,7 @@ public partial class MainPage : ContentPage
 
     private void loadToListView(string Path)
     {
+       // player.Stop();
         string musicPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
         playlist.LoadFromDirectory(Path);
         playlistView.ItemsSource = null;
@@ -386,13 +401,13 @@ public partial class MainPage : ContentPage
         var result = await FolderPicker.Default.PickAsync(cancellationToken);
         if (result.IsSuccessful)
         {
-            if (foldersList.Contains(result.Folder.Path))
+            if (_foldersList.Contains(result.Folder.Path))
             {
                 await Toast.Make($"The selected folder {result.Folder.Path} is already added.").Show(cancellationToken);
             }
             else
             {
-                foldersList.Add(result.Folder.Path);
+                _foldersList.Add(result.Folder.Path);
                 loadToListView(result.Folder.Path);
                 SaveFoldersList();
             }
@@ -406,7 +421,7 @@ public partial class MainPage : ContentPage
     {
         var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
 
-        var foldersSettings = new Configuration{ FolderList = foldersList };
+        var foldersSettings = new Configuration{ FolderList = _foldersList };
         var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
 
         System.IO.File.WriteAllText(appSettingsPath, json);
@@ -449,7 +464,7 @@ public partial class MainPage : ContentPage
 
     private void settingsButtonClicked(object sender, EventArgs e)
     {
-        Navigation.PushAsync(new SettingsPage());
+        Navigation.PushAsync(new SettingsPage(_foldersList));
         //ustawienia.IsVisible = true;
         //glowny.IsVisible = false;
     }
@@ -460,6 +475,21 @@ private void callPopup(object sender, FocusEventArgs e)=>
 
     private void hidePopup(object sender, FocusEventArgs e)=>
         _visibility = false;
+
+
+    private async void SaveListBtn_Clicked(object sender, EventArgs e)
+    {
+        var popup = new PopupTrackInfo();
+        popup.PlaylistSaved += OnPlaylistSaved;
+        this.ShowPopup(popup);
+    }
+
+
+    private void OnPlaylistSaved(object? sender, string playlistName)
+    {
+        string Name = playlistName;
+       //tutaj dalej z jsonem i m3u
+    }
 }
 
 
