@@ -30,13 +30,18 @@ public static class MauiProgram
         var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
         if (!File.Exists(appSettingsPath))
         {
-            var foldersSettings = new Configuration { FolderList = new List<string> { Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) } };
+            var foldersSettings = new Configuration
+            {
+                FolderList = new List<string> { Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) },
+                AudioPlaylists = new List<AudioPlaylist> { new AudioPlaylist { Name = "", Path = "" } }
+            };
             var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(appSettingsPath, json);
         }
 
         using var stream = File.Open(appSettingsPath, FileMode.Open);
         var config = new ConfigurationBuilder().AddJsonStream(stream).Build();
+
         builder.Configuration.AddConfiguration(config);
 
 

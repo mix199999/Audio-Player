@@ -53,15 +53,17 @@
                             <!--Ewentualne dodawanie nowych skladanek ?-->
                             <StackLayout Orientation="Vertical"  HorizontalOptions="Fill" Spacing="10" Padding="5">
                                 <!-- lakies tam jabele -->
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <ListView x:Name="playlistListView" ItemsSource="{Binding _playlist}" SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay}" ItemSelected="OnPlaylistSelected">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <ViewCell>
+                                                <StackLayout Orientation="Vertical">
+                                                    <Label Text="{Binding Name}" FontSize="20" TextColor="LightGrey" FontAttributes="Bold" />
+                                                </StackLayout>
+                                            </ViewCell>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
                             </StackLayout>
 
                         </ScrollView>
