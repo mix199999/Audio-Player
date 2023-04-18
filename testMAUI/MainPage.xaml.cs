@@ -43,7 +43,12 @@ public partial class MainPage : ContentPage
     private List<AudioPlaylist> _playlist;
     private List<string> foldersList = new List<string>();
 
+    private bool _visibility = true;
+
+
+
     public MainPage(IFileSaver fileSaver, IConfiguration configuration)
+
     {
         _configuration = configuration;
         _configuration.GetSection("FolderList").Bind(foldersList);
@@ -58,20 +63,29 @@ public partial class MainPage : ContentPage
 
         this.fileSaver = fileSaver;
 
-        VolumeSlider.Value = 100;
+        VolumeSlider.Value = 0;
+        player.SetVolume(0);
+
+        AudioPlayingImageControl.Opacity = 0;
         trackTimer.Interval = 1000;
         trackTimer.Elapsed += TimerTick;
         TrackProgressBarSlider.Value = 0;
+
+        this.Unfocused += callPopup;
+        this.Unfocused += hidePopup;
 
 
         foreach (var Folder in foldersList)
         {
             loadToListView(Folder);
         }
-        if (foldersList.Count == 0) foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
+
+        if(foldersList.Count == 0) foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
+
     }
 
 
+    }
 
 
 
@@ -116,6 +130,7 @@ public partial class MainPage : ContentPage
     private void nextTrack()
     {
         //if()
+        
         playlist.Next();
         currentTrackTime = TimeSpan.Zero;
         AudioFile audioFile = playlist.GetCurrentTrack();
@@ -125,7 +140,6 @@ public partial class MainPage : ContentPage
             player.Play();
             setCurrentTrackInfo();
 
-          
         }
     }
 
@@ -135,9 +149,19 @@ public partial class MainPage : ContentPage
     private void stopBtn_Clicked(object sender, EventArgs e)
     {
         trackTimer.Stop();
+        CurrentTimeLabel.Opacity = 0.7;
         player.Pause();
+        AudioPlayingImageControl.Opacity = 0;
     }
-    private void playBtn_Clicked(object sender, EventArgs e) => playAudio();
+    private void playBtn_Clicked(object sender, EventArgs e)
+    {
+        playAudio();
+        CurrentTimeLabel.Opacity = 1;
+        if(playlist.Tracks.Count == 0) { return; }
+        AudioPlayingImageControl.Opacity = 1;
+    }
+
+   
 
 
     private void prevBtn_Clicked(object sender, EventArgs e)
@@ -160,9 +184,11 @@ public partial class MainPage : ContentPage
         if (e.SelectedItem == null)
             return;
 
+
         var list = new List<object>();
         currentTrackTime = TimeSpan.Zero;
         playAudio();
+        AudioPlayingImageControl.Opacity = 1;
 
         if (playlistView.ItemsSource is IEnumerable<object> enumerable)
         {
@@ -266,6 +292,9 @@ public partial class MainPage : ContentPage
         currentTrackProgress += 15;
     }
 
+    private void replayBtn_Clicked(object sender, TappedEventArgs e) => ReplayPlaylist(sender);
+
+    private void shuffleBtn_Clicked(Object sender, TappedEventArgs e) => PlayRandom(sender);
 
     private async void TimerTick(object sender, ElapsedEventArgs e)
     {
@@ -290,14 +319,16 @@ public partial class MainPage : ContentPage
 
     private async Task setCurrentTrackInfo()
     {
+       
         await Dispatcher.DispatchAsync(() =>
         {
             CurrentTrackAlbum.Text = ((dynamic)playlist.GetCurrentTrack().GetAlbum());
             CurrentTrackArtist.Text = ((dynamic)playlist.GetCurrentTrack().GetArtist());
             CurrentTrackTitle.Text = ((dynamic)playlist.GetCurrentTrack().GetTitle());
             CurrentTrackCover.Source = (dynamic)playlist.GetCurrentTrack().GetCoverUrl();
-            showToastInfo();
+           
         });
+        if (!_visibility) showToastInfo();
     }
 
     private void TrackProgressBarSlider_ValueChanged(object sender, ValueChangedEventArgs e)
@@ -310,15 +341,26 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private bool ReplayPlaylist()
+    private bool ReplayPlaylist(object s)
     {
-        return true;
+
+        if(s is Image)
+        {
+            Image img = (Image)s;
+            if(img.Opacity == 0.75) { img.Opacity = 0.4; } else { img.Opacity = 0.75; }
+        }
+        return true; 
+
 
     }
 
-    private void PlayRandom()
+    private void PlayRandom(object s)
     {
-
+        if (s is Image)
+        {
+            Image img = (Image)s;
+            if (img.Opacity == 0.75) { img.Opacity = 0.4; } else { img.Opacity = 0.75; }
+        }
     }
 
     private async void Button_Clicked(object sender, EventArgs e)
@@ -397,11 +439,30 @@ public partial class MainPage : ContentPage
 
     private async void showToastInfo()
     {
-        await Toast.Make($"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
-            $" Artist - {((dynamic)playlist.GetCurrentTrack().GetArtist())}\n\r" +
-            $" Album - {((dynamic)playlist.GetCurrentTrack().GetAlbum())}\n\r",
-            ToastDuration.Short).Show(cancellationToken);
+        var toast = Toast.Make($"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
+           $" Artist - {((dynamic)playlist.GetCurrentTrack().GetArtist())}\n\r" +
+           $" Album - {((dynamic)playlist.GetCurrentTrack().GetAlbum())}\n\r",
+           ToastDuration.Short );          
+            await toast.Show(cancellationToken);
 
     }
+
+
+
+    private void settingsButtonClicked(object sender, EventArgs e)
+    {
+        Navigation.PushAsync(new SettingsPage());
+        //ustawienia.IsVisible = true;
+        //glowny.IsVisible = false;
+    }
+
+private void callPopup(object sender, FocusEventArgs e)=>
+        _visibility = true;
+    
+
+    private void hidePopup(object sender, FocusEventArgs e)=>
+        _visibility = false;
+
 }
+
 
