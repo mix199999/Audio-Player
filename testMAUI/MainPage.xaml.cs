@@ -1,7 +1,4 @@
 ﻿
-
-
-
 using Microsoft.Maui.Controls.PlatformConfiguration;
 
 namespace testMAUI;
@@ -45,7 +42,9 @@ public partial class MainPage : ContentPage
     private IConfiguration _configuration;
     private List<AudioPlaylist> _playlist;
     private List<string> foldersList = new List<string>();
+
     private bool _visibility = true;
+
 
 
     public MainPage(IFileSaver fileSaver, IConfiguration configuration)
@@ -80,11 +79,15 @@ public partial class MainPage : ContentPage
         {
             loadToListView(Folder);
         }
+
         if(foldersList.Count == 0) foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
 
     }
 
-   
+
+    }
+
+
 
     private async void filesBtn_Clicked(object sender, EventArgs e)
     {
@@ -267,7 +270,7 @@ public partial class MainPage : ContentPage
     }
 
 
-   
+
 
     private async void Slider_ValueChanged(object sender, ValueChangedEventArgs e)
     {
@@ -406,7 +409,7 @@ public partial class MainPage : ContentPage
     {
         var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
 
-        var foldersSettings = new Configuration{ FolderList = foldersList };
+        var foldersSettings = new Configuration { FolderList = foldersList };
         var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
 
         System.IO.File.WriteAllText(appSettingsPath, json);
@@ -416,7 +419,7 @@ public partial class MainPage : ContentPage
     {
         var popup = new Popup();
         popup.Size = new Size(300, 300);
-       
+
         var stackLayout = new VerticalStackLayout();
         var image = new Image { Source = playlist.GetCurrentTrack().GetCoverUrl() };
         var label = new Label
@@ -434,8 +437,6 @@ public partial class MainPage : ContentPage
 
     }
 
-
-
     private async void showToastInfo()
     {
         var toast = Toast.Make($"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
@@ -445,6 +446,7 @@ public partial class MainPage : ContentPage
             await toast.Show(cancellationToken);
 
     }
+
 
 
     private void settingsButtonClicked(object sender, EventArgs e)
@@ -460,6 +462,7 @@ private void callPopup(object sender, FocusEventArgs e)=>
 
     private void hidePopup(object sender, FocusEventArgs e)=>
         _visibility = false;
+
 }
 
 
