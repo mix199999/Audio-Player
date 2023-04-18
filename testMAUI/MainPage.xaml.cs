@@ -447,13 +447,19 @@ public partial class MainPage : ContentPage
     }
 
 
-    private void callPopup(object sender, FocusEventArgs e)=>
+    private void settingsButtonClicked(object sender, EventArgs e)
+    {
+        Navigation.PushAsync(new SettingsPage());
+        //ustawienia.IsVisible = true;
+        //glowny.IsVisible = false;
+    }
+
+private void callPopup(object sender, FocusEventArgs e)=>
         _visibility = true;
     
 
     private void hidePopup(object sender, FocusEventArgs e)=>
         _visibility = false;
-    
-
 }
+
 

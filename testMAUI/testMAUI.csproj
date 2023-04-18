@@ -54,6 +54,7 @@
 	  <None Remove="Resources\Images\downloadsolid.png" />
 	  <None Remove="Resources\Images\forward-solid.svg" />
 	  <None Remove="Resources\Images\list-solid.svg" />
+	  <None Remove="Resources\Images\minus.png" />
 	  <None Remove="Resources\Images\note_icon.png" />
 	  <None Remove="Resources\Images\pause-solid.svg" />
 	  <None Remove="Resources\Images\play-solid.svg" />
@@ -74,12 +75,18 @@
 	<ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://json.schemastore.org/asconfig-schema.json" /></VisualStudio></ProjectExtensions>
 
 	<ItemGroup>
+	  <Compile Update="SettingsPage.xaml.cs">
+	    <DependentUpon>SettingsPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="PopupTrackInfo.xaml.cs">
 	    <DependentUpon>PopupTrackInfo.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="SettingsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="PopupTrackInfo.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
