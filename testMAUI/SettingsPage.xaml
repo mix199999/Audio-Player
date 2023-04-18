@@ -98,44 +98,38 @@
                     <HorizontalStackLayout HorizontalOptions="EndAndExpand">
                         
                         <!-- Dodaj button -->
-                        <Image Source="plussolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="30" Grid.Column="8" ToolTipProperties.Text="Add path">
+                        <Image Source="plussolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="30" Grid.Column="8" ToolTipProperties.Text="Add path" x:Name="addFolderBt" >
                             <Image.GestureRecognizers>
-                                <TapGestureRecognizer  />
+                                    <TapGestureRecognizer Tapped="Button_Clicked" />
                             </Image.GestureRecognizers>
                         </Image>
                         
                         <!-- Usun button -->
                         <Image Source="minus.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="25" Grid.Column="8" ToolTipProperties.Text="Remove path">
                             <Image.GestureRecognizers>
-                                <TapGestureRecognizer  />
+                                <TapGestureRecognizer   />
                             </Image.GestureRecognizers>
                         </Image>
                         
                     </HorizontalStackLayout>
                 </Grid>
                 
-                <!-- Lista ścierzek -->
-                    <ScrollView  Grid.Row="1" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" x:Name="test" >
-                        <ListView x:Name="playlistView" SelectionMode="Single"  SelectedItem="{Binding SelectedItem}">
+                <!-- Lista ścieżek -->
+                    <ScrollView Grid.Row="1" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" x:Name="test">
+                        <ListView x:Name="pathListView" SelectionMode="Single" SelectedItem="{Binding SelectedItem}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <ViewCell>
                                         <Grid>
                                             <Grid.RowDefinitions>
-                                                <RowDefinition Height="0.9*"/>
-                                                <RowDefinition Height="0.1*"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <Grid Grid.Row="0" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand" Padding="0,10" Margin="20,0" >
+                                            <Grid Grid.Row="0" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand" Padding="0,10" Margin="20,0">
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="0.3*"/>
-                                                    <ColumnDefinition Width="0.3*"/>
-                                                    <ColumnDefinition Width="0.3*"/>
-                                                    <ColumnDefinition Width="0.1*"/>
+                                                    <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Label Text="1" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                                                <Label Text="2" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                                                <Label Text="3" Grid.Column="2" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                                                <Label Text="4" Grid.Column="3" VerticalOptions="Center" HorizontalOptions="End" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                                                <Label Text="{Binding Path}" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
                                             </Grid>
                                             <BoxView Grid.Row="1" BackgroundColor="Black" Opacity="0.05" HeightRequest="1" VerticalOptions="Start" Margin="15,0" />
                                         </Grid>
@@ -144,6 +138,7 @@
                             </ListView.ItemTemplate>
                         </ListView>
                     </ScrollView>
+
                 </Grid>
                
             </Frame>
