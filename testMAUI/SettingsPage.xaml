@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="testMAUI.SettingsPage"
              Title="Settings Page"
-             
              >
     <Grid>
         <Grid.ColumnDefinitions>
@@ -37,7 +36,7 @@
                 
             </StackLayout>
             <!-- track info - jeśli niepotrzebne to wywalic xd -->
-            <Grid Grid.Row="1" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="#606060" Opacity="0.8" HeightRequest="70">
+            <Grid Grid.Row="1" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Gray"  HeightRequest="70">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.3*"/>
                     <ColumnDefinition Width="0.8*"/>

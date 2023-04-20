@@ -19,73 +19,118 @@
         <!-- Menu nawigacyjne -->
         <Grid Grid.Column="0" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Gray">
             <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="0.3*" />
+                <RowDefinition Height="0.35*" />
+                <RowDefinition Height="70" />
             </Grid.RowDefinitions>
-            <!--Zostawiam tu StackLayout, pasuje-->
-            <StackLayout Grid.Row="0" Orientation="Vertical" Spacing="10" Padding="5">
-                <!-- Wyszukiwarka -->
-                <Frame CornerRadius="10" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" >
+            <!-- Wyszukiwarka -->
+                <VerticalStackLayout Grid.Row="0" Spacing="5" Padding="5" VerticalOptions="Fill" >
+                    <Frame CornerRadius="10" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" >
                     <SearchBar Placeholder="Szukaj" BackgroundColor="#606060" PlaceholderColor="White"/>
                 </Frame>
-                <Grid>
-                    <Grid.RowDefinitions>
+                <Grid RowSpacing="5">
+                    <Grid.RowDefinitions >
+                        <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <!-- linki do stronek -->
-
-                    <Button Grid.Row="0" Text="Strona główna" BackgroundColor="#606060" TextColor="White" VerticalOptions="Center" Margin="0,0,0,5" />
-                    <Button Grid.Row="1" Text="Ustawienia" BackgroundColor="#606060" TextColor="White" VerticalOptions="Center" Margin="0,5,0,0" Clicked="settingsButtonClicked" />
+                    <!-- Przyciski kontrolek -->
+                    
+                        <!-- Strona główna -->
+                    <Frame  Grid.Row="0" Padding="0" Margin="0" CornerRadius="10" BackgroundColor="Transparent" BorderColor="Transparent" >
+                        <Grid BackgroundColor="#606060" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="0"  Padding="20,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image x:Name="HomeIcon" Grid.Column="0" Source="home_white.png" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="20" WidthRequest="20"  />
+                            <Button Grid.Column="1" BackgroundColor="Transparent" TextColor="White" BorderWidth="0" VerticalOptions="Center" HorizontalOptions="Start">
+                                <Button.Text>Strona główna</Button.Text>
+                            </Button>
+                        </Grid>
+                    </Frame>
+                    <!-- Ustawienia -->
+                    <Frame  Grid.Row="1" Padding="0" CornerRadius="10" BackgroundColor="Transparent" BorderColor="Transparent" >
+                        <Grid BackgroundColor="#606060" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="20,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image x:Name="SettingsIcon" Grid.Column="0" Source="settings_white.png" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="20" WidthRequest="20"  />
+                            <Button Grid.Column="1" BackgroundColor="Transparent" TextColor="White" BorderWidth="0" VerticalOptions="Center" HorizontalOptions="Start"   Clicked="settingsButtonClicked">
+                                <Button.Text>Ustawienia</Button.Text>
+                            </Button>
+                        </Grid>
+                    </Frame>
+                    <!-- Nowa Playlista -->
+                    <Frame  Grid.Row="2" Padding="0" CornerRadius="10" BackgroundColor="Transparent" BorderColor="Transparent" >
+                        <Grid BackgroundColor="#606060" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="20,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image x:Name="AddPlaylistIcon" Grid.Column="0" Source="plussolid_white.png" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="20" WidthRequest="20"  />
+                            <Button Grid.Column="1" BackgroundColor="Transparent" TextColor="White" BorderWidth="0" VerticalOptions="Center" HorizontalOptions="Start"  Clicked="settingsButtonClicked">
+                                <Button.Text>Nowa playlista</Button.Text>
+                            </Button>
+                        </Grid>
+                    </Frame>
                 </Grid>
+            </VerticalStackLayout>
 
 
-                <!-- Lista ulubionych plejlist -->
-                <Frame CornerRadius="10" Padding="0" BackgroundColor="Transparent" HeightRequest="240" BorderColor="Transparent" >
-
-                    <Grid RowSpacing="0" VerticalOptions="Start"  HorizontalOptions="FillAndExpand" BackgroundColor="#606060">
+            <!-- Lista ulubionych plejlist -->
+            <StackLayout Grid.Row="1" Padding="4" VerticalOptions="StartAndExpand">
+                <Frame  CornerRadius="10" Padding="1" Margin="0,-10,0,0"  BackgroundColor="Transparent" VerticalOptions="FillAndExpand" BorderColor="Transparent" >
+                    <Grid RowSpacing="0" VerticalOptions="FillAndExpand"  HorizontalOptions="FillAndExpand" BackgroundColor="#606060">
                         <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
+                            <RowDefinition Height="40"/>
+                                <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Text="Twoje składanki" FontSize="24" TextColor="LightGrey" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
-                        <ScrollView Grid.Row="1" HeightRequest="210">
+                        <Label Grid.Row="0" Text="Twoje składanki" FontSize="24" TextColor="White" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                        <ScrollView Grid.Row="1" VerticalOptions="FillAndExpand">
                             <!--Ewentualne dodawanie nowych skladanek ?-->
-                            <StackLayout Orientation="Vertical"  HorizontalOptions="Fill" Spacing="10" Padding="5">
+                                <VerticalStackLayout  HorizontalOptions="Fill" Spacing="10" Padding="5">
                                 <!-- lakies tam jabele -->
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                            </StackLayout>
+                                <Label Text="Składanka" FontSize="20" TextColor="White" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="White" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="White" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="White" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="White" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="White" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="White" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="White" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <Label Text="Składanka" FontSize="20" TextColor="White" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                            </VerticalStackLayout>
 
                         </ScrollView>
                     </Grid>
                 </Frame>
             </StackLayout>
+
             <!-- track info -->
-            <Grid Grid.Row="1" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="#606060" Opacity="0.8" HeightRequest="70">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.3*"/>
-                    <ColumnDefinition Width="0.8*"/>
+            <VerticalStackLayout Grid.Row="2" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand" HeightRequest="70"  Padding="0">
+                <Frame HeightRequest="1" CornerRadius="0" Padding="0,0,0,0" Margin="0,-1,0,0"  VerticalOptions="End" BorderColor="Black" HasShadow="False"/>
+                <Grid BackgroundColor="Gray" VerticalOptions="Center" HeightRequest="70">
+                    <Grid.ColumnDefinitions>
+                     <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="0.7*"/>
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0" x:Name="CurrentTrackCover"  VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="46" HeightRequest="46" Margin="2,0"/>
-                <Grid Grid.Column="1">
+                <Image Grid.Column="0" x:Name="CurrentTrackCover" Source="cover.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="60" HeightRequest="60" Margin="5"/>
+                <Grid Grid.Column="1" Padding="5,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="0.4*" />
-                        <RowDefinition Height="0.25*"/>
+                        <RowDefinition Height="0.2*"/>
                         <RowDefinition Height="0.4*"/>
                     </Grid.RowDefinitions>
-                    <Label x:Name="CurrentTrackTitle" Grid.Row="0" VerticalOptions="End" HorizontalOptions="StartAndExpand" TextColor="White" FontSize="16"/>
-                    <Label x:Name="CurrentTrackArtist" Grid.Row="1" VerticalOptions="Start" HorizontalOptions="StartAndExpand" TextColor="White" FontSize="12"/>
-                    <Label x:Name="CurrentTrackAlbum" Grid.Row="2" VerticalOptions="Start" HorizontalOptions="StartAndExpand" TextColor="LightGrey" FontSize="12"/>
+                    <Label x:Name="CurrentTrackTitle" Grid.Row="0" VerticalOptions="CenterAndExpand" HorizontalOptions="StartAndExpand" TextColor="White" FontSize="16"/>
+                        <Label x:Name="CurrentTrackArtist" Grid.Row="1" VerticalOptions="CenterAndExpand" HorizontalOptions="StartAndExpand" TextColor="White" FontSize="12"/>
+                        <Label x:Name="CurrentTrackAlbum" Grid.Row="2" VerticalOptions="CenterAndExpand" HorizontalOptions="StartAndExpand" TextColor="LightGrey" FontSize="12"/>
                 </Grid>
             </Grid>
+            </VerticalStackLayout>
+            
+            
         </Grid>
 
         <!-- Lista utworów -->

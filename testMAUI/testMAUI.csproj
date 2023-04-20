@@ -53,12 +53,16 @@
 	  <None Remove="Resources\Images\cover.png" />
 	  <None Remove="Resources\Images\downloadsolid.png" />
 	  <None Remove="Resources\Images\forward-solid.svg" />
+	  <None Remove="Resources\Images\home.png" />
+	  <None Remove="Resources\Images\home_white.png" />
 	  <None Remove="Resources\Images\list-solid.svg" />
 	  <None Remove="Resources\Images\minus.png" />
 	  <None Remove="Resources\Images\note_icon.png" />
 	  <None Remove="Resources\Images\pause-solid.svg" />
 	  <None Remove="Resources\Images\play-solid.svg" />
 	  <None Remove="Resources\Images\plus-solid.svg" />
+	  <None Remove="Resources\Images\settings.png" />
+	  <None Remove="Resources\Images\settings_white.png" />
 	</ItemGroup>
 
 	<ItemGroup>
