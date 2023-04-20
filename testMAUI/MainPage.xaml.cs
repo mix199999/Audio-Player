@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using CommunityToolkit.Mvvm.Messaging;
-using Windows.Media.Playlists;
+
 
 
 public partial class MainPage : ContentPage
@@ -42,11 +42,7 @@ public partial class MainPage : ContentPage
     private bool ValueChangedEnabled = true;
     private IConfiguration _configuration;
     private List<AudioPlaylist> _playlist;
-
-
-
     private List<string> _foldersList = new List<string>();
-
     private bool _visibility = true;
 
 
@@ -55,7 +51,7 @@ public partial class MainPage : ContentPage
 
     {
         _configuration = configuration;
-
+        _playlist = new List<AudioPlaylist>();
         _configuration.GetSection("FolderList").Bind(_foldersList);
         _playlist = _configuration.GetSection("AudioPlaylists").Get<List<AudioPlaylist>>();
 
@@ -64,9 +60,10 @@ public partial class MainPage : ContentPage
         player = new Player();
         player._status = playerStatus.IsNotPlaying;
         playlist = new AudioPlaylist();
-        _playlist = new List<AudioPlaylist>();
+        
 
         playlistView.ItemsSource = playlist.Tracks;
+        playlistListView.ItemsSource = null;
         playlistListView.ItemsSource = _playlist;
 
         this.fileSaver = fileSaver;
@@ -79,8 +76,9 @@ public partial class MainPage : ContentPage
         trackTimer.Elapsed += TimerTick;
         TrackProgressBarSlider.Value = 0;
 
-        this.Unfocused += callPopup;
         this.Unfocused += hidePopup;
+        this.Focused += callPopup;
+         var test = AppDomain.CurrentDomain.BaseDirectory;
 
 
         if (_foldersList.Count == 0) _foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
@@ -93,26 +91,32 @@ public partial class MainPage : ContentPage
             };
             _playlist.Add(emptyPlaylist);
         }
-
+        
         foreach (var Folder in _foldersList)
         {
-            loadToListView(Folder);
+            playlist.LoadFromDirectory(Folder);
+
         }
+        LoadToListView();
+
+     
         foreach (var playlist in _playlist)
         {
             playlist.LoadFromM3U(playlist.Path);
         }
 
-
+       
 
 
 
         MessagingCenter.Subscribe<SettingsPage, List<string>>(this, "FoldersList", (sender, foldersList) =>
         {
+            this.playlist = new AudioPlaylist();
             if (foldersList != null)
             {
                 this._foldersList = foldersList;
-                foreach (var Folder in _foldersList) { loadToListView(Folder); }
+                foreach (var Folder in _foldersList) { playlist.LoadFromDirectory(Folder); }
+                LoadToListView();
                 SaveToJson();
             }
 
@@ -424,10 +428,9 @@ public partial class MainPage : ContentPage
         PickFolder(cancellationToken);
     }
 
-    private void loadToListView(string Path)
+    private void loadToListViewFromDirectory(string Path)
     {
-       // player.Stop();
-        string musicPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+       
         playlist.LoadFromDirectory(Path);
         playlistView.ItemsSource = null;
         playlistView.ItemsSource = playlist.Tracks.Select(track => new
@@ -453,7 +456,7 @@ public partial class MainPage : ContentPage
             else
             {
                 _foldersList.Add(result.Folder.Path);
-                loadToListView(result.Folder.Path);
+                loadToListViewFromDirectory(result.Folder.Path);
                 SaveToJson();
             }
         }
@@ -509,6 +512,7 @@ public partial class MainPage : ContentPage
            $" Album - {((dynamic)playlist.GetCurrentTrack().GetAlbum())}\n\r",
            ToastDuration.Short );          
             await toast.Show(cancellationToken);
+       
 
     }
 
@@ -586,6 +590,20 @@ public partial class MainPage : ContentPage
         };
         _playlist.Add(newPlaylist);
         SaveToJson();
+    }
+
+
+    private void LoadToListView()
+    {
+        playlistView.ItemsSource = playlist.Tracks.Select(track => new
+        {
+            Title = track.GetTitle(),
+            Duration = track.GetDuration().ToString("mm\\:ss"),
+            Album = track.GetAlbum(),
+            Artist = track.GetArtist(),
+            Path = track.GetFilePath(),
+            Cover = track.GetCover()
+        });
     }
 
 }
