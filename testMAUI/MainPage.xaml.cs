@@ -1,7 +1,4 @@
 ﻿
-
-
-
 using Microsoft.Maui.Controls.PlatformConfiguration;
 
 namespace testMAUI;
@@ -27,10 +24,9 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using CommunityToolkit.Mvvm.Messaging;
 
-using CommunityToolkit.Maui.Core;
-using CommunityToolkit.Maui.Alerts;
- private List<string> foldersList = new List<string>();
+
 
 public partial class MainPage : ContentPage
 {
@@ -46,21 +42,29 @@ public partial class MainPage : ContentPage
     private bool ValueChangedEnabled = true;
     private IConfiguration _configuration;
     private List<AudioPlaylist> _playlist;
+    private List<string> _foldersList = new List<string>();
+    private bool _visibility = true;
+
 
 
     public MainPage(IFileSaver fileSaver, IConfiguration configuration)
 
     {
         _configuration = configuration;
-        _configuration.GetSection("FolderList").Bind(foldersList);
+        _playlist = new List<AudioPlaylist>();
+        _configuration.GetSection("FolderList").Bind(_foldersList);
+        _playlist = _configuration.GetSection("AudioPlaylists").Get<List<AudioPlaylist>>();
 
 
         InitializeComponent();
         player = new Player();
         player._status = playerStatus.IsNotPlaying;
         playlist = new AudioPlaylist();
+        
 
         playlistView.ItemsSource = playlist.Tracks;
+        playlistListView.ItemsSource = null;
+        playlistListView.ItemsSource = _playlist;
 
         this.fileSaver = fileSaver;
 
@@ -72,19 +76,61 @@ public partial class MainPage : ContentPage
         trackTimer.Elapsed += TimerTick;
         TrackProgressBarSlider.Value = 0;
 
+        this.Unfocused += hidePopup;
+        this.Focused += callPopup;
+         var test = AppDomain.CurrentDomain.BaseDirectory;
 
 
-        foreach (var Folder in foldersList)
+        if (_foldersList.Count == 0) _foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
+        if (_playlist == null)
         {
-            loadToListView(Folder);
+            var emptyPlaylist = new AudioPlaylist()
+            {
+                Name = "",
+                Path = ""
+            };
+            _playlist.Add(emptyPlaylist);
         }
-        if(foldersList.Count == 0) foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
+        
+        foreach (var Folder in _foldersList)
+        {
+            playlist.LoadFromDirectory(Folder);
+
+        }
+        LoadToListView();
+
+     
+        foreach (var playlist in _playlist)
+        {
+            playlist.LoadFromM3U(playlist.Path);
+        }
+
+       
+
+
+
+        MessagingCenter.Subscribe<SettingsPage, List<string>>(this, "FoldersList", (sender, foldersList) =>
+        {
+            this.playlist = new AudioPlaylist();
+            if (foldersList != null)
+            {
+                this._foldersList = foldersList;
+                foreach (var Folder in _foldersList) { playlist.LoadFromDirectory(Folder); }
+                LoadToListView();
+                SaveToJson();
+            }
+
+        });
 
     }
 
 
 
-   
+    
+
+
+
+
 
     private async void filesBtn_Clicked(object sender, EventArgs e)
     {
@@ -127,6 +173,7 @@ public partial class MainPage : ContentPage
     private void nextTrack()
     {
         //if()
+        
         playlist.Next();
         currentTrackTime = TimeSpan.Zero;
         AudioFile audioFile = playlist.GetCurrentTrack();
@@ -136,7 +183,6 @@ public partial class MainPage : ContentPage
             player.Play();
             setCurrentTrackInfo();
 
-          
         }
     }
 
@@ -158,7 +204,7 @@ public partial class MainPage : ContentPage
         AudioPlayingImageControl.Opacity = 1;
     }
 
-    private void playBtn_Clicked(object sender, EventArgs e) => playAudio();
+   
 
 
     private void prevBtn_Clicked(object sender, EventArgs e)
@@ -236,14 +282,31 @@ public partial class MainPage : ContentPage
                 Cover = track.GetCover()
             });
 
+            var newPlaylist = new AudioPlaylist()
+            {
+                Name = Path.GetFileNameWithoutExtension(playlistFile.FileName),
+                Path = playlistFile.FullPath
+            };
+            _playlist.Add(newPlaylist);
+            SaveToJson();
         }
 
     }
+
     private async void saveListBtn_Clicked(object sender, TappedEventArgs e)
     {
         using var stream = new MemoryStream(Encoding.Default.GetBytes(playlist.SaveToM3U()));
         var path = await fileSaver.SaveAsync(".M3U", stream, cancellationTokenSource.Token);
+
+        var newPlaylist = new AudioPlaylist()
+        {
+            Name = Path.GetFileNameWithoutExtension(path.FilePath),
+            Path = path.FilePath
+        };
+        _playlist.Add(newPlaylist);
+        SaveToJson();
     }
+
 
 
     private void playAudio()
@@ -267,7 +330,7 @@ public partial class MainPage : ContentPage
     }
 
 
-   
+
 
     private async void Slider_ValueChanged(object sender, ValueChangedEventArgs e)
     {
@@ -316,14 +379,16 @@ public partial class MainPage : ContentPage
 
     private async Task setCurrentTrackInfo()
     {
+       
         await Dispatcher.DispatchAsync(() =>
         {
             CurrentTrackAlbum.Text = ((dynamic)playlist.GetCurrentTrack().GetAlbum());
             CurrentTrackArtist.Text = ((dynamic)playlist.GetCurrentTrack().GetArtist());
             CurrentTrackTitle.Text = ((dynamic)playlist.GetCurrentTrack().GetTitle());
             CurrentTrackCover.Source = (dynamic)playlist.GetCurrentTrack().GetCoverUrl();
-            showToastInfo();
+           
         });
+        if (!_visibility) showToastInfo();
     }
 
     private void TrackProgressBarSlider_ValueChanged(object sender, ValueChangedEventArgs e)
@@ -363,9 +428,9 @@ public partial class MainPage : ContentPage
         PickFolder(cancellationToken);
     }
 
-    private void loadToListView(string Path)
+    private void loadToListViewFromDirectory(string Path)
     {
-        string musicPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+       
         playlist.LoadFromDirectory(Path);
         playlistView.ItemsSource = null;
         playlistView.ItemsSource = playlist.Tracks.Select(track => new
@@ -384,15 +449,15 @@ public partial class MainPage : ContentPage
         var result = await FolderPicker.Default.PickAsync(cancellationToken);
         if (result.IsSuccessful)
         {
-            if (foldersList.Contains(result.Folder.Path))
+            if (_foldersList.Contains(result.Folder.Path))
             {
                 await Toast.Make($"The selected folder {result.Folder.Path} is already added.").Show(cancellationToken);
             }
             else
             {
-                foldersList.Add(result.Folder.Path);
-                loadToListView(result.Folder.Path);
-                SaveFoldersList();
+                _foldersList.Add(result.Folder.Path);
+                loadToListViewFromDirectory(result.Folder.Path);
+                SaveToJson();
             }
         }
         else
@@ -400,21 +465,29 @@ public partial class MainPage : ContentPage
             await Toast.Make($"The folder was not picked with error: {result.Exception.Message}").Show(cancellationToken);
         }
     }
-    private void SaveFoldersList()
+    private void SaveToJson()
     {
         var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
 
-        var foldersSettings = new Configuration{ FolderList = foldersList };
+
+        var foldersSettings = new Configuration
+        {
+            FolderList = _foldersList,
+            AudioPlaylists = _playlist
+        };
+
         var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
 
         System.IO.File.WriteAllText(appSettingsPath, json);
+        playlistListView.ItemsSource = null;
+        playlistListView.ItemsSource = _playlist;
     }
 
     private async Task ShowPopupInfo()
     {
         var popup = new Popup();
         popup.Size = new Size(300, 300);
-       
+
         var stackLayout = new VerticalStackLayout();
         var image = new Image { Source = playlist.GetCurrentTrack().GetCoverUrl() };
         var label = new Label
@@ -432,16 +505,108 @@ public partial class MainPage : ContentPage
 
     }
 
-
-
     private async void showToastInfo()
     {
-        await Toast.Make($"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
-            $" Artist - {((dynamic)playlist.GetCurrentTrack().GetArtist())}\n\r" +
-            $" Album - {((dynamic)playlist.GetCurrentTrack().GetAlbum())}\n\r",
-            ToastDuration.Short).Show(cancellationToken);
+        var toast = Toast.Make($"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
+           $" Artist - {((dynamic)playlist.GetCurrentTrack().GetArtist())}\n\r" +
+           $" Album - {((dynamic)playlist.GetCurrentTrack().GetAlbum())}\n\r",
+           ToastDuration.Short );          
+            await toast.Show(cancellationToken);
+       
 
     }
 
+
+
+    private void settingsButtonClicked(object sender, EventArgs e)
+    {
+        Navigation.PushAsync(new SettingsPage(_foldersList));
+        //ustawienia.IsVisible = true;
+        //glowny.IsVisible = false;
+    }
+
+    private void OnPlaylistSelected(object sender, SelectedItemChangedEventArgs e)
+    {
+        if (e.SelectedItem == null)
+        {
+            return;
+        }
+
+        var selectedPlaylist = (AudioPlaylist)e.SelectedItem;
+
+        if (selectedPlaylist.Path != null)
+        {
+            trackTimer.Stop();
+            player.Pause();
+
+            playlist.clearList();
+            playlist.LoadFromM3U(selectedPlaylist.Path);
+            playlistView.ItemsSource = null;
+            playlistView.ItemsSource = playlist.Tracks.Select(track => new
+            {
+                Title = track.GetTitle(),
+                Duration = track.GetDuration().ToString("hh\\:mm\\:ss"),
+                Album = track.GetAlbum(),
+                Artist = track.GetArtist(),
+                Path = track.GetFilePath(),
+                Cover = track.GetCover()
+            });
+
+        }
+
+    }
+
+    private void callPopup(object sender, FocusEventArgs e)=>
+        _visibility = true;
+    
+
+    private void hidePopup(object sender, FocusEventArgs e)=>
+        _visibility = false;
+
+
+
+    private async void SaveListBtn_Clicked(object sender, EventArgs e)
+    {
+        var popup = new PopupTrackInfo();
+        popup.PlaylistSaved += OnPlaylistSaved;
+        this.ShowPopup(popup);
+    }
+
+
+    private async void OnPlaylistSaved(object? sender, string playlistName)
+    {
+        string Name = playlistName;
+        string Path = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+
+        var fullPath = Path + "\\" + playlistName + ".M3U";
+        using var stream = new MemoryStream(Encoding.Default.GetBytes(playlist.SaveToM3U()));
+        await using var fileStream = System.IO.File.Create(fullPath);
+        await stream.CopyToAsync(fileStream);
+
+        var newPlaylist = new AudioPlaylist()
+        {
+            Name = playlistName,
+            Path = fullPath
+        };
+        _playlist.Add(newPlaylist);
+        SaveToJson();
+    }
+
+
+    private void LoadToListView()
+    {
+        playlistView.ItemsSource = playlist.Tracks.Select(track => new
+        {
+            Title = track.GetTitle(),
+            Duration = track.GetDuration().ToString("mm\\:ss"),
+            Album = track.GetAlbum(),
+            Artist = track.GetArtist(),
+            Path = track.GetFilePath(),
+            Cover = track.GetCover()
+        });
+    }
+
 }
+
+
 

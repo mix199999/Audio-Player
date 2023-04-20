@@ -9,15 +9,11 @@ namespace testMAUI
 internal class Configuration
 {
     private List<string> folderList;
-    private List<AudioAlbum> audioPlaylists;
+    private List<AudioPlaylist> audioPlaylists;
 
     public List<string> FolderList { get => folderList; set => folderList = value; }
-    public List<AudioAlbum> AudioPlaylists { get => audioPlaylists; set => audioPlaylists = value; }
-}
+    public List<AudioPlaylist> AudioPlaylists { get => audioPlaylists; set => audioPlaylists = value; }
+    }
 
-internal class AudioAlbum
-{
-    public string Name { get; set; }
-    public string Path { get; set; }
-}
+
 }

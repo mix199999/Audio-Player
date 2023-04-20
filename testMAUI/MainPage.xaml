@@ -26,7 +26,7 @@
             <StackLayout Grid.Row="0" Orientation="Vertical" Spacing="10" Padding="5">
                 <!-- Wyszukiwarka -->
                 <Frame CornerRadius="10" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" >
-                    <SearchBar Placeholder="Szukaj" BackgroundColor="#606060" PlaceholderColor="#4f4f4f"/>
+                    <SearchBar Placeholder="Szukaj" BackgroundColor="#606060" PlaceholderColor="White"/>
                 </Frame>
                 <Grid>
                     <Grid.RowDefinitions>
@@ -35,8 +35,8 @@
                     </Grid.RowDefinitions>
                     <!-- linki do stronek -->
 
-                    <Button Grid.Row="0" Text="Strona główna" BackgroundColor="#606060" TextColor="White" VerticalOptions="Center" Margin="0,0,0,5"/>
-                    <Button Grid.Row="1" Text="Ustawienia" BackgroundColor="#606060" TextColor="White" VerticalOptions="Center" Margin="0,5,0,0" />
+                    <Button Grid.Row="0" Text="Strona główna" BackgroundColor="#606060" TextColor="White" VerticalOptions="Center" Margin="0,0,0,5" />
+                    <Button Grid.Row="1" Text="Ustawienia" BackgroundColor="#606060" TextColor="White" VerticalOptions="Center" Margin="0,5,0,0" Clicked="settingsButtonClicked" />
                 </Grid>
 
 
@@ -53,15 +53,17 @@
                             <!--Ewentualne dodawanie nowych skladanek ?-->
                             <StackLayout Orientation="Vertical"  HorizontalOptions="Fill" Spacing="10" Padding="5">
                                 <!-- lakies tam jabele -->
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
-                                <Label Text="Składanka" FontSize="20" TextColor="LightGrey" HorizontalTextAlignment="Start" FontAttributes="Bold"/>
+                                <ListView x:Name="playlistListView" ItemsSource="{Binding _playlist}" SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay}" ItemSelected="OnPlaylistSelected">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <ViewCell>
+                                                <StackLayout Orientation="Vertical">
+                                                    <Label Text="{Binding Name}" FontSize="20" TextColor="LightGrey" FontAttributes="Bold" />
+                                                </StackLayout>
+                                            </ViewCell>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
                             </StackLayout>
 
                         </ScrollView>
@@ -222,7 +224,7 @@
                             </Image>
                             <Image Source="downloadsolid.png" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="10" ToolTipProperties.Text="Save playlist">
                                 <Image.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="saveListBtn_Clicked" />
+                                    <TapGestureRecognizer Tapped="SaveListBtn_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
                             <Image Source="replaysolid.png" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="11" ToolTipProperties.Text="Save playlist">

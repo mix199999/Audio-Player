@@ -111,35 +111,39 @@ namespace testMAUI
         /// <returns>zwraca liczbę odczytanych utworów</returns>
         public int LoadFromM3U(string filePath)
         {
-            var content = System.IO.File.ReadAllText(filePath);
-            var entries = content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            var added = 0;
-
-            for (var i = 0; i < entries.Length; i++)
+            if (System.IO.File.Exists(filePath))
             {
-                if (entries[i].StartsWith("#EXTINF"))
+                var content = System.IO.File.ReadAllText(filePath);
+                var entries = content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                var added = 0;
+
+                for (var i = 0; i < entries.Length; i++)
                 {
-                    var durationTitle = entries[i].Substring(8);
-
-                    if (i + 1 < entries.Length && !entries[i + 1].StartsWith("#EXT"))
+                    if (entries[i].StartsWith("#EXTINF"))
                     {
-                        var audioFilePath = entries[i + 1];
+                        var durationTitle = entries[i].Substring(8);
 
-                        if (System.IO.File.Exists(audioFilePath))
+                        if (i + 1 < entries.Length && !entries[i + 1].StartsWith("#EXT"))
                         {
-                            var track = new AudioFile(audioFilePath);
-                            _tracks.Add(track);
-                            added++;
-                        }
-                        else
-                        {
-                            Console.WriteLine($"File not found: {audioFilePath}");
+                            var audioFilePath = entries[i + 1];
+
+                            if (System.IO.File.Exists(audioFilePath))
+                            {
+                                var track = new AudioFile(audioFilePath);
+                                _tracks.Add(track);
+                                added++;
+                            }
+                            else
+                            {
+                                Console.WriteLine($"File not found: {audioFilePath}");
+                            }
                         }
                     }
                 }
-            }
+                return added;
 
-            return added;
+            }
+            else return 0;
         }
 
 
