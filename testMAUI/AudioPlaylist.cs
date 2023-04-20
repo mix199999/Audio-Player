@@ -5,14 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 using TagLib.Mpeg;
 using System.IO;
+
+using System.Text.Json.Serialization;
+
+
 namespace testMAUI
 {
     internal class AudioPlaylist
     {
+        [JsonIgnore]
         private List<AudioFile> _tracks;
+        [JsonIgnore]
         private int _currentIndex;
-
+        [JsonIgnore]
         public List<AudioFile> Tracks => _tracks;
+
+        public string Name { get; set; }
+        public string Path { get; set; }
+
 
 
 
@@ -26,6 +36,9 @@ namespace testMAUI
         {
             _tracks.Add(track);
         }
+
+        public int GetCurrentTrackIndex()
+        { return _currentIndex; }
 
 
        
@@ -98,42 +111,74 @@ namespace testMAUI
         /// <returns>zwraca liczbę odczytanych utworów</returns>
         public int LoadFromM3U(string filePath)
         {
-            var content = System.IO.File.ReadAllText(filePath);
-            var entries = content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            var added = 0;
-
-            for (var i = 0; i < entries.Length; i++)
+            if (System.IO.File.Exists(filePath))
             {
-                if (entries[i].StartsWith("#EXTINF"))
+                var content = System.IO.File.ReadAllText(filePath);
+                var entries = content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                var added = 0;
+
+                for (var i = 0; i < entries.Length; i++)
                 {
-                    var durationTitle = entries[i].Substring(8);
-
-                    if (i + 1 < entries.Length && !entries[i + 1].StartsWith("#EXT"))
+                    if (entries[i].StartsWith("#EXTINF"))
                     {
-                        var audioFilePath = entries[i + 1];
+                        var durationTitle = entries[i].Substring(8);
 
-                        if (System.IO.File.Exists(audioFilePath))
+                        if (i + 1 < entries.Length && !entries[i + 1].StartsWith("#EXT"))
                         {
-                            var track = new AudioFile(audioFilePath);
-                            _tracks.Add(track);
-                            added++;
-                        }
-                        else
-                        {
-                            Console.WriteLine($"File not found: {audioFilePath}");
+                            var audioFilePath = entries[i + 1];
+
+                            if (System.IO.File.Exists(audioFilePath))
+                            {
+                                var track = new AudioFile(audioFilePath);
+                                _tracks.Add(track);
+                                added++;
+                            }
+                            else
+                            {
+                                Console.WriteLine($"File not found: {audioFilePath}");
+                            }
                         }
                     }
                 }
-            }
+                return added;
 
-            return added;
+            }
+            else return 0;
         }
 
 
+        public void LoadFromDirectory(string directory)
+        {
+            if (Directory.Exists(directory))
+            {
+                string[] files = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories);
 
+                List<string> musicFiles = new List<string>();
 
+                foreach (string file in files)
+                {
+                    string extension = System.IO.Path.GetExtension(file).ToLower();
+                    if (extension == ".mp3" || extension == ".mp4" || extension == ".wave" || extension == ".wav" || extension == ".flac")
+                    {
+                        musicFiles.Add(file);
+                    }
+                }
 
+                foreach (string file in musicFiles)
+                {
+                    if (System.IO.File.Exists(file))
+                    {
+                        var track = new AudioFile(file);
+                        _tracks.Add(track);                       
+                    }
+                }
+            }
+        }
 
 
     }
+
+
+
+
 }

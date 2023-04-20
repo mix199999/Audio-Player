@@ -111,7 +111,7 @@ namespace testMAUI
                 _album = Regex.Replace(_album, @"\s*\[.*?\]\s*", "");
                 _duration = tagFile.Properties.Duration.TotalSeconds <= 0 ? TimeSpan.Zero : tagFile.Properties.Duration; 
                 
-                if(_title ==  "unknown") 
+                if(_title ==  "unknown" && _album == "unknown" && _artist == "unknown") 
                 {
                     _coverUrl = "note_icon.png";
                 }
@@ -163,7 +163,7 @@ namespace testMAUI
             catch (HttpRequestException e)
             {
                 Console.WriteLine($"Error while retrieving album art: {e.Message}");
-               
+                _coverUrl = "note_icon.png";
             }
         }
 
