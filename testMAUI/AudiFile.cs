@@ -36,6 +36,10 @@ namespace testMAUI
             return _cover;
         }
 
+        public AudioFile()
+        {
+
+        }
        
 
         public string GetDurationString()
@@ -176,14 +180,6 @@ namespace testMAUI
             }
         }
 
-
-
-
-
-
-
-
-
-
+       
     }
 }
