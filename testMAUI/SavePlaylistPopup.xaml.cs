@@ -9,8 +9,8 @@ public partial class PopupTrackInfo : Popup
     public PopupTrackInfo()
 	{
 		InitializeComponent();
-		
-	}
+        this.Size = new Size(500, 100);
+    }
 
 
 

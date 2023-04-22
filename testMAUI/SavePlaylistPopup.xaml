@@ -3,11 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
        x:Class="testMAUI.PopupTrackInfo"
-          CanBeDismissedByTappingOutsideOfPopup="False" >
-    <VerticalStackLayout VerticalOptions="FillAndExpand">
-        <Entry Placeholder="Enter playlist name" x:Name="PlaylistNameEntry"/>
+          CanBeDismissedByTappingOutsideOfPopup="True" 
+           Color="Transparent">
+    <Grid VerticalOptions="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Entry Grid.Row="0" Placeholder="Enter playlist name" x:Name="PlaylistNameEntry"/>
 
-        <Button Text="Save playlist" Clicked="SavePlaylistButton_Clicked"
+        <Button Text="Save playlist" Grid.Row="1" Clicked="SavePlaylistButton_Clicked"
                 VerticalOptions="End"/>
-    </VerticalStackLayout>
+    </Grid>
 </mct:Popup>

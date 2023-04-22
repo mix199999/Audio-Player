@@ -44,6 +44,7 @@ public partial class MainPage : ContentPage
     private List<AudioPlaylist> _playlist;
     private List<string> _foldersList = new List<string>();
     private bool _visibility = true;
+    private List<String> _favImgTheme;
 
 
 
@@ -80,6 +81,18 @@ public partial class MainPage : ContentPage
         this.Focused += callPopup;
          var test = AppDomain.CurrentDomain.BaseDirectory;
 
+        //Ładowanie ikon w zależności od motywu aplikacji
+        _favImgTheme = new List<string>();
+        if ((AppTheme)Application.Current.RequestedTheme == AppTheme.Light)
+        {
+            _favImgTheme.Add("favorite0solid.png");
+            _favImgTheme.Add("favorite1solid.png");
+        }
+        else
+        {
+            _favImgTheme.Add("favorite0whitesolid.png");
+            _favImgTheme.Add("favorite1whitesolid.png");
+        }
 
         if (_foldersList.Count == 0) _foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
         if (_playlist == null)
@@ -165,7 +178,8 @@ public partial class MainPage : ContentPage
             Album = track.GetAlbum(),
             Artist = track.GetArtist(),
             Path = track.GetFilePath(),
-            Cover = track.GetCover()
+            Cover = track.GetCover(),
+            Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
         });
     }
 
@@ -183,6 +197,19 @@ public partial class MainPage : ContentPage
             player.Play();
             setCurrentTrackInfo();
 
+        }
+    }
+
+    private void favImg_Clicked(object sender, TappedEventArgs e)
+    {
+        bool fav = playlist.Tracks[playlist.GetCurrentTrackIndex()].GetFavourite();
+        playlist.Tracks[playlist.GetCurrentTrackIndex()].SetFavourite(!fav);
+        if (sender is Image image)
+        {
+            if (fav)
+            {
+                image.Source = _favImgTheme[0];
+            } else { image.Source = _favImgTheme[1]; }
         }
     }
 
@@ -279,7 +306,8 @@ public partial class MainPage : ContentPage
                 Album = track.GetAlbum(),
                 Artist = track.GetArtist(),
                 Path = track.GetFilePath(),
-                Cover = track.GetCover()
+                Cover = track.GetCover(),
+                Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
             });
 
             var newPlaylist = new AudioPlaylist()
@@ -440,7 +468,8 @@ public partial class MainPage : ContentPage
             Album = track.GetAlbum(),
             Artist = track.GetArtist(),
             Path = track.GetFilePath(),
-            Cover = track.GetCover()
+            Cover = track.GetCover(),
+            Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
         });
     }
 
@@ -549,7 +578,8 @@ public partial class MainPage : ContentPage
                 Album = track.GetAlbum(),
                 Artist = track.GetArtist(),
                 Path = track.GetFilePath(),
-                Cover = track.GetCover()
+                Cover = track.GetCover(),
+                Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
             });
 
         }
@@ -572,6 +602,10 @@ public partial class MainPage : ContentPage
         this.ShowPopup(popup);
     }
 
+    private void PlaylistReturnBtn_Clicked(object sender, TappedEventArgs e)
+    {
+        
+    }
 
     private async void OnPlaylistSaved(object? sender, string playlistName)
     {
@@ -602,7 +636,8 @@ public partial class MainPage : ContentPage
             Album = track.GetAlbum(),
             Artist = track.GetArtist(),
             Path = track.GetFilePath(),
-            Cover = track.GetCover()
+            Cover = track.GetCover(),
+            Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
         });
     }
 
