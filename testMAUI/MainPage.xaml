@@ -9,6 +9,12 @@
         <Style TargetType="Image">
             <Setter Property="Opacity" Value="0.75"/>
         </Style>
+        <Style TargetType="Border">
+            <Setter Property="StrokeThickness" Value="0" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="CornerRadius" Value="5" />
+        </Style>
     </ContentPage.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -22,10 +28,9 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <!--Zostawiam tu StackLayout, pasuje-->
             <StackLayout Grid.Row="0" Orientation="Vertical" Spacing="10" Padding="5">
                 <!-- Wyszukiwarka -->
-                <Frame CornerRadius="10" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" >
+                <Frame CornerRadius="5" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" >
                     <SearchBar Placeholder="Szukaj" BackgroundColor="#606060" PlaceholderColor="White"/>
                 </Frame>
                 <Grid>
@@ -41,16 +46,26 @@
 
 
                 <!-- Lista ulubionych plejlist -->
-                <Frame CornerRadius="10" Padding="0" BackgroundColor="Transparent" HeightRequest="240" BorderColor="Transparent" >
+                <Frame CornerRadius="8" Padding="0" BackgroundColor="Transparent" HeightRequest="240" BorderColor="Transparent" >
 
                     <Grid RowSpacing="0" VerticalOptions="Start"  HorizontalOptions="FillAndExpand" BackgroundColor="#606060">
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Text="Twoje składanki" FontSize="24" TextColor="LightGrey" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="0.2*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="Twoje składanki" FontSize="17" TextColor="White" HorizontalTextAlignment="Start"  Margin="10,0,0,0" FontAttributes="Bold"/>
+                            <Image Grid.Column="1" Source="playlistreturnsolid.png" HeightRequest="16" VerticalOptions="Center" HorizontalOptions="Center" ToolTipProperties.Text="Return to the main playlist">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="PlaylistReturnBtn_Clicked" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </Grid>
                         <ScrollView Grid.Row="1" HeightRequest="210">
-                            <!--Ewentualne dodawanie nowych skladanek ?-->
                             <StackLayout Orientation="Vertical"  HorizontalOptions="Fill" Spacing="10" Padding="5">
                                 <!-- lakies tam jabele -->
                                 <ListView x:Name="playlistListView" ItemsSource="{Binding _playlist}" SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay}" ItemSelected="OnPlaylistSelected">
@@ -94,7 +109,7 @@
         <Grid 
         Grid.Column="1" 
         VerticalOptions="FillAndExpand" 
-        HorizontalOptions="FillAndExpand" 
+        HorizontalOptions="FillAndExpand"
         >
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.05*"/>
@@ -104,18 +119,56 @@
 
             <Grid Grid.Row="0" Margin="20,0" Opacity="0.75">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.25*"/>
                     <ColumnDefinition />
                     <ColumnDefinition />
                     <ColumnDefinition />
-                    <ColumnDefinition Width="0.34*"/>
+                    <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
                 <Label Text="Tytuł" Grid.Column="0" VerticalOptions="End" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
                 <Label Text="Artysta" Grid.Column="1" VerticalOptions="End" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
                 <Label Text="Album" Grid.Column="2" VerticalOptions="End" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
                 <Label Text="Czas trwania" Grid.Column="3" VerticalOptions="End" HorizontalOptions="End" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                <Label Text="Ulubiony" Grid.Column="4" VerticalOptions="End" HorizontalOptions="End" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
             </Grid>
+            
+            <!--Grid do testowania podgladu playlisty, bedzie to usuwane pozniej-->
 
-            <ScrollView Grid.Row="1" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" x:Name="test" >
+            <!--<Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.9*"/>
+                    <RowDefinition Height="0.1*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Padding="0,10" Margin="20,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.25*"/>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="0.25*"/>
+                        <ColumnDefinition Width="0.15*"/>
+                        <ColumnDefinition Width="0.1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border>
+                        <Label Text="Abc" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    </Border>
+                    <Border Grid.Column="1">
+                        <Label Text="Abc" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                    </Border>
+                    <Border Grid.Column="2">
+                        <Label Text="Abcsgfggdgfgdgdgdgdgdfdfd" Grid.Column="2" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                    </Border>
+                    <Border Grid.Column="3">
+                        <Label Text="05:31" Grid.Column="3" VerticalOptions="Center" HorizontalOptions="End" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                    </Border>
+                    <Border Grid.Column="4">
+                        <ImageButton Source="favorite0solid.png" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="43" WidthRequest="20" />
+                    </Border>
+                </Grid>
+                <BoxView Grid.Row="1" BackgroundColor="Black" Opacity="0.05" HeightRequest="1" VerticalOptions="Start" Margin="15,0" />
+            </Grid>-->
+            
+            <!--Koniec testowego grida-->
+
+            <ScrollView Grid.Row="1" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" x:Name="test" Margin="0,10,0,0" >
                 <ListView x:Name="playlistView" SelectionMode="Single" ItemSelected="OnItemSelected" SelectedItem="{Binding SelectedItem}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -127,15 +180,21 @@
                                     </Grid.RowDefinitions>
                                     <Grid Grid.Row="0" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand" Padding="0,10" Margin="20,0" >
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="0.3*"/>
-                                            <ColumnDefinition Width="0.3*"/>
-                                            <ColumnDefinition Width="0.3*"/>
+                                            <ColumnDefinition Width="0.25*"/>
+                                            <ColumnDefinition Width="0.2*"/>
+                                            <ColumnDefinition Width="0.25*"/>
+                                            <ColumnDefinition Width="0.15*"/>
                                             <ColumnDefinition Width="0.1*"/>
                                         </Grid.ColumnDefinitions>
                                         <Label Text="{Binding Title}" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
                                         <Label Text="{Binding Artist}" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
                                         <Label Text="{Binding Album}" Grid.Column="2" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
                                         <Label Text="{Binding Duration}" Grid.Column="3" VerticalOptions="Center" HorizontalOptions="End" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                                        <Image Source="{Binding Favourite}" Grid.Column="4" HeightRequest="15" VerticalOptions="Center" HorizontalOptions="End" Margin="22,0" ToolTipProperties.Text="Favourite this song!">
+                                            <Image.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="favImg_Clicked"/>
+                                            </Image.GestureRecognizers>
+                                        </Image>
                                     </Grid>
                                     <BoxView Grid.Row="1" BackgroundColor="Black" Opacity="0.05" HeightRequest="1" VerticalOptions="Start" Margin="15,0" />
                                 </Grid>
@@ -157,7 +216,7 @@
                         <ColumnDefinition Width="0.7*" />
                         <ColumnDefinition Width="0.1*" />
                     </Grid.ColumnDefinitions>
-                    <Image x:Name="AudioPlayingImageControl" Source="playing.gif" VerticalOptions="Center" HorizontalOptions="Center" Grid.Column="0" />
+                    <Image x:Name="AudioPlayingImageControl" VerticalOptions="Center" HorizontalOptions="Center" Grid.Column="0" />
                     <Slider x:Name="VolumeSlider" Maximum="100" Minimum="0" ValueChanged="Slider_ValueChanged" VerticalOptions="Center"  Grid.Column="1" ToolTipProperties.Text="Set the volume"  />
 
                     <Grid Grid.Column="2">

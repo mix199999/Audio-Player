@@ -23,6 +23,7 @@ namespace testMAUI
         private string _filePath;
         private Image _cover;
         private string _coverUrl;
+        private bool _favourite;
         
         public string GetCoverUrl()
         { return _coverUrl; }
@@ -92,6 +93,13 @@ namespace testMAUI
             _filePath = filePath.Trim();
         }
 
+        public bool GetFavourite()
+        {
+            return _favourite;
+        }
+
+        public bool SetFavourite(bool favourite) => _favourite = favourite;
+
         /// <summary>
         /// Konstruktor klasy AudioFile, który wykorzystuje bibliotekę TagLib 
         /// do pozyskania informacji dotyczących danego utworu
@@ -109,7 +117,8 @@ namespace testMAUI
                 _artist = tagFile.Tag.Performers.Length > 0 ? tagFile.Tag.Performers[0] : "unknown";
                 _album = tagFile.Tag.Album ?? "unknown";
                 _album = Regex.Replace(_album, @"\s*\[.*?\]\s*", "");
-                _duration = tagFile.Properties.Duration.TotalSeconds <= 0 ? TimeSpan.Zero : tagFile.Properties.Duration; 
+                _duration = tagFile.Properties.Duration.TotalSeconds <= 0 ? TimeSpan.Zero : tagFile.Properties.Duration;
+                _favourite = false;
                 
                 if(_title ==  "unknown" && _album == "unknown" && _artist == "unknown") 
                 {
