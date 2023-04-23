@@ -2,6 +2,32 @@
 Desktop "Audio Player" type of an app for a university project
 
 ## Co jest zrobione
+
+Update #3
+- Poprawiona optymalizacja strony z ustawieniami 
+  - teraz właściwie tworzy się w innym wątku (znacznie szybciej działa)
+- Automatyczne tworzenie się playlisty ulubione utwory + dodanie jej do pliku konfiguracyjnego:
+    - AppendTrackToFavoritelistFile(AudioFile track) - metoda pozwala na dopisywanie do playlisty w formacie .m3u kolejnych utworów
+    - RemoveTrackFromM3U(AudioFile track) - odwrotna metoda do AppendTrackToPlaylist
+    
+- Przebudowanie metod do wyświetlania w ListView:
+  - Utworzono model danych dla ListView z utworami (coś jak model dla adaptera w javie)
+  - Zmodyfikowano metodę na potrzeby wyświetlania czy utwór w danym zbiorze znajduje się w playliscie ulubione
+  
+- Zmiana eventów z selected item changed na itemtapped:
+  - Wynikało to z problemu z wczytywaniem się playlist z listy playlist
+  - Jedyny sposób na obsłużenie polubienia tzn. double-click na element listy powoduje like/unlike
+  
+- Obsłużenie powrotu do playlisty zawierającej utwory z wybranych ścieżek
+- Obsłużenie usuwania folderów z listy w ustawieniach
+- ...i wiele mniejszych błędów poprawiono...
+
+Update #2
+- startowa playlista
+- wybieranie folderów do domyślnej playlisty
+- systemowa notyfikacja z informacjami utworu (gdy program jest w tle)
+- plik konfiguracyjny(na razie samo zapisywanie wybranych "ulubionych" folderów)
+
 Update #1
 - sterowanie odtwarzaczem
 - dodawanie utworów do playlist
@@ -9,11 +35,7 @@ Update #1
 - pobieranie informacji o utworze wykorzystując bibliotekę TagLib
 - pobieranie okładki albumu z api deezer (jeśli jest to możliwe)
 - wydzielenie poszczególnych segmentów na ekranie startowym
-Update #2
-- startowa playlista
-- wybieranie folderów do domyślnej playlisty
-- systemowa notyfikacja z informacjami utworu (gdy program jest w tle)
-- plik konfiguracyjny(na razie samo zapisywanie wybranych "ulubionych" folderów)
+
 
 ### BUGFIX 1.0
 
