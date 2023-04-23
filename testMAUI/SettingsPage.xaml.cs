@@ -7,7 +7,7 @@ public partial class SettingsPage : ContentPage
 {
 
     private CancellationToken cancellationToken = new CancellationToken();
-
+    private int _indexPath=-1;
     private int countStart;
     private int countEnd;
     List<string> _foldersList = new List<string>();
@@ -21,13 +21,17 @@ public partial class SettingsPage : ContentPage
         this._foldersList = folderlist;
         countStart = _foldersList.Count;
         countEnd = countStart;
-        pathListView.ItemsSource = _foldersList.Select(directory => new
-        {
-            Path = directory.ToString()
-        });
+        LoadDataToPathView();
+        pathListView.ItemTapped += PathListView_ItemTapped;
+
+
 
     }
 
+    private void PathListView_ItemTapped(object sender, ItemTappedEventArgs e)
+    {
+        _indexPath = e.ItemIndex;
+    }
 
     private async void Button_Clicked(object sender, TappedEventArgs e)
     {
@@ -79,10 +83,7 @@ public partial class SettingsPage : ContentPage
             else
             {
                 _foldersList.Add(result.Folder.Path);
-                pathListView.ItemsSource = _foldersList.Select(directory => new
-                {
-                     Path = directory.ToString()
-                }) ;
+                LoadDataToPathView();
 
                countEnd++;
             }
@@ -93,11 +94,21 @@ public partial class SettingsPage : ContentPage
         }
     }
 
+    private void RemoveFolderBt_Tapped(object sender, TappedEventArgs e)
+    {
+       
+        var selectedItem = pathListView.SelectedItem;
+        if (selectedItem != null) 
+        {
+            _foldersList.RemoveAt(_indexPath);
+            LoadDataToPathView();
 
+        }
+    }
 
-
-
-
-
-
+    private void LoadDataToPathView()
+    {
+        pathListView.ItemsSource = _foldersList.Select(directory => new
+        {Path = directory.ToString() }) ;
+    }
 }

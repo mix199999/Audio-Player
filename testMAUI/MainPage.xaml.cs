@@ -115,11 +115,7 @@ public partial class MainPage : ContentPage
             _playlists.Add(emptyPlaylist);
         }
 
-        foreach (var Folder in _foldersList)
-        {
-            mainPlaylist.LoadFromDirectory(Folder);
-
-        }
+       
         foreach (var playlist in _playlists)
         {
             playlist.LoadFromM3U(playlist.Path);
@@ -130,12 +126,11 @@ public partial class MainPage : ContentPage
 
 
         playlistView.ItemTapped += PlaylistListView_ItemTapped;
-        
+        playlistListView.ItemTapped += MultiplePlaylistView_ItemTapped;
 
         playlistListView.ItemsSource = _playlists;
-        MarkFavoriteSongsInMainPlaylist();
-        LoadToListView();
-      
+
+        LoadFromDirectory();
 
 
         MessagingCenter.Subscribe<SettingsPage, List<string>>(this, "FoldersList", (sender, foldersList) =>
@@ -154,6 +149,18 @@ public partial class MainPage : ContentPage
 
     }
 
+    
+
+    private void LoadFromDirectory()
+    {
+        mainPlaylist.Tracks.Clear();
+        foreach (var Folder in _foldersList)
+        {
+            mainPlaylist.LoadFromDirectory(Folder);
+
+        }
+        LoadToListView();
+    }
     private async void PlaylistListView_ItemTapped(object sender, ItemTappedEventArgs e)
     {
        
@@ -175,10 +182,7 @@ public partial class MainPage : ContentPage
                 {
                     
                     _favouriteSongsPlaylist.RemoveTrack(mainPlaylist.Tracks[selectedIndex]);
-                    _playlists[0] = null;
-                    _playlists[0] = _favouriteSongsPlaylist;
-                   // _playlists[0] = _favouriteSongsPlaylist;
-                    
+                    _playlists[0] = _favouriteSongsPlaylist;             
                     AudioPlaylist.RemoveTrackFromM3U(mainPlaylist.Tracks[selectedIndex]);
                 }
 
@@ -654,12 +658,19 @@ public partial class MainPage : ContentPage
 
     private void OnPlaylistSelected(object sender, SelectedItemChangedEventArgs e)
     {
-        if (e.SelectedItem == null)
+        
+
+    }
+
+
+    private void MultiplePlaylistView_ItemTapped(object sender, ItemTappedEventArgs e)
+    {
+        if (e.Item == null)
         {
             return;
         }
 
-        var selectedPlaylist = (AudioPlaylist)e.SelectedItem;
+        var selectedPlaylist = (AudioPlaylist)e.Item;
 
         if (selectedPlaylist.Path != null)
         {
@@ -667,12 +678,11 @@ public partial class MainPage : ContentPage
             player.Pause();
 
             mainPlaylist.Tracks.Clear();
-            mainPlaylist.LoadFromM3U(selectedPlaylist.Path);            
-            playlistView.ItemsSource = null;
+            mainPlaylist.LoadFromM3U(selectedPlaylist.Path);
+
             LoadToListView();
 
         }
-
     }
 
 
@@ -694,7 +704,8 @@ public partial class MainPage : ContentPage
 
     private void PlaylistReturnBtn_Clicked(object sender, TappedEventArgs e)
     {
-        
+        LoadFromDirectory();
+
     }
 
     private async void OnPlaylistSaved(object? sender, string playlistName)
