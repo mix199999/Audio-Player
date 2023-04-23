@@ -50,7 +50,9 @@ public partial class MainPage : ContentPage
     private DateTime _previousClickTime = DateTime.MinValue;
 
     List<PlaylistViewModel> trackViewModels = new List<PlaylistViewModel>();
-
+    List<PlaylistViewModel> _searchPlaylist = new List<PlaylistViewModel>();
+    private double listViewTranslationY = 0;
+    private const double SearchBarHeight = 50;
 
 
 
@@ -147,9 +149,91 @@ public partial class MainPage : ContentPage
         });
 
 
+        searchBar.TextChanged += OnSearchTextChanged;
+        searchBar.Focused += OnSearchBarFocused;
+        searchBar.Unfocused += OnSearchBarUnfocused;
+        searchBar.SearchButtonPressed += SearchBar_SearchButtonPressed;
+
+        _searchPlaylist = PlaylistViewModel.CreatePlaylistViewModel(mainPlaylist);
+        resultsList.ItemTapped += ResultsList_ItemTapped;
+
     }
 
+    private void SearchBar_SearchButtonPressed(object sender, EventArgs e)
+    {
+        trackTimer.Stop();
+        player.Pause();
+        mainPlaylist = new AudioPlaylist();
+        foreach (PlaylistViewModel result in resultsList.ItemsSource)
+        {
+          
+               
+                mainPlaylist.AddTrack(new AudioFile(result.Path));
+               
+               
+            
+        }
+        LoadToListView();
+    }
+
+
+    private void ResultsList_ItemTapped(object sender, ItemTappedEventArgs e)
+    {
+        var selectedResult = (PlaylistViewModel)e.Item;
+        if (selectedResult != null)
+        {
+            trackTimer.Stop();
+            player.Pause();
+            mainPlaylist = new AudioPlaylist();
+            mainPlaylist.AddTrack(new AudioFile(selectedResult.Path));
+            LoadToListView();
+        }
+    }
+
+    private void OnSearchBarFocused(object sender, FocusEventArgs e)
+    {       
+        resultsList.ItemsSource = null;
+        resultsList.IsVisible = true;
+        resultsList.HeightRequest = 200;
+    }
+
+    private void OnSearchBarUnfocused(object sender, FocusEventArgs e)
+    {
+        resultsList.IsVisible = false;
+        searchBar.Text = "";
+        resultsList.HeightRequest = 0;
+    }
+
+
+    private void OnSearchTextChanged(object sender, EventArgs e)
+    {
+
+        SearchBar searchBar = (SearchBar)sender;
+
     
+        string searchText = searchBar.Text;
+
+   
+        var searchResults = _searchPlaylist.Where(item =>
+            item.Title.ToLower().Contains(searchText) ||
+            item.Artist.ToLower().Contains(searchText) ||
+            item.Album.ToLower().Contains(searchText)).ToList();
+
+       
+        var searchResultsViewModels = searchResults.Select(item => new PlaylistViewModel
+        {
+            TitleAndArtist = $"{item.Title} - {item.Artist}",
+            Path = item.Path,
+
+        }).ToList();
+
+     
+        resultsList.ItemsSource = searchResultsViewModels;
+        
+    }
+
+
+
 
     private void LoadFromDirectory()
     {
@@ -163,42 +247,43 @@ public partial class MainPage : ContentPage
     }
     private async void PlaylistListView_ItemTapped(object sender, ItemTappedEventArgs e)
     {
-       
-        var selectedTrack = (PlaylistViewModel)e.Item;
-        var selectedIndex = e.ItemIndex;
-        if (selectedTrack != null)
+        await Dispatcher.DispatchAsync(() =>
         {
-            if ( _previousIndex == selectedIndex)
+            var selectedTrack = (PlaylistViewModel)e.Item;
+            var selectedIndex = e.ItemIndex;
+            if (selectedTrack != null)
             {
-                //nie ulubiony fav[0]
-                if (selectedTrack.Favourite == _favImgTheme[0])
+                if (_previousIndex == selectedIndex)
                 {
-                    _favouriteSongsPlaylist.AddTrack(mainPlaylist.Tracks[selectedIndex]);                                           
-                    _playlists[0] = _favouriteSongsPlaylist;
-                    AudioPlaylist.AppendTrackToFavoritelistFile(mainPlaylist.Tracks[selectedIndex]);
+                    //nie ulubiony fav[0]
+                    if (selectedTrack.Favourite == _favImgTheme[0])
+                    {
+                        _favouriteSongsPlaylist.AddTrack(mainPlaylist.Tracks[selectedIndex]);
+                        _playlists[0] = _favouriteSongsPlaylist;
+                        AudioPlaylist.AppendTrackToFavoritelistFile(mainPlaylist.Tracks[selectedIndex]);
+
+                    }
+                    else if (selectedTrack.Favourite == _favImgTheme[1])
+                    {
+
+                        _favouriteSongsPlaylist.RemoveTrack(mainPlaylist.Tracks[selectedIndex]);
+                        _playlists[0] = _favouriteSongsPlaylist;
+                        AudioPlaylist.RemoveTrackFromM3U(mainPlaylist.Tracks[selectedIndex]);
+                    }
+
+                    // await Task.Delay(100);
+                    LoadToListView();
+                    // ((ListView)sender).SelectedItem = null;
+                    // ((ListView)sender).SelectedItem = selectedTrack;
+
+
 
                 }
-                else if (selectedTrack.Favourite == _favImgTheme[1])
-                {
-                    
-                    _favouriteSongsPlaylist.RemoveTrack(mainPlaylist.Tracks[selectedIndex]);
-                    _playlists[0] = _favouriteSongsPlaylist;             
-                    AudioPlaylist.RemoveTrackFromM3U(mainPlaylist.Tracks[selectedIndex]);
-                }
 
-               // await Task.Delay(100);
-                LoadToListView();
-                // ((ListView)sender).SelectedItem = null;
-                // ((ListView)sender).SelectedItem = selectedTrack;
+                _previousIndex = selectedIndex;
 
-
-                
             }
-
-            _previousIndex = selectedIndex;
-
-
-        }
+        });
 
     }
 
@@ -766,7 +851,32 @@ public class PlaylistViewModel
     public string Path { get; set; }
     public string Cover { get; set; }
     public string Favourite { get; set; }
+
+    public string TitleAndArtist { get        ; set; }
+    internal static List<PlaylistViewModel> CreatePlaylistViewModel(AudioPlaylist playlist)
+    {
+        var playlistViewModels = new List<PlaylistViewModel>();
+
+        foreach (var track in playlist.Tracks)
+        {
+            var trackViewModel = new PlaylistViewModel
+            {
+                Title = track.GetTitle(),
+                Album = track.GetAlbum(),
+                Artist = track.GetArtist(),
+                Path = track.GetFilePath()
+            };
+
+            playlistViewModels.Add(trackViewModel);
+        }
+
+        return playlistViewModels;
+    }
+
+
+
 }
+
 
 
 
