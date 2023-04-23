@@ -40,10 +40,15 @@ namespace testMAUI
         {
             _tracks.Add(track);
         }
-        public void RemoveTrack(AudioFile track) 
+        public void RemoveTrack(AudioFile track)
         {
-            _tracks.Remove(track);
+            var trackToRemove = _tracks.FirstOrDefault(t => t.GetFilePath() == track.GetFilePath());
+            if (trackToRemove != null)
+            {
+                _tracks.Remove(trackToRemove);
+            }
         }
+
 
         public int GetCurrentTrackIndex()
         { return _currentIndex; }
@@ -120,23 +125,28 @@ namespace testMAUI
             sb.AppendLine();
             System.IO.File.AppendAllText(_favoriteSongsListPath, sb.ToString());
         }
-        public static void RemoveTrackFromM3U( AudioFile track)
+        public static void RemoveTrackFromM3U(AudioFile track)
         {
-        
             var lines = System.IO.File.ReadAllLines(_favoriteSongsListPath);
+            var lineIndex = Array.FindIndex(lines, line => line.Contains(track.GetFilePath()));
 
-     
-            var lineToRemove = lines.FirstOrDefault(line => line.Contains(track.GetFilePath()));
-
-            if (lineToRemove != null)
+            if (lineIndex >= 0)
             {
-              
-                lines = lines.Where(line => line != lineToRemove).ToArray();
+               
+                var linesList = lines.ToList();
+                linesList.RemoveAt(lineIndex);
 
-                
+             
+                if (lineIndex > 0)
+                {
+                    linesList.RemoveAt(lineIndex - 1);
+                }
+
+                lines = linesList.ToArray();
                 System.IO.File.WriteAllLines(_favoriteSongsListPath, lines);
             }
         }
+
 
 
         /// <summary>

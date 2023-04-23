@@ -46,7 +46,12 @@ public partial class MainPage : ContentPage
     private bool _visibility = true;
     private List<String> _favImgTheme;
     private AudioPlaylist _favouriteSongsPlaylist;
-    private int _previousIndex;
+    private int _previousIndex = -1;
+    private DateTime _previousClickTime = DateTime.MinValue;
+
+    List<PlaylistViewModel> trackViewModels = new List<PlaylistViewModel>();
+
+
 
 
 
@@ -151,31 +156,61 @@ public partial class MainPage : ContentPage
 
     private async void PlaylistListView_ItemTapped(object sender, ItemTappedEventArgs e)
     {
-      
-            currentTrackTime = TimeSpan.Zero;
+       
+        var selectedTrack = (PlaylistViewModel)e.Item;
+        var selectedIndex = e.ItemIndex;
+        if (selectedTrack != null)
+        {
+            if ( _previousIndex == selectedIndex)
+            {
+                //nie ulubiony fav[0]
+                if (selectedTrack.Favourite == _favImgTheme[0])
+                {
+                    _favouriteSongsPlaylist.AddTrack(mainPlaylist.Tracks[selectedIndex]);                                           
+                    _playlists[0] = _favouriteSongsPlaylist;
+                    AudioPlaylist.AppendTrackToFavoritelistFile(mainPlaylist.Tracks[selectedIndex]);
 
-            AudioPlayingImageControl.Opacity = 1;
+                }
+                else if (selectedTrack.Favourite == _favImgTheme[1])
+                {
+                    
+                    _favouriteSongsPlaylist.RemoveTrack(mainPlaylist.Tracks[selectedIndex]);
+                    _playlists[0] = null;
+                    _playlists[0] = _favouriteSongsPlaylist;
+                   // _playlists[0] = _favouriteSongsPlaylist;
+                    
+                    AudioPlaylist.RemoveTrackFromM3U(mainPlaylist.Tracks[selectedIndex]);
+                }
 
-            mainPlaylist.SetCurrentTrack(e.ItemIndex);
-            await setCurrentTrackInfo();
-            playAudio();
-            _previousIndex = e.ItemIndex;
-      
+               // await Task.Delay(100);
+                LoadToListView();
+                // ((ListView)sender).SelectedItem = null;
+                // ((ListView)sender).SelectedItem = selectedTrack;
 
-        
+
+                
+            }
+
+            _previousIndex = selectedIndex;
+
+
+        }
+
     }
 
     public void MarkFavoriteSongsInMainPlaylist()
     {
         for (int i = 0; i < mainPlaylist.Tracks.Count; i++)
         {
-
+            mainPlaylist.Tracks[i].SetFavourite(false);
             for (int j = 0; j < _favouriteSongsPlaylist.Tracks.Count; j++)
             {
                 if (_favouriteSongsPlaylist.Tracks[j].GetTitle() == mainPlaylist.Tracks[i].GetTitle() 
                     && _favouriteSongsPlaylist.Tracks[j].GetArtist() == mainPlaylist.Tracks[i].GetArtist()
                     && _favouriteSongsPlaylist.Tracks[j].GetDuration() == mainPlaylist.Tracks[i].GetDuration())
                     mainPlaylist.Tracks[i].SetFavourite(true);
+                
+
             }
         }
 
@@ -245,31 +280,31 @@ public partial class MainPage : ContentPage
     private  void favImg_Clicked(object sender, TappedEventArgs e)
     {
 
-            bool fav = mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()].GetFavourite();
-            mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()].SetFavourite(!fav);
-        if (sender is Image image)
-        {
-            if (fav)
-            {
+        //    bool fav = mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()].GetFavourite();
+        //    mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()].SetFavourite(!fav);
+        //if (sender is Image image)
+        //{
+        //    if (fav)
+        //    {
 
-                image.Source = _favImgTheme[1];
-                _favouriteSongsPlaylist.RemoveTrack(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
-                _playlists[0] = _favouriteSongsPlaylist;
-                // kłopoty trzeba jakoś usunąć z playlisty
-                AudioPlaylist.RemoveTrackFromM3U(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
-            }
-            else
-            {
-                image.Source = _favImgTheme[0];
-                //dodawanie do playlisty ulublionych
-                _favouriteSongsPlaylist.AddTrack(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
-                //update ulubionej playlisty
-                _playlists[0] = _favouriteSongsPlaylist;
-                // dopisanie
-                AudioPlaylist.AppendTrackToFavoritelistFile(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
+        //        image.Source = _favImgTheme[1];
+        //        _favouriteSongsPlaylist.RemoveTrack(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
+        //        _playlists[0] = _favouriteSongsPlaylist;
+        //        // kłopoty trzeba jakoś usunąć z playlisty
+        //        AudioPlaylist.RemoveTrackFromM3U(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
+        //    }
+        //    else
+        //    {
+        //        image.Source = _favImgTheme[0];
+        //        //dodawanie do playlisty ulublionych
+        //        _favouriteSongsPlaylist.AddTrack(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
+        //        //update ulubionej playlisty
+        //        _playlists[0] = _favouriteSongsPlaylist;
+        //        // dopisanie
+        //        AudioPlaylist.AppendTrackToFavoritelistFile(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
 
-            }
-        }
+        //    }
+        //}
 
         
     }
@@ -313,10 +348,15 @@ public partial class MainPage : ContentPage
     private void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
     {
 
+
         if (e.SelectedItem == null)
             return;
 
+
         var list = new List<object>();
+        currentTrackTime = TimeSpan.Zero;
+        playAudio();
+        AudioPlayingImageControl.Opacity = 1;
 
         if (playlistView.ItemsSource is IEnumerable<object> enumerable)
         {
@@ -325,33 +365,9 @@ public partial class MainPage : ContentPage
 
         int selectedIndex = list.IndexOf(e.SelectedItem);
 
-        //if (_previousIndex == selectedIndex)
-        //{
-            bool fav = mainPlaylist.Tracks[selectedIndex].GetFavourite();
-                if (fav)
-                {
-                    // _favImgTheme[1];
-                    _favouriteSongsPlaylist.RemoveTrack(mainPlaylist.Tracks[selectedIndex]);
-                    _playlists[0] = _favouriteSongsPlaylist;
-                    // kłopoty trzeba jakoś usunąć z playlisty
-                    AudioPlaylist.RemoveTrackFromM3U(mainPlaylist.Tracks[selectedIndex]);
-                }
-                else
-                {
-                   // _favImgTheme[0];
-                    //dodawanie do playlisty ulublionych
-                    _favouriteSongsPlaylist.AddTrack(mainPlaylist.Tracks[selectedIndex]);
-                    //update ulubionej playlisty
-                    _playlists[0] = _favouriteSongsPlaylist;
-                    // dopisanie
-                    AudioPlaylist.AppendTrackToFavoritelistFile(mainPlaylist.Tracks[selectedIndex]);
+        mainPlaylist.SetCurrentTrack(selectedIndex);
 
-                }
-        //}
-        //else
-        //{
-        //    _previousIndex = selectedIndex;
-        //}
+        setCurrentTrackInfo();
     }
       
 
@@ -651,8 +667,7 @@ public partial class MainPage : ContentPage
             player.Pause();
 
             mainPlaylist.Tracks.Clear();
-            mainPlaylist.LoadFromM3U(selectedPlaylist.Path);
-            MarkFavoriteSongsInMainPlaylist();
+            mainPlaylist.LoadFromM3U(selectedPlaylist.Path);            
             playlistView.ItemsSource = null;
             LoadToListView();
 
@@ -704,19 +719,44 @@ public partial class MainPage : ContentPage
 
     private void LoadToListView()
     {
-        playlistView.ItemsSource = mainPlaylist.Tracks.Select(track => new
+        playlistView.ItemsSource = null;
+        MarkFavoriteSongsInMainPlaylist();
+
+        trackViewModels = new List<PlaylistViewModel>();
+        foreach (var track in mainPlaylist.Tracks)
         {
-            Title = track.GetTitle(),
-            Duration = track.GetDuration().ToString("mm\\:ss"),
-            Album = track.GetAlbum(),
-            Artist = track.GetArtist(),
-            Path = track.GetFilePath(),
-            Cover = track.GetCover(),
-            Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
-        });
+            var trackViewModel = new PlaylistViewModel
+            {
+                Title = track.GetTitle(),
+                Duration = track.GetDuration().ToString("mm\\:ss"),
+                Album = track.GetAlbum(),
+                Artist = track.GetArtist(),
+                Path = track.GetFilePath(),           
+                Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
+            };
+
+            trackViewModels.Add(trackViewModel);
+
+        }
+        
+        playlistView.ItemsSource = trackViewModels;
+
+
     }
 
 }
+
+public class PlaylistViewModel
+{
+    public string Title { get; set; }
+    public string Duration { get; set; }
+    public string Album { get; set; }
+    public string Artist { get; set; }
+    public string Path { get; set; }
+    public string Cover { get; set; }
+    public string Favourite { get; set; }
+}
+
 
 
 
