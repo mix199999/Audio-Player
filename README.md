@@ -2,10 +2,12 @@
 Desktop "Audio Player" type of an app for a university project
 
 ## Co jest zrobione
+
 Update #4
 - Wyszukiwarka
   - Naciśnięcie Enter/ikony lupy powoduje załadowanie wszystkich utworów z listy znalezionych utworów
   - wybranie pojedyńczego elementu z listy znalezionych utworów ładuje go do playlisty
+  
 Update #3
 - Poprawiona optymalizacja strony z ustawieniami 
   - teraz właściwie tworzy się w innym wątku (znacznie szybciej działa)
