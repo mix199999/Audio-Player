@@ -175,9 +175,11 @@ public partial class MainPage : ContentPage
                
             
         }
-       
-      
-        
+
+        Task.Run(async () => {
+            await LoadToListView();
+        });
+
     }
 
 
