@@ -80,8 +80,11 @@ namespace testMAUI
             if (index >= 0 && index < _tracks.Count)
             {
                 _currentIndex = index;
+                
             }
         }
+
+
 
         public void Next()
         {
@@ -222,7 +225,7 @@ namespace testMAUI
             }
         }
 
-
+        
     }
 
 
