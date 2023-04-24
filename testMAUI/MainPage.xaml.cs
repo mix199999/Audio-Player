@@ -27,6 +27,7 @@ using System.Reflection;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Dispatching;
 
+
 public partial class MainPage : ContentPage
 {
     //create file saver
@@ -50,7 +51,7 @@ public partial class MainPage : ContentPage
 
     List<PlaylistViewModel> trackViewModels = new List<PlaylistViewModel>();
     List<PlaylistViewModel> _searchPlaylist = new List<PlaylistViewModel>();
-    
+
 
 
 
@@ -63,19 +64,19 @@ public partial class MainPage : ContentPage
         _configuration.GetSection("FolderList").Bind(_foldersList);
         _playlists = _configuration.GetSection("AudioPlaylists").Get<List<AudioPlaylist>>();
         //1 sza jest lista z ulubionymi
-       
+
 
 
         InitializeComponent();
 
-        
+
 
         player = new Player();
         player._status = playerStatus.IsNotPlaying;
         mainPlaylist = new AudioPlaylist();
 
 
-       
+
 
         this.fileSaver = fileSaver;
 
@@ -89,7 +90,7 @@ public partial class MainPage : ContentPage
 
         this.Unfocused += hidePopup;
         this.Focused += callPopup;
-         var test = AppDomain.CurrentDomain.BaseDirectory;
+        var test = AppDomain.CurrentDomain.BaseDirectory;
 
         //Ładowanie ikon w zależności od motywu aplikacji
         _favImgTheme = new List<string>();
@@ -115,7 +116,7 @@ public partial class MainPage : ContentPage
             _playlists.Add(emptyPlaylist);
         }
 
-       
+
         foreach (var playlist in _playlists)
         {
             playlist.LoadFromM3U(playlist.Path);
@@ -132,19 +133,21 @@ public partial class MainPage : ContentPage
 
         LoadFromDirectory();
 
+        WeakReferenceMessenger.Default.Register<StringListMessage>(this, OnStringListMessageReceived);
 
-        MessagingCenter.Subscribe<SettingsPage, List<string>>(this, "FoldersList", (sender, foldersList) =>
-        {
-           
-            if (foldersList != null)
-            {
-                this._foldersList = foldersList;
-                SaveToJson();
-            }
 
-        });
+        //MessagingCenter.Subscribe<SettingsPage, List<string>>(this, "FoldersList", (sender, foldersList) =>
+        //{
 
-       
+        //    if (foldersList != null)
+        //    {
+        //        this._foldersList = foldersList;
+        //        SaveToJson();
+        //    }
+
+        //});
+
+
 
 
         searchBar.TextChanged += OnSearchTextChanged;
@@ -157,6 +160,18 @@ public partial class MainPage : ContentPage
 
     }
 
+    private void OnStringListMessageReceived(object recipient, StringListMessage message)
+    {
+        List<string> receivedFolders = message.Strings;
+
+        if (receivedFolders != null)
+        {
+            this._foldersList = receivedFolders;
+            SaveToJson();
+        }
+    }
+
+  
     private void SearchBar_SearchButtonPressed(object sender, EventArgs e)
     {
         trackTimer.Stop();
@@ -812,21 +827,31 @@ public partial class MainPage : ContentPage
 
     private async void OnPlaylistSaved(object? sender, string playlistName)
     {
-        string Name = playlistName;
-        string Path = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+        await Dispatcher.DispatchAsync(async () => {
 
-        var fullPath = Path + "\\" + playlistName + ".M3U";
-        using var stream = new MemoryStream(Encoding.Default.GetBytes(mainPlaylist.SaveToM3U()));
-        await using var fileStream = System.IO.File.Create(fullPath);
-        await stream.CopyToAsync(fileStream);
+            if (playlistName != null || playlistName == "")
+            {
+                string Name = playlistName;
+                string Path = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
 
-        var newPlaylist = new AudioPlaylist()
-        {
-            Name = playlistName,
-            Path = fullPath
-        };
-        _playlists.Add(newPlaylist);
-        SaveToJson();
+                var fullPath = Path + "\\" + playlistName + ".M3U";
+                using var stream = new MemoryStream(Encoding.Default.GetBytes(mainPlaylist.SaveToM3U()));
+                await using var fileStream = System.IO.File.Create(fullPath);
+                await stream.CopyToAsync(fileStream);
+
+                var newPlaylist = new AudioPlaylist()
+                {
+                    Name = playlistName,
+                    Path = fullPath
+                };
+                _playlists.Add(newPlaylist);
+                SaveToJson();
+
+
+            }
+            else
+             await Toast.Make("Playlist name cannot be blank", ToastDuration.Short, 14).Show();
+        });
     }
 
 

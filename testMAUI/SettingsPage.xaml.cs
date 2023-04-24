@@ -1,7 +1,19 @@
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Storage;
+using CommunityToolkit.Mvvm.Messaging;
+
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace testMAUI;
+public class StringListMessage
+{
+    public List<string> Strings { get; set; }
+
+    public StringListMessage(List<string> strings)
+    {
+        Strings = strings;
+    }
+}
 
 public partial class SettingsPage : ContentPage
 {
@@ -39,9 +51,10 @@ public partial class SettingsPage : ContentPage
 
     private void SettingsPage_Disappearing(object sender, EventArgs e)
     {
-        if(countStart == countEnd) { _foldersList = null; }        
-        MessagingCenter.Send(this, "FoldersList", _foldersList);
-       
+        if(countStart == countEnd) { _foldersList = null; }             
+        StringListMessage message = new StringListMessage(_foldersList);
+        WeakReferenceMessenger.Default.Send(message);
+
 
     }
 
