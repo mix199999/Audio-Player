@@ -21,7 +21,7 @@ namespace testMAUI
         private string _album;
         private TimeSpan _duration;
         private string _filePath;
-        private Image _cover;
+       
         private string _coverUrl;
         private bool _favourite;
         
@@ -31,10 +31,7 @@ namespace testMAUI
         { _coverUrl = coverUrl; }
 
 
-        public Image GetCover()
-        {
-            return _cover;
-        }
+        
 
         public AudioFile()
         {
@@ -109,7 +106,7 @@ namespace testMAUI
         /// do pozyskania informacji dotyczących danego utworu
         /// </summary>
         /// <param name="filePath">ścieżka do pliku audio </param>
-        public AudioFile(string filePath)
+        public  AudioFile(string filePath)
         {
             _filePath = filePath;
 
@@ -128,8 +125,13 @@ namespace testMAUI
                 {
                     _coverUrl = "note_icon.png";
                 }
-                else {
-                SetAlbumArtFromDeezerApiAsync();
+                else 
+                {
+                    Task.Run(async () =>
+                    {
+                       await SetAlbumArtFromDeezerApiAsync();
+
+                    });
                 }
 
             }

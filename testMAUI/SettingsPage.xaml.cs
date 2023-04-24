@@ -11,10 +11,9 @@ public partial class SettingsPage : ContentPage
     private int countStart;
     private int countEnd;
     List<string> _foldersList = new List<string>();
-	public SettingsPage(List<string> folderlist)
+
+    internal SettingsPage(List<string> folderlist)
 	{
-        
-        
 
         InitializeComponent();
         this.Disappearing += SettingsPage_Disappearing;
@@ -42,12 +41,14 @@ public partial class SettingsPage : ContentPage
     {
         if(countStart == countEnd) { _foldersList = null; }        
         MessagingCenter.Send(this, "FoldersList", _foldersList);
+       
 
     }
 
-    public void mainButtonClicked(object sender, EventArgs e)
+    public async void mainButtonClicked(object sender, EventArgs e)
 	{
-		Navigation.PopAsync();
+
+		await Navigation.PopAsync();
 
 	}
 

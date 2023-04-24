@@ -53,6 +53,8 @@ namespace testMAUI
         public int GetCurrentTrackIndex()
         { return _currentIndex; }
 
+        public void SetTracks(List<AudioFile> tracks)
+        { _tracks = tracks; }
 
        
 
