@@ -27,8 +27,8 @@ namespace testMAUI
         
         public string GetCoverUrl()
         { return _coverUrl; }
-        public void SetCoverUrl(string coverUrl)
-        { _coverUrl = coverUrl; }
+        public async Task SetCoverUrl()
+        { await SetAlbumArtFromDeezerApiAsync();  }
 
 
         
@@ -125,14 +125,7 @@ namespace testMAUI
                 {
                     _coverUrl = "note_icon.png";
                 }
-                else 
-                {
-                    Task.Run(async () =>
-                    {
-                       await SetAlbumArtFromDeezerApiAsync();
-
-                    });
-                }
+              
 
             }
 
@@ -182,6 +175,65 @@ namespace testMAUI
             }
         }
 
-       
+
+        public void SetAlbumArtFromDeezerApi()
+        {
+            const int maxRetries = 3;
+            for (int i = 0; i < maxRetries; i++)
+            {
+                try
+                {
+                    using (var httpClient = new HttpClient())
+                    {
+                        var query = $"{_artist} {_album}".Replace(' ', '+');
+                        var requestUrl = $"https://api.deezer.com/search?q={query}&limit=1";
+                        var response = httpClient.GetAsync(requestUrl).Result;
+                        response.EnsureSuccessStatusCode();
+                        var responseBody = response.Content.ReadAsStringAsync().Result;
+                        var jsonResponse = System.Text.Json.JsonDocument.Parse(responseBody);
+                        var dataProperty = jsonResponse.RootElement.GetProperty("data");
+                        if (dataProperty.ValueKind == JsonValueKind.Array && dataProperty.GetArrayLength() > 0)
+                        {
+                            var albumIdProperty = dataProperty[0].GetProperty("album").GetProperty("id");
+                            if (albumIdProperty.ValueKind == JsonValueKind.Number)
+                            {
+                                var albumId = albumIdProperty.GetInt32();
+                                requestUrl = $"https://api.deezer.com/album/{albumId}";
+                                response = httpClient.GetAsync(requestUrl).Result;
+                                response.EnsureSuccessStatusCode();
+                                responseBody = response.Content.ReadAsStringAsync().Result;
+                                jsonResponse = System.Text.Json.JsonDocument.Parse(responseBody);
+                                _coverUrl = jsonResponse.RootElement.GetProperty("cover_xl").GetString();
+                                return;
+                            }
+                        }
+                        // Handle error case where album ID is not found
+                        _coverUrl = "note_icon.png";
+                        return;
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    // Log error and retry if possible
+                    Console.WriteLine($"Error while retrieving album art: {e.Message}");
+                    if (i == maxRetries - 1)
+                    {
+                        // Handle error case where all retries failed
+                        _coverUrl = "note_icon.png";
+                    }
+                    else
+                    {
+                        System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1));
+                    }
+                }
+            }
+        }
+
+
+
     }
+
+
+
+
 }

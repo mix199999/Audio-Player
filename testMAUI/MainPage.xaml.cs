@@ -664,7 +664,7 @@ public partial class MainPage : ContentPage
 
     private async Task setCurrentTrackInfo()
     {
-        await Dispatcher.DispatchAsync(() =>
+        await Dispatcher.DispatchAsync(async () =>
         {
 
             if (mainPlaylist.GetCurrentTrack() != null)
@@ -672,7 +672,13 @@ public partial class MainPage : ContentPage
                 CurrentTrackAlbum.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetAlbum());
                 CurrentTrackArtist.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetArtist());
                 CurrentTrackTitle.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetTitle());
-                CurrentTrackCover.Source = (dynamic)mainPlaylist.GetCurrentTrack().GetCoverUrl();
+
+                while (mainPlaylist.GetCurrentTrack().GetCoverUrl() == null)
+                {
+                    await mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()].SetCoverUrl();
+                }
+                await Task.Delay(TimeSpan.FromSeconds(1));
+                CurrentTrackCover.Source = mainPlaylist.GetCurrentTrack().GetCoverUrl();
                 if (!_visibility) showToastInfo();
 
             }
