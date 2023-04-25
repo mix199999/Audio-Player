@@ -25,7 +25,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using CommunityToolkit.Mvvm.Messaging;
-
+using Microsoft.Maui.Dispatching;
+using System;
 
 
 public partial class MainPage : ContentPage
@@ -34,17 +35,27 @@ public partial class MainPage : ContentPage
     IFileSaver fileSaver;
     private Player player;
     TimeSpan currentTrackTime = TimeSpan.Zero;
-    private AudioPlaylist playlist;
+    private AudioPlaylist mainPlaylist;
     CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
     CancellationToken cancellationToken = new CancellationToken();
     private System.Timers.Timer trackTimer = new System.Timers.Timer();
     private double currentTrackProgress;
     private bool ValueChangedEnabled = true;
     private IConfiguration _configuration;
-    private List<AudioPlaylist> _playlist;
+    private List<AudioPlaylist> _playlists;
     private List<string> _foldersList = new List<string>();
     private bool _visibility = true;
     private List<String> _favImgTheme;
+    private AudioPlaylist _favouriteSongsPlaylist;
+    private int _previousIndex = -1;
+    private DateTime _previousClickTime = DateTime.MinValue;
+    private bool _isRandom = false;
+    private bool _isLoop = false;
+
+    List<PlaylistViewModel> trackViewModels = new List<PlaylistViewModel>();
+    List<PlaylistViewModel> _searchPlaylist = new List<PlaylistViewModel>();
+
+
 
 
 
@@ -52,20 +63,23 @@ public partial class MainPage : ContentPage
 
     {
         _configuration = configuration;
-        _playlist = new List<AudioPlaylist>();
+        _playlists = new List<AudioPlaylist>();
         _configuration.GetSection("FolderList").Bind(_foldersList);
-        _playlist = _configuration.GetSection("AudioPlaylists").Get<List<AudioPlaylist>>();
+        _playlists = _configuration.GetSection("AudioPlaylists").Get<List<AudioPlaylist>>();
+        //1 sza jest lista z ulubionymi
 
-
-        InitializeComponent();
-        player = new Player();
-        player._status = playerStatus.IsNotPlaying;
-        playlist = new AudioPlaylist();
         
 
-        playlistView.ItemsSource = playlist.Tracks;
-        playlistListView.ItemsSource = null;
-        playlistListView.ItemsSource = _playlist;
+        InitializeComponent();
+
+
+
+        player = new Player();
+        player._status = playerStatus.IsNotPlaying;
+        mainPlaylist = new AudioPlaylist();
+
+
+
 
         this.fileSaver = fileSaver;
 
@@ -79,7 +93,7 @@ public partial class MainPage : ContentPage
 
         this.Unfocused += hidePopup;
         this.Focused += callPopup;
-         var test = AppDomain.CurrentDomain.BaseDirectory;
+        var test = AppDomain.CurrentDomain.BaseDirectory;
 
         //Ładowanie ikon w zależności od motywu aplikacji
         _favImgTheme = new List<string>();
@@ -95,52 +109,210 @@ public partial class MainPage : ContentPage
         }
 
         if (_foldersList.Count == 0) _foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
-        if (_playlist == null)
+        if (_playlists == null)
         {
             var emptyPlaylist = new AudioPlaylist()
             {
                 Name = "",
                 Path = ""
             };
-            _playlist.Add(emptyPlaylist);
+            _playlists.Add(emptyPlaylist);
         }
-        
-        foreach (var Folder in _foldersList)
-        {
-            playlist.LoadFromDirectory(Folder);
 
-        }
-        LoadToListView();
 
-     
-        foreach (var playlist in _playlist)
+        foreach (var playlist in _playlists)
         {
             playlist.LoadFromM3U(playlist.Path);
         }
 
-       
+
+        _favouriteSongsPlaylist = _playlists[0];
 
 
+        playlistView.ItemTapped += PlaylistListView_ItemTapped;
+        playlistListView.ItemTapped += MultiplePlaylistView_ItemTapped;
 
-        MessagingCenter.Subscribe<SettingsPage, List<string>>(this, "FoldersList", (sender, foldersList) =>
+        playlistListView.ItemsSource = _playlists;
+
+        LoadFromDirectory();
+
+        WeakReferenceMessenger.Default.Register<StringListMessage>(this, OnStringListMessageReceived);
+
+
+        searchBar.TextChanged += OnSearchTextChanged;
+        searchBar.Focused += OnSearchBarFocused;
+        searchBar.Unfocused += OnSearchBarUnfocused;
+        searchBar.SearchButtonPressed += SearchBar_SearchButtonPressed;
+
+        _searchPlaylist = PlaylistViewModel.CreatePlaylistViewModel(mainPlaylist);
+        resultsList.ItemTapped += ResultsList_ItemTapped;
+
+    }
+
+    private void OnStringListMessageReceived(object recipient, StringListMessage message)
+    {
+        List<string> receivedFolders = message.Strings;
+
+        if (receivedFolders != null)
         {
-            this.playlist = new AudioPlaylist();
-            if (foldersList != null)
-            {
-                this._foldersList = foldersList;
-                foreach (var Folder in _foldersList) { playlist.LoadFromDirectory(Folder); }
-                LoadToListView();
-                SaveToJson();
-            }
+            this._foldersList = receivedFolders;
+            SaveToJson();
+        }
+    }
 
-        });
+  
+    private void SearchBar_SearchButtonPressed(object sender, EventArgs e)
+    {
+        trackTimer.Stop();
+        player.Pause();
+        mainPlaylist = new AudioPlaylist();
+        foreach (PlaylistViewModel result in resultsList.ItemsSource)
+        {
+          
+               
+                mainPlaylist.AddTrack(new AudioFile(result.Path));
+               
+               
+            
+        }
+       
+      
+        
+    }
 
+
+    private void ResultsList_ItemTapped(object sender, ItemTappedEventArgs e)
+    {
+        var selectedResult = (PlaylistViewModel)e.Item;
+        if (selectedResult != null)
+        {
+            trackTimer.Stop();
+            player.Pause();
+            mainPlaylist = new AudioPlaylist();
+            mainPlaylist.AddTrack(new AudioFile(selectedResult.Path));
+            Task.Run(async () => {
+                await LoadToListView();
+            });
+        }
+    }
+
+    private void OnSearchBarFocused(object sender, FocusEventArgs e)
+    {       
+        resultsList.ItemsSource = null;
+        resultsList.IsVisible = true;
+        resultsList.HeightRequest = 200;
+    }
+
+    private void OnSearchBarUnfocused(object sender, FocusEventArgs e)
+    {
+        resultsList.IsVisible = false;
+        searchBar.Text = "";
+        resultsList.HeightRequest = 0;
+    }
+
+
+    private void OnSearchTextChanged(object sender, EventArgs e)
+    {
+
+        SearchBar searchBar = (SearchBar)sender;
+
+    
+        string searchText = searchBar.Text;
+
+   
+        var searchResults = _searchPlaylist.Where(item =>
+            item.Title.ToLower().Contains(searchText) ||
+            item.Artist.ToLower().Contains(searchText) ||
+            item.Album.ToLower().Contains(searchText)).ToList();
+
+       
+        var searchResultsViewModels = searchResults.Select(item => new PlaylistViewModel
+        {
+            TitleAndArtist = $"{item.Title} - {item.Artist}",
+            Path = item.Path,
+
+        }).ToList();
+
+     
+        resultsList.ItemsSource = searchResultsViewModels;
+        
     }
 
 
 
-    
 
+    private void LoadFromDirectory()
+    {
+        mainPlaylist.Tracks.Clear();
+        foreach (var Folder in _foldersList)
+        {
+            mainPlaylist.LoadFromDirectory(Folder);
+
+        }
+        Task.Run(async () => { await LoadToListView(); });
+    }
+    private async void PlaylistListView_ItemTapped(object sender, ItemTappedEventArgs e)
+    {
+        await Dispatcher.DispatchAsync(async() =>
+        {
+            var selectedTrack = (PlaylistViewModel)e.Item;
+            var selectedIndex = e.ItemIndex;
+            if (selectedTrack != null)
+            {
+                if (_previousIndex == selectedIndex)
+                {
+                    //nie ulubiony fav[0]
+                    if (selectedTrack.Favourite == _favImgTheme[0])
+                    {
+                        _favouriteSongsPlaylist.AddTrack(mainPlaylist.Tracks[selectedIndex]);
+                        _playlists[0] = _favouriteSongsPlaylist;
+                        AudioPlaylist.AppendTrackToFavoritelistFile(mainPlaylist.Tracks[selectedIndex]);
+
+                    }
+                    else if (selectedTrack.Favourite == _favImgTheme[1])
+                    {
+
+                        _favouriteSongsPlaylist.RemoveTrack(mainPlaylist.Tracks[selectedIndex]);
+                        _playlists[0] = _favouriteSongsPlaylist;
+                        AudioPlaylist.RemoveTrackFromM3U(mainPlaylist.Tracks[selectedIndex]);
+                    }
+                   await LoadToListView();
+              
+
+
+                }
+
+                _previousIndex = selectedIndex;
+
+            }
+        });
+
+    }
+
+    public async Task MarkFavoriteSongsInMainPlaylist()
+    {
+        await Dispatcher.DispatchAsync(() => 
+        {
+            for (int i = 0; i < mainPlaylist.Tracks.Count; i++)
+            {
+                mainPlaylist.Tracks[i].SetFavourite(false);
+                for (int j = 0; j < _favouriteSongsPlaylist.Tracks.Count; j++)
+                {
+                    if (_favouriteSongsPlaylist.Tracks[j].GetTitle() == mainPlaylist.Tracks[i].GetTitle()
+                        && _favouriteSongsPlaylist.Tracks[j].GetArtist() == mainPlaylist.Tracks[i].GetArtist()
+                        && _favouriteSongsPlaylist.Tracks[j].GetDuration() == mainPlaylist.Tracks[i].GetDuration())
+                        mainPlaylist.Tracks[i].SetFavourite(true);
+
+
+                }
+            }
+
+        });
+        
+
+
+        
+    }
 
 
 
@@ -149,6 +321,15 @@ public partial class MainPage : ContentPage
     {
         // var allowedExtensions = new[] { ".mp3", ".mp4", ".wave", ".flac" };
         // var files = await FilePicker.PickMultipleAsync();
+
+        //await Dispatcher.DispatchAsync(() =>
+        //{
+        //    CurrentTrackAlbum.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetAlbum());
+        //    CurrentTrackArtist.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetArtist());
+        //    CurrentTrackTitle.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetTitle());
+        //    CurrentTrackCover.Source = (dynamic)mainPlaylist.GetCurrentTrack().GetCoverUrl();
+
+        //});
 
         var m3uPicker = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
         {
@@ -167,50 +348,112 @@ public partial class MainPage : ContentPage
         {
 
             AudioFile audioFile = new AudioFile(file.FullPath);
-            playlist.AddTrack(audioFile);
+            mainPlaylist.AddTrack(audioFile);
 
         }
 
-        playlistView.ItemsSource = playlist.Tracks.Select(track => new
-        {
-            Title = track.GetTitle(),
-            Duration = track.GetDuration().ToString("mm\\:ss"),
-            Album = track.GetAlbum(),
-            Artist = track.GetArtist(),
-            Path = track.GetFilePath(),
-            Cover = track.GetCover(),
-            Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
-        });
+        await Task.Run(async () => { await LoadToListView(); });
+
+       
     }
 
 
-    private void nextTrack()
+    private async void nextTrack()
     {
-        //if()
-        
-        playlist.Next();
-        currentTrackTime = TimeSpan.Zero;
-        AudioFile audioFile = playlist.GetCurrentTrack();
-        if (audioFile != null)
-        {
-            player.Load(audioFile.GetFilePath());
-            player.Play();
-            setCurrentTrackInfo();
+        await Task.Delay(500);
 
-        }
-    }
-
-    private void favImg_Clicked(object sender, TappedEventArgs e)
-    {
-        bool fav = playlist.Tracks[playlist.GetCurrentTrackIndex()].GetFavourite();
-        playlist.Tracks[playlist.GetCurrentTrackIndex()].SetFavourite(!fav);
-        if (sender is Image image)
+        await Dispatcher.DispatchAsync(async()=>
         {
-            if (fav)
+            AudioFile audioFile;
+            currentTrackTime = TimeSpan.Zero;
+            switch (_isRandom)
             {
-                image.Source = _favImgTheme[0];
-            } else { image.Source = _favImgTheme[1]; }
-        }
+                case false:
+
+                    if (mainPlaylist.GetCurrentTrackIndex() != mainPlaylist.Tracks.Count-1)
+                    {
+                        mainPlaylist.Next();
+                      
+                        audioFile = mainPlaylist.GetCurrentTrack();
+                        if (audioFile != null)
+                        {
+                            player.Load(audioFile.GetFilePath());
+                            player.Play();
+                            await setCurrentTrackInfo();
+                        }
+                    }
+                    else if(mainPlaylist.GetCurrentTrackIndex() == mainPlaylist.Tracks.Count-1  && _isLoop)
+                    {
+                       
+                     await PlayInLoop();
+                    }
+                    else
+                    {
+                        player.Stop();
+                        trackTimer.Stop();
+                    }
+                    break;
+
+                case true:                   
+                   
+                    int index = await GenerateRandomIndex();
+                    while(index == mainPlaylist.GetCurrentTrackIndex())
+                    {
+                        index = await GenerateRandomIndex();
+                    }                    
+                    mainPlaylist.SetCurrentTrack(index);            
+                    
+                    audioFile = mainPlaylist.GetCurrentTrack(); 
+                    if (audioFile != null)
+                    {
+                        player.Load(audioFile.GetFilePath());
+                        player.Play();
+                        await setCurrentTrackInfo();
+                    }                  
+
+                    break;
+
+              
+
+            }
+        });
+         
+
+       
+    }
+
+
+
+    private  void favImg_Clicked(object sender, TappedEventArgs e)
+    {
+
+        //    bool fav = mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()].GetFavourite();
+        //    mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()].SetFavourite(!fav);
+        //if (sender is Image image)
+        //{
+        //    if (fav)
+        //    {
+
+        //        image.Source = _favImgTheme[1];
+        //        _favouriteSongsPlaylist.RemoveTrack(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
+        //        _playlists[0] = _favouriteSongsPlaylist;
+        //        // kłopoty trzeba jakoś usunąć z playlisty
+        //        AudioPlaylist.RemoveTrackFromM3U(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
+        //    }
+        //    else
+        //    {
+        //        image.Source = _favImgTheme[0];
+        //        //dodawanie do playlisty ulublionych
+        //        _favouriteSongsPlaylist.AddTrack(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
+        //        //update ulubionej playlisty
+        //        _playlists[0] = _favouriteSongsPlaylist;
+        //        // dopisanie
+        //        AudioPlaylist.AppendTrackToFavoritelistFile(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
+
+        //    }
+        //}
+
+        
     }
 
     private void nextBtn_Clicked(object sender, EventArgs e) => nextTrack();
@@ -227,7 +470,7 @@ public partial class MainPage : ContentPage
     {
         playAudio();
         CurrentTimeLabel.Opacity = 1;
-        if(playlist.Tracks.Count == 0) { return; }
+        if(mainPlaylist.Tracks.Count == 0) { return; }
         AudioPlayingImageControl.Opacity = 1;
     }
 
@@ -236,28 +479,29 @@ public partial class MainPage : ContentPage
 
     private void prevBtn_Clicked(object sender, EventArgs e)
     {
-        playlist.Previous();
+        mainPlaylist.Previous();
         currentTrackTime = TimeSpan.Zero;
-        AudioFile audioFile = playlist.GetCurrentTrack();
+        AudioFile audioFile = mainPlaylist.GetCurrentTrack();
 
         if (audioFile != null)
         {
             player.Load(audioFile.GetFilePath());
             player.Play();
-            setCurrentTrackInfo();
+            Task.Run(async () => { await setCurrentTrackInfo(); });
         }
     }
 
+    //testy
     private void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
     {
+
 
         if (e.SelectedItem == null)
             return;
 
 
         var list = new List<object>();
-        currentTrackTime = TimeSpan.Zero;
-        playAudio();
+        currentTrackTime = TimeSpan.Zero;       
         AudioPlayingImageControl.Opacity = 1;
 
         if (playlistView.ItemsSource is IEnumerable<object> enumerable)
@@ -267,13 +511,14 @@ public partial class MainPage : ContentPage
 
         int selectedIndex = list.IndexOf(e.SelectedItem);
 
-        playlist.SetCurrentTrack(selectedIndex);
+        mainPlaylist.SetCurrentTrack(selectedIndex);
 
-        setCurrentTrackInfo();
-
-
-
+        playAudio();
+        Task.Run(async () => { await setCurrentTrackInfo(); });
     }
+      
+
+
 
     private async void loadListBtn_Clicked(object sender, TappedEventArgs e)
     {
@@ -296,17 +541,17 @@ public partial class MainPage : ContentPage
             trackTimer.Stop();
             player.Pause();
 
-            playlist.clearList();
-            playlist.LoadFromM3U(playlistFile.FullPath);
+            mainPlaylist.clearList();
+            mainPlaylist.LoadFromM3U(playlistFile.FullPath);
             playlistView.ItemsSource = null;
-            playlistView.ItemsSource = playlist.Tracks.Select(track => new
+            playlistView.ItemsSource = mainPlaylist.Tracks.Select(track => new
             {
                 Title = track.GetTitle(),
                 Duration = track.GetDuration().ToString("hh\\:mm\\:ss"),
                 Album = track.GetAlbum(),
                 Artist = track.GetArtist(),
                 Path = track.GetFilePath(),
-                Cover = track.GetCover(),
+              
                 Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
             });
 
@@ -315,7 +560,7 @@ public partial class MainPage : ContentPage
                 Name = Path.GetFileNameWithoutExtension(playlistFile.FileName),
                 Path = playlistFile.FullPath
             };
-            _playlist.Add(newPlaylist);
+            _playlists.Add(newPlaylist);
             SaveToJson();
         }
 
@@ -323,7 +568,7 @@ public partial class MainPage : ContentPage
 
     private async void saveListBtn_Clicked(object sender, TappedEventArgs e)
     {
-        using var stream = new MemoryStream(Encoding.Default.GetBytes(playlist.SaveToM3U()));
+        using var stream = new MemoryStream(Encoding.Default.GetBytes(mainPlaylist.SaveToM3U()));
         var path = await fileSaver.SaveAsync(".M3U", stream, cancellationTokenSource.Token);
 
         var newPlaylist = new AudioPlaylist()
@@ -331,27 +576,35 @@ public partial class MainPage : ContentPage
             Name = Path.GetFileNameWithoutExtension(path.FilePath),
             Path = path.FilePath
         };
-        _playlist.Add(newPlaylist);
+        _playlists.Add(newPlaylist);
         SaveToJson();
     }
 
 
 
-    private void playAudio()
+    private async void playAudio()
     {
         if (playlistView.SelectedItem != null)
         {
             trackTimer.Start();
+            await Dispatcher.DispatchAsync( () => {
 
-            string path = ((dynamic)playlistView.SelectedItem).Path;
-            setCurrentTrackInfo();
-            AudioFile audioFile = new AudioFile(path);
-            player.Load(audioFile.GetFilePath());
-            player.Play();
 
-            // player.status = playerStatus.IsPlaying;
-            player._totalTime = audioFile.GetDuration();
-            TrackProgressBarSlider.Maximum = audioFile.GetDuration().TotalSeconds;
+                string path = ((dynamic)playlistView.SelectedItem).Path;
+
+                AudioFile audioFile = new AudioFile(path);
+                player.Load(audioFile.GetFilePath());
+                player.Play();
+
+                player._totalTime = audioFile.GetDuration();
+                TrackProgressBarSlider.Maximum = audioFile.GetDuration().TotalSeconds;
+
+            });
+            
+            await Task.Delay(500);
+            await setCurrentTrackInfo();
+            
+           
         }
 
 
@@ -388,35 +641,51 @@ public partial class MainPage : ContentPage
     {
         await Dispatcher.DispatchAsync(() =>
         {
-            currentTrackTime += TimeSpan.FromSeconds(1);
-            TimeSpan durationTime = playlist.GetCurrentTrack().GetDuration();
-            currentTrackProgress = durationTime.TotalSeconds - currentTrackTime.TotalSeconds;
-
-            if (currentTrackProgress <= 0) { nextTrack(); }
-            else
+            if(mainPlaylist.GetCurrentTrack() != null) 
             {
-                CurrentTimeLabel.Text = currentTrackTime.ToString("mm\\:ss");
-                //testCurrentTimeLabel.Text = currentTrackProgress.ToString();
-                ValueChangedEnabled = false;
-                TrackProgressBarSlider.Value = currentTrackTime.TotalSeconds;
-                ValueChangedEnabled = true;
+                currentTrackTime += TimeSpan.FromSeconds(1);
+                TimeSpan durationTime = mainPlaylist.GetCurrentTrack().GetDuration();
+                currentTrackProgress = durationTime.TotalSeconds - currentTrackTime.TotalSeconds;
+
+                if (currentTrackProgress <= 0) { nextTrack(); }
+                else
+                {
+                    CurrentTimeLabel.Text = currentTrackTime.ToString("mm\\:ss");
+                    //testCurrentTimeLabel.Text = currentTrackProgress.ToString();
+                    ValueChangedEnabled = false;
+                    TrackProgressBarSlider.Value = currentTrackTime.TotalSeconds;
+                    ValueChangedEnabled = true;
+                }
             }
+            
         });
     }
 
 
     private async Task setCurrentTrackInfo()
     {
-       
-        await Dispatcher.DispatchAsync(() =>
+        await Dispatcher.DispatchAsync(async () =>
         {
-            CurrentTrackAlbum.Text = ((dynamic)playlist.GetCurrentTrack().GetAlbum());
-            CurrentTrackArtist.Text = ((dynamic)playlist.GetCurrentTrack().GetArtist());
-            CurrentTrackTitle.Text = ((dynamic)playlist.GetCurrentTrack().GetTitle());
-            CurrentTrackCover.Source = (dynamic)playlist.GetCurrentTrack().GetCoverUrl();
-           
+
+            if (mainPlaylist.GetCurrentTrack() != null)
+            {
+                CurrentTrackAlbum.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetAlbum());
+                CurrentTrackArtist.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetArtist());
+                CurrentTrackTitle.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetTitle());
+
+                while (mainPlaylist.GetCurrentTrack().GetCoverUrl() == null)
+                {
+                    await mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()].SetCoverUrl();
+                }
+                await Task.Delay(TimeSpan.FromSeconds(1));
+                CurrentTrackCover.Source = mainPlaylist.GetCurrentTrack().GetCoverUrl();
+                if (!_visibility) showToastInfo();
+
+            }
+
+
         });
-        if (!_visibility) showToastInfo();
+
     }
 
     private void TrackProgressBarSlider_ValueChanged(object sender, ValueChangedEventArgs e)
@@ -431,7 +700,9 @@ public partial class MainPage : ContentPage
 
     private bool ReplayPlaylist(object s)
     {
-
+        if(_isLoop)_isLoop = false;
+        else if (!_isLoop) { _isLoop = true; }
+   
         if(s is Image)
         {
             Image img = (Image)s;
@@ -442,33 +713,74 @@ public partial class MainPage : ContentPage
 
     }
 
-    private void PlayRandom(object s)
+    private async Task PlayInLoop()
     {
+        await Task.Delay(500);
+
+        await Dispatcher.DispatchAsync(async () =>
+        {
+            AudioFile audioFile;
+            currentTrackTime = TimeSpan.Zero;
+
+            if (_isLoop) 
+            {
+                mainPlaylist.SetCurrentTrack(0);
+
+                audioFile = mainPlaylist.GetCurrentTrack();
+                if (audioFile != null)
+                {
+                    player.Load(audioFile.GetFilePath());
+                    player.Play();
+                    await setCurrentTrackInfo();
+                }
+            }
+
+        });
+    }
+
+    private void PlayRandom(object s)
+    { 
+
+        if(_isRandom) { _isRandom = false; }
+        else if(!_isRandom) { _isRandom = true; }
+
         if (s is Image)
         {
             Image img = (Image)s;
             if (img.Opacity == 0.75) { img.Opacity = 0.4; } else { img.Opacity = 0.75; }
         }
     }
+  
+    private async Task<int> GenerateRandomIndex()
+    {
+        int index = 0;
+        await Dispatcher.DispatchAsync(new Action(() =>
+        {
+            Random random = new Random();
+           index = random.Next(mainPlaylist.Tracks.Count-1);
+           
+        }));
+
+        return index;
+    }
 
     private async void Button_Clicked(object sender, EventArgs e)
     {
-        PickFolder(cancellationToken);
+        await PickFolder(cancellationToken);
     }
 
     private void loadToListViewFromDirectory(string Path)
     {
        
-        playlist.LoadFromDirectory(Path);
+        mainPlaylist.LoadFromDirectory(Path);
         playlistView.ItemsSource = null;
-        playlistView.ItemsSource = playlist.Tracks.Select(track => new
+        playlistView.ItemsSource = mainPlaylist.Tracks.Select(track => new
         {
             Title = track.GetTitle(),
             Duration = track.GetDuration().ToString("hh\\:mm\\:ss"),
             Album = track.GetAlbum(),
             Artist = track.GetArtist(),
-            Path = track.GetFilePath(),
-            Cover = track.GetCover(),
+            Path = track.GetFilePath(),           
             Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
         });
     }
@@ -502,14 +814,14 @@ public partial class MainPage : ContentPage
         var foldersSettings = new Configuration
         {
             FolderList = _foldersList,
-            AudioPlaylists = _playlist
+            AudioPlaylists = _playlists
         };
 
         var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
 
         System.IO.File.WriteAllText(appSettingsPath, json);
         playlistListView.ItemsSource = null;
-        playlistListView.ItemsSource = _playlist;
+        playlistListView.ItemsSource = _playlists;
     }
 
     private async Task ShowPopupInfo()
@@ -518,12 +830,12 @@ public partial class MainPage : ContentPage
         popup.Size = new Size(300, 300);
 
         var stackLayout = new VerticalStackLayout();
-        var image = new Image { Source = playlist.GetCurrentTrack().GetCoverUrl() };
+        var image = new Image { Source = mainPlaylist.GetCurrentTrack().GetCoverUrl() };
         var label = new Label
         {
-            Text = $"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
-            $" Artist - {((dynamic)playlist.GetCurrentTrack().GetArtist())}\n\r" +
-            $" Album - {((dynamic)playlist.GetCurrentTrack().GetAlbum())}\n\r",
+            Text = $"\n\r{((dynamic)mainPlaylist.GetCurrentTrack().GetTitle())}\n\r" +
+            $" Artist - {((dynamic)mainPlaylist.GetCurrentTrack().GetArtist())}\n\r" +
+            $" Album - {((dynamic)mainPlaylist.GetCurrentTrack().GetAlbum())}\n\r",
             VerticalTextAlignment = TextAlignment.Center
         };
 
@@ -536,55 +848,52 @@ public partial class MainPage : ContentPage
 
     private async void showToastInfo()
     {
-        var toast = Toast.Make($"\n\r{((dynamic)playlist.GetCurrentTrack().GetTitle())}\n\r" +
-           $" Artist - {((dynamic)playlist.GetCurrentTrack().GetArtist())}\n\r" +
-           $" Album - {((dynamic)playlist.GetCurrentTrack().GetAlbum())}\n\r",
+           var toast = Toast.Make($"\n\r{((dynamic)mainPlaylist.GetCurrentTrack().GetTitle())}\n\r" +
+           $" Artist - {((dynamic)mainPlaylist.GetCurrentTrack().GetArtist())}\n\r" +
+           $" Album - {((dynamic)mainPlaylist.GetCurrentTrack().GetAlbum())}\n\r",
            ToastDuration.Short );          
-            await toast.Show(cancellationToken);
-       
-
+           await toast.Show(cancellationToken);
     }
 
 
 
-    private void settingsButtonClicked(object sender, EventArgs e)
+    private async void settingsButtonClicked(object sender, EventArgs e)
     {
-        Navigation.PushAsync(new SettingsPage(_foldersList));
-        //ustawienia.IsVisible = true;
-        //glowny.IsVisible = false;
+       // player.Pause();
+       // trackTimer.Stop();
+       await Navigation.PushAsync(new SettingsPage(_foldersList));
+        
     }
-
+    
     private void OnPlaylistSelected(object sender, SelectedItemChangedEventArgs e)
     {
-        if (e.SelectedItem == null)
+        
+
+    }
+
+
+    private void MultiplePlaylistView_ItemTapped(object sender, ItemTappedEventArgs e)
+    {
+        if (e.Item == null)
         {
             return;
         }
 
-        var selectedPlaylist = (AudioPlaylist)e.SelectedItem;
+        var selectedPlaylist = (AudioPlaylist)e.Item;
 
         if (selectedPlaylist.Path != null)
         {
             trackTimer.Stop();
             player.Pause();
 
-            playlist.clearList();
-            playlist.LoadFromM3U(selectedPlaylist.Path);
-            playlistView.ItemsSource = null;
-            playlistView.ItemsSource = playlist.Tracks.Select(track => new
-            {
-                Title = track.GetTitle(),
-                Duration = track.GetDuration().ToString("hh\\:mm\\:ss"),
-                Album = track.GetAlbum(),
-                Artist = track.GetArtist(),
-                Path = track.GetFilePath(),
-                Cover = track.GetCover(),
-                Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
-            });
+            mainPlaylist.Tracks.Clear();
+            mainPlaylist.LoadFromM3U(selectedPlaylist.Path);
+
+            Task.Run(async () => { await LoadToListView(); });
 
         }
-
     }
+
 
     private void callPopup(object sender, FocusEventArgs e)=>
         _visibility = true;
@@ -597,51 +906,119 @@ public partial class MainPage : ContentPage
 
     private async void SaveListBtn_Clicked(object sender, EventArgs e)
     {
-        var popup = new PopupTrackInfo();
-        popup.PlaylistSaved += OnPlaylistSaved;
-        this.ShowPopup(popup);
+       await Dispatcher.DispatchAsync(() => {
+            var popup = new PopupTrackInfo();
+            popup.PlaylistSaved += OnPlaylistSaved;
+            this.ShowPopup(popup);
+        });
+      
     }
 
     private void PlaylistReturnBtn_Clicked(object sender, TappedEventArgs e)
     {
-        
+        LoadFromDirectory();
+
     }
 
     private async void OnPlaylistSaved(object? sender, string playlistName)
     {
-        string Name = playlistName;
-        string Path = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+        await Dispatcher.DispatchAsync(async () => {
 
-        var fullPath = Path + "\\" + playlistName + ".M3U";
-        using var stream = new MemoryStream(Encoding.Default.GetBytes(playlist.SaveToM3U()));
-        await using var fileStream = System.IO.File.Create(fullPath);
-        await stream.CopyToAsync(fileStream);
+            if (playlistName != null || playlistName == "")
+            {
+                string Name = playlistName;
+                string Path = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
 
-        var newPlaylist = new AudioPlaylist()
-        {
-            Name = playlistName,
-            Path = fullPath
-        };
-        _playlist.Add(newPlaylist);
-        SaveToJson();
-    }
+                var fullPath = Path + "\\" + playlistName + ".M3U";
+                using var stream = new MemoryStream(Encoding.Default.GetBytes(mainPlaylist.SaveToM3U()));
+                await using var fileStream = System.IO.File.Create(fullPath);
+                await stream.CopyToAsync(fileStream);
+
+                var newPlaylist = new AudioPlaylist()
+                {
+                    Name = playlistName,
+                    Path = fullPath
+                };
+                _playlists.Add(newPlaylist);
+                SaveToJson();
 
 
-    private void LoadToListView()
-    {
-        playlistView.ItemsSource = playlist.Tracks.Select(track => new
-        {
-            Title = track.GetTitle(),
-            Duration = track.GetDuration().ToString("mm\\:ss"),
-            Album = track.GetAlbum(),
-            Artist = track.GetArtist(),
-            Path = track.GetFilePath(),
-            Cover = track.GetCover(),
-            Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
+            }
+            else
+             await Toast.Make("Playlist name cannot be blank", ToastDuration.Short, 14).Show();
         });
     }
 
+
+    private async Task LoadToListView()
+    {
+        await Task.Delay(500);
+        await Dispatcher.DispatchAsync(async() => {
+
+            playlistView.ItemsSource = null;
+            await MarkFavoriteSongsInMainPlaylist();
+
+            trackViewModels = new List<PlaylistViewModel>();
+            foreach (var track in mainPlaylist.Tracks)
+            {
+                var trackViewModel = new PlaylistViewModel
+                {
+                    Title = track.GetTitle(),
+                    Duration = track.GetDuration().ToString("mm\\:ss"),
+                    Album = track.GetAlbum(),
+                    Artist = track.GetArtist(),
+                    Path = track.GetFilePath(),
+                    Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
+                };
+
+                trackViewModels.Add(trackViewModel);
+
+            }
+
+            playlistView.ItemsSource = trackViewModels;
+
+        });
+       
+
+    }
+
 }
+
+public class PlaylistViewModel
+{
+    public string Title { get; set; }
+    public string Duration { get; set; }
+    public string Album { get; set; }
+    public string Artist { get; set; }
+    public string Path { get; set; }   
+    public string Favourite { get; set; }
+
+    public string TitleAndArtist { get        ; set; }
+    internal static List<PlaylistViewModel> CreatePlaylistViewModel(AudioPlaylist playlist)
+    {
+        var playlistViewModels = new List<PlaylistViewModel>();
+
+        foreach (var track in playlist.Tracks)
+        {
+            var trackViewModel = new PlaylistViewModel
+            {
+                Title = track.GetTitle(),
+                Album = track.GetAlbum(),
+                Artist = track.GetArtist(),
+                Path = track.GetFilePath()
+            };
+
+            playlistViewModels.Add(trackViewModel);
+        }
+
+        return playlistViewModels;
+    }
+
+
+
+}
+
+
 
 
 

@@ -7,6 +7,7 @@ using TagLib.Mpeg;
 using System.IO;
 
 using System.Text.Json.Serialization;
+using TagLib.Matroska;
 
 
 namespace testMAUI
@@ -19,9 +20,12 @@ namespace testMAUI
         private int _currentIndex;
         [JsonIgnore]
         public List<AudioFile> Tracks => _tracks;
+        [JsonIgnore]
+        private static string _favoriteSongsListPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "favoritesongs.M3U");
 
         public string Name { get; set; }
         public string Path { get; set; }
+
 
 
 
@@ -36,10 +40,21 @@ namespace testMAUI
         {
             _tracks.Add(track);
         }
+        public void RemoveTrack(AudioFile track)
+        {
+            var trackToRemove = _tracks.FirstOrDefault(t => t.GetFilePath() == track.GetFilePath());
+            if (trackToRemove != null)
+            {
+                _tracks.Remove(trackToRemove);
+            }
+        }
+
 
         public int GetCurrentTrackIndex()
         { return _currentIndex; }
 
+        public void SetTracks(List<AudioFile> tracks)
+        { _tracks = tracks; }
 
        
 
@@ -65,8 +80,11 @@ namespace testMAUI
             if (index >= 0 && index < _tracks.Count)
             {
                 _currentIndex = index;
+                
             }
         }
+
+
 
         public void Next()
         {
@@ -85,7 +103,7 @@ namespace testMAUI
         }
 
         /// <summary>
-        /// Metoda służąca do tworzenia playlist w formacie M3U
+        /// Metoda służąca do tworzenia mainPlaylist w formacie M3U
         /// Dodatkowe informacje o formacie M3U: https://en.wikipedia.org/wiki/M3U
         /// </summary>
         /// <returns>zwraca playliste zapisana w formie stringa</returns>
@@ -103,6 +121,38 @@ namespace testMAUI
 
            return sb.ToString();
         }
+
+        public static void AppendTrackToFavoritelistFile(AudioFile track)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"#EXTINF:{track.GetDuration()},{track.GetTitle()}");
+            sb.AppendLine(track.GetFilePath());
+            sb.AppendLine();
+            System.IO.File.AppendAllText(_favoriteSongsListPath, sb.ToString());
+        }
+        public static void RemoveTrackFromM3U(AudioFile track)
+        {
+            var lines = System.IO.File.ReadAllLines(_favoriteSongsListPath);
+            var lineIndex = Array.FindIndex(lines, line => line.Contains(track.GetFilePath()));
+
+            if (lineIndex >= 0)
+            {
+               
+                var linesList = lines.ToList();
+                linesList.RemoveAt(lineIndex);
+
+             
+                if (lineIndex > 0)
+                {
+                    linesList.RemoveAt(lineIndex - 1);
+                }
+
+                lines = linesList.ToArray();
+                System.IO.File.WriteAllLines(_favoriteSongsListPath, lines);
+            }
+        }
+
+
 
         /// <summary>
         /// Funkcja służąca do sparsowania danych dotyczących playlisty zapisanych w pliku .M3U
@@ -175,7 +225,7 @@ namespace testMAUI
             }
         }
 
-
+        
     }
 
 

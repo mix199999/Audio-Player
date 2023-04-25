@@ -105,9 +105,9 @@
                         </Image>
                         
                         <!-- Usun button -->
-                        <Image Source="minus.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="25" Grid.Column="8" ToolTipProperties.Text="Remove path">
+                        <Image Source="minus.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="25" Grid.Column="8" ToolTipProperties.Text="Remove path" x:Name="RemoveFolderBt">
                             <Image.GestureRecognizers>
-                                <TapGestureRecognizer   />
+                                    <TapGestureRecognizer  Tapped="RemoveFolderBt_Tapped"  />
                             </Image.GestureRecognizers>
                         </Image>
                         
@@ -116,7 +116,7 @@
                 
                 <!-- Lista ścieżek -->
                     <ScrollView Grid.Row="1" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" x:Name="test">
-                        <ListView x:Name="pathListView" SelectionMode="Single" SelectedItem="{Binding SelectedItem}">
+                        <ListView x:Name="pathListView" SelectionMode="Single" SelectedItem="{Binding SelectedItem} ">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <ViewCell>

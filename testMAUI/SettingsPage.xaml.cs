@@ -1,33 +1,48 @@
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Storage;
+using CommunityToolkit.Mvvm.Messaging;
+
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace testMAUI;
+public class StringListMessage
+{
+    public List<string> Strings { get; set; }
+
+    public StringListMessage(List<string> strings)
+    {
+        Strings = strings;
+    }
+}
 
 public partial class SettingsPage : ContentPage
 {
 
     private CancellationToken cancellationToken = new CancellationToken();
-
+    private int _indexPath=-1;
     private int countStart;
     private int countEnd;
     List<string> _foldersList = new List<string>();
-	public SettingsPage(List<string> folderlist)
+
+    internal SettingsPage(List<string> folderlist)
 	{
-        
-        
 
         InitializeComponent();
         this.Disappearing += SettingsPage_Disappearing;
         this._foldersList = folderlist;
         countStart = _foldersList.Count;
         countEnd = countStart;
-        pathListView.ItemsSource = _foldersList.Select(directory => new
-        {
-            Path = directory.ToString()
-        });
+        LoadDataToPathView();
+        pathListView.ItemTapped += PathListView_ItemTapped;
+
+
 
     }
 
+    private void PathListView_ItemTapped(object sender, ItemTappedEventArgs e)
+    {
+        _indexPath = e.ItemIndex;
+    }
 
     private async void Button_Clicked(object sender, TappedEventArgs e)
     {
@@ -36,14 +51,17 @@ public partial class SettingsPage : ContentPage
 
     private void SettingsPage_Disappearing(object sender, EventArgs e)
     {
-        if(countStart == countEnd) { _foldersList = null; }        
-        MessagingCenter.Send(this, "FoldersList", _foldersList);
+        if(countStart == countEnd) { _foldersList = null; }             
+        StringListMessage message = new StringListMessage(_foldersList);
+        WeakReferenceMessenger.Default.Send(message);
+
 
     }
 
-    public void mainButtonClicked(object sender, EventArgs e)
+    public async void mainButtonClicked(object sender, EventArgs e)
 	{
-		Navigation.PopAsync();
+
+		await Navigation.PopAsync();
 
 	}
 
@@ -79,10 +97,7 @@ public partial class SettingsPage : ContentPage
             else
             {
                 _foldersList.Add(result.Folder.Path);
-                pathListView.ItemsSource = _foldersList.Select(directory => new
-                {
-                     Path = directory.ToString()
-                }) ;
+                LoadDataToPathView();
 
                countEnd++;
             }
@@ -93,11 +108,21 @@ public partial class SettingsPage : ContentPage
         }
     }
 
+    private void RemoveFolderBt_Tapped(object sender, TappedEventArgs e)
+    {
+       
+        var selectedItem = pathListView.SelectedItem;
+        if (selectedItem != null) 
+        {
+            _foldersList.RemoveAt(_indexPath);
+            LoadDataToPathView();
 
+        }
+    }
 
-
-
-
-
-
+    private void LoadDataToPathView()
+    {
+        pathListView.ItemsSource = _foldersList.Select(directory => new
+        {Path = directory.ToString() }) ;
+    }
 }

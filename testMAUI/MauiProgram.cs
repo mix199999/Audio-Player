@@ -28,15 +28,18 @@ public static class MauiProgram
 
 
         var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
+        var favoriteSongsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "favoritesongs.M3U");
         if (!File.Exists(appSettingsPath))
         {
             var foldersSettings = new Configuration
             {
                 FolderList = new List<string> { Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) },
-                AudioPlaylists = new List<AudioPlaylist> { new AudioPlaylist { Name = "", Path = "" } }
+                AudioPlaylists = new List<AudioPlaylist> { new AudioPlaylist { Name = "Favorite Songs", Path = favoriteSongsPath } }
             };
             var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(appSettingsPath, json);
+            
+            File.WriteAllText(favoriteSongsPath, "#EXTM3U");
         }
 
         using var stream = File.Open(appSettingsPath, FileMode.Open);

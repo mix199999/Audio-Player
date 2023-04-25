@@ -31,8 +31,25 @@
             <StackLayout Grid.Row="0" Orientation="Vertical" Spacing="10" Padding="5">
                 <!-- Wyszukiwarka -->
                 <Frame CornerRadius="5" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" >
-                    <SearchBar Placeholder="Szukaj" BackgroundColor="#606060" PlaceholderColor="White"/>
+                    <SearchBar Placeholder="Szukaj" BackgroundColor="#606060" PlaceholderColor="White" x:Name="searchBar"/>
+                  
                 </Frame>
+                <Frame CornerRadius="5" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" >
+                    <ScrollView >
+                    <ListView  x:Name="resultsList">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <StackLayout Orientation="Vertical">
+                                        <Label Text="{Binding TitleAndArtist}" />                                      
+                                    </StackLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    </ScrollView>
+                </Frame>
+                
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -169,7 +186,7 @@
             <!--Koniec testowego grida-->
 
             <ScrollView Grid.Row="1" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" x:Name="test" Margin="0,10,0,0" >
-                <ListView x:Name="playlistView" SelectionMode="Single" ItemSelected="OnItemSelected" SelectedItem="{Binding SelectedItem}">
+                <ListView x:Name="playlistView" SelectionMode="Single" ItemSelected="OnItemSelected"  SelectedItem="{Binding SelectedItem}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
@@ -190,9 +207,9 @@
                                         <Label Text="{Binding Artist}" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
                                         <Label Text="{Binding Album}" Grid.Column="2" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
                                         <Label Text="{Binding Duration}" Grid.Column="3" VerticalOptions="Center" HorizontalOptions="End" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                                        <Image Source="{Binding Favourite}" Grid.Column="4" HeightRequest="15" VerticalOptions="Center" HorizontalOptions="End" Margin="22,0" ToolTipProperties.Text="Favourite this song!">
+                                        <Image Source="{Binding Favourite}" Grid.Column="4" HeightRequest="15" VerticalOptions="Center" HorizontalOptions="End" Margin="22,0" ToolTipProperties.Text="Favourite this song!" InputTransparent="False">
                                             <Image.GestureRecognizers>
-                                                <TapGestureRecognizer Tapped="favImg_Clicked"/>
+                                                <TapGestureRecognizer Tapped="favImg_Clicked" />
                                             </Image.GestureRecognizers>
                                         </Image>
                                     </Grid>
@@ -202,7 +219,6 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-
             </ScrollView>
 
 
