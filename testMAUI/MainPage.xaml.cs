@@ -198,6 +198,11 @@ public partial class MainPage : ContentPage
 
     private void OnSearchBarFocused(object sender, FocusEventArgs e)
     {       
+        if(searchBar.Text == null || searchBar.Text == String.Empty)
+        {
+            resultsList.HeightRequest = 0;
+            return;
+        }
         resultsList.ItemsSource = null;
         resultsList.IsVisible = true;
         resultsList.HeightRequest = 200;
@@ -636,6 +641,30 @@ public partial class MainPage : ContentPage
     private void replayBtn_Clicked(object sender, TappedEventArgs e) => ReplayPlaylist(sender);
 
     private void shuffleBtn_Clicked(Object sender, TappedEventArgs e) => PlayRandom(sender);
+
+    private void HoverBegan(object sender, PointerEventArgs e)
+    {
+        if(sender is Button button)
+        {
+            switch (App.Current.RequestedTheme)
+            {
+                case AppTheme.Light:
+                    button.BackgroundColor = Color.FromRgba(0, 0, 0, 20);
+                    break;
+                case AppTheme.Dark:
+                    button.BackgroundColor = Color.FromRgba(255, 255, 255, 20);
+                    break;
+            }
+        }
+    }
+
+    private void HoverEnded(object sender, PointerEventArgs e)
+    {
+        if (sender is Button button)
+        {
+            button.BackgroundColor = Color.FromRgba(0, 0, 0, 0);
+        }
+    }
 
     private async void TimerTick(object sender, ElapsedEventArgs e)
     {

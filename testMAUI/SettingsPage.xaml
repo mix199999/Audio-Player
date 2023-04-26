@@ -5,14 +5,31 @@
              Title="Settings Page"
              
              >
+    <ContentPage.Resources>
+        <Style TargetType="Button">
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="BorderWidth" Value="0"/>
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=Black, Dark=White}"/>
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Style.Triggers>
+                <Trigger TargetType="Button" Property="IsPressed" Value="True">
+                    <Setter Property="Opacity" Value="0.75"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=Black, Dark=White}"/>
+        </Style>
+    </ContentPage.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20*" />
+            <ColumnDefinition Width="1" />
             <ColumnDefinition Width="80*" />
         </Grid.ColumnDefinitions>
 
         <!-- Menu nawigacyjne -->
-        <Grid Grid.Column="0" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Gray">
+        <Grid Grid.Column="0" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" >
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
@@ -21,7 +38,7 @@
             <StackLayout Grid.Row="0" Orientation="Vertical" Spacing="10" Padding="5">
                 <!-- Wyszukiwarka -->
                 <Frame CornerRadius="10" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" >
-                    <SearchBar Placeholder="Szukaj" BackgroundColor="#606060" PlaceholderColor="White"/>
+                    <SearchBar Placeholder="Szukaj" PlaceholderColor="{AppThemeBinding Light=Black, Dark=White}"/>
                 </Frame>
                 <Grid>
                     <Grid.RowDefinitions>
@@ -30,14 +47,22 @@
                     </Grid.RowDefinitions>
                     <!-- linki do stronek -->
 
-                    <Button Grid.Row="0" Text="Strona główna" BackgroundColor="#606060" TextColor="White" VerticalOptions="Center" Margin="0,0,0,5" Clicked="mainButtonClicked"/>
-                    <Button Grid.Row="1" Text="Ustawienia" BackgroundColor="#606060" TextColor="White" VerticalOptions="Center" Margin="0,5,0,0"  />
+                    <Button Grid.Row="0" Text="Strona główna" VerticalOptions="Center" Margin="0,0,0,5" Clicked="mainButtonClicked">
+                        <Button.GestureRecognizers>
+                            <PointerGestureRecognizer PointerEntered="HoverBegan" PointerExited="HoverEnded"/>
+                        </Button.GestureRecognizers>
+                    </Button>
+                    <Button Grid.Row="1" Text="Ustawienia" VerticalOptions="Center" Margin="0,5,0,0">
+                        <Button.GestureRecognizers>
+                            <PointerGestureRecognizer PointerEntered="HoverBegan" PointerExited="HoverEnded"/>
+                        </Button.GestureRecognizers>
+                    </Button>
                 </Grid>
                
                 
             </StackLayout>
             <!-- track info - jeśli niepotrzebne to wywalic xd -->
-            <Grid Grid.Row="1" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="#606060" Opacity="0.8" HeightRequest="70">
+            <Grid Grid.Row="1" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand" HeightRequest="70">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.3*"/>
                     <ColumnDefinition Width="0.8*"/>
@@ -49,63 +74,77 @@
                         <RowDefinition Height="0.25*"/>
                         <RowDefinition Height="0.4*"/>
                     </Grid.RowDefinitions>
-                    <Label x:Name="CurrentTrackTitle" Grid.Row="0" VerticalOptions="End" HorizontalOptions="StartAndExpand" TextColor="White" FontSize="16"/>
-                    <Label x:Name="CurrentTrackArtist" Grid.Row="1" VerticalOptions="Start" HorizontalOptions="StartAndExpand" TextColor="White" FontSize="12"/>
-                    <Label x:Name="CurrentTrackAlbum" Grid.Row="2" VerticalOptions="Start" HorizontalOptions="StartAndExpand" TextColor="LightGrey" FontSize="12"/>
+                    <Label x:Name="CurrentTrackTitle" Grid.Row="0" VerticalOptions="End" HorizontalOptions="StartAndExpand" FontSize="16"/>
+                    <Label x:Name="CurrentTrackArtist" Grid.Row="1" VerticalOptions="Start" HorizontalOptions="StartAndExpand" FontSize="12"/>
+                    <Label x:Name="CurrentTrackAlbum" Grid.Row="2" VerticalOptions="Start" HorizontalOptions="StartAndExpand" Opacity="0.75" FontSize="12"/>
                 </Grid>
             </Grid>
         </Grid>
+        <BoxView Grid.Column="1" Opacity="0.1" />
 
         <!-- Lista utworów -->
         <Grid 
-        Grid.Column="1" 
+        Grid.Column="2" 
         VerticalOptions="FillAndExpand" 
         HorizontalOptions="FillAndExpand" 
         Padding="15"
-            BackgroundColor="#606060"
             >
             
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.3*"/>
+                <ColumnDefinition Width="1"/>
                 <ColumnDefinition Width="0.5*" />
             </Grid.ColumnDefinitions>
             
             <!-- Panel lewy z przyciskami opcji -->
             <Frame CornerRadius="10" Grid.Column="0" Padding="0" BorderColor="Transparent" Margin="2">
-                <VerticalStackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Gray">
+                <VerticalStackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" >
                     <!-- moze też to ListView się zrobi -->
                     <ScrollView HorizontalOptions="FillAndExpand">
                         <VerticalStackLayout HorizontalOptions="FillAndExpand" Padding="5">
-                        <Button HorizontalOptions="FillAndExpand" TextColor="white" BackgroundColor="#606060" Text="Lista katalogów" VerticalOptions="FillAndExpand" Clicked="showPathOptions"/>
-                            <Button TextColor="white" BackgroundColor="#606060" Text="Opcja 2" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Clicked="showSecondOption"/>
-                            <Button TextColor="white" BackgroundColor="#606060" Text="Opcja 3" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Clicked="showThirdOption"/>
+                            <Button HorizontalOptions="FillAndExpand" Text="Lista katalogów" VerticalOptions="FillAndExpand" Clicked="showPathOptions">
+                                <Button.GestureRecognizers>
+                                    <PointerGestureRecognizer PointerEntered="HoverBegan" PointerExited="HoverEnded"/>
+                                </Button.GestureRecognizers>
+                            </Button>
+                            <Button Text="Opcja 2" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Clicked="showSecondOption">
+                                <Button.GestureRecognizers>
+                                    <PointerGestureRecognizer PointerEntered="HoverBegan" PointerExited="HoverEnded"/>
+                                </Button.GestureRecognizers>
+                            </Button>
+                            <Button Text="Opcja 3" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Clicked="showThirdOption">
+                                <Button.GestureRecognizers>
+                                    <PointerGestureRecognizer PointerEntered="HoverBegan" PointerExited="HoverEnded"/>
+                                </Button.GestureRecognizers>
+                            </Button>
                         </VerticalStackLayout>
 
                     </ScrollView>
                 </VerticalStackLayout>
             </Frame>
-             <!-- Panel prawy ze zmieniającymi się sekcjami ustawień -->
-            <Frame CornerRadius="10" Grid.Column="1" Padding="0" BorderColor="Transparent" BackgroundColor="Gray" Margin="2">
+            <BoxView Grid.Column="1" Opacity="0.1"/>
+            <!-- Panel prawy ze zmieniającymi się sekcjami ustawień -->
+            <Frame CornerRadius="10" Grid.Column="2" Padding="0" BorderColor="Transparent" Margin="2">
                 <!--Opcja 1 - ściezki -->
-                <Grid VerticalOptions="FillAndExpand" BackgroundColor="Gray" x:Name="pathOptions" IsVisible="false">
+                <Grid VerticalOptions="FillAndExpand" x:Name="pathOptions" IsVisible="false">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="0.1*"/>
                     <RowDefinition Height="0.8*"/>
                 </Grid.RowDefinitions>
                 
                 <!-- Pasek górny z dwoma przyciskami -->
-                <Grid Grid.Row="0" BackgroundColor="#606060" Opacity="0.7" Padding="10,0">
+                <Grid Grid.Row="0" Opacity="0.7" Padding="10,0">
                     <HorizontalStackLayout HorizontalOptions="EndAndExpand">
                         
                         <!-- Dodaj button -->
-                        <Image Source="plussolid.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="30" Grid.Column="8" ToolTipProperties.Text="Add path" x:Name="addFolderBt" >
+                            <Image Source="{AppThemeBinding Light=plussolid.png, Dark=plussolidwhite.png}" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="30" Grid.Column="8" ToolTipProperties.Text="Add path" x:Name="addFolderBt" >
                             <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="Button_Clicked" />
                             </Image.GestureRecognizers>
                         </Image>
                         
                         <!-- Usun button -->
-                        <Image Source="minus.png" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="25" Grid.Column="8" ToolTipProperties.Text="Remove path" x:Name="RemoveFolderBt">
+                            <Image Source="{AppThemeBinding Light=minus.png, Dark=minuswhite.png}" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="25" Grid.Column="8" ToolTipProperties.Text="Remove path" x:Name="RemoveFolderBt">
                             <Image.GestureRecognizers>
                                     <TapGestureRecognizer  Tapped="RemoveFolderBt_Tapped"  />
                             </Image.GestureRecognizers>
