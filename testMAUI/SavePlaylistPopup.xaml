@@ -12,7 +12,6 @@
         </Grid.RowDefinitions>
         <Entry Grid.Row="0" Placeholder="Enter playlist name" x:Name="PlaylistNameEntry"/>
 
-        <Button Text="Save playlist" Grid.Row="1" Clicked="SavePlaylistButton_Clicked"
-                VerticalOptions="End"/>
+        <Button Text="Save playlist" Grid.Row="1" Clicked="SavePlaylistButton_Clicked" VerticalOptions="End"/>
     </Grid>
 </mct:Popup>
