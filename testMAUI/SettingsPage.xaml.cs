@@ -65,6 +65,30 @@ public partial class SettingsPage : ContentPage
 
 	}
 
+    private void HoverBegan(object sender, PointerEventArgs e)
+    {
+        if (sender is Button button)
+        {
+            switch (App.Current.RequestedTheme)
+            {
+                case AppTheme.Light:
+                    button.BackgroundColor = Color.FromRgba(0, 0, 0, 20);
+                    break;
+                case AppTheme.Dark:
+                    button.BackgroundColor = Color.FromRgba(255, 255, 255, 20);
+                    break;
+            }
+        }
+    }
+
+    private void HoverEnded(object sender, PointerEventArgs e)
+    {
+        if (sender is Button button)
+        {
+            button.BackgroundColor = Color.FromRgba(0, 0, 0, 0);
+        }
+    }
+
     public void showPathOptions(object sender, EventArgs e)
     {
         pathOptions.IsVisible = true;
