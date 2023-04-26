@@ -68,7 +68,7 @@ public partial class MainPage : ContentPage
         _playlists = _configuration.GetSection("AudioPlaylists").Get<List<AudioPlaylist>>();
         //1 sza jest lista z ulubionymi
 
-        
+
 
         InitializeComponent();
 
@@ -199,12 +199,7 @@ public partial class MainPage : ContentPage
     }
 
     private void OnSearchBarFocused(object sender, FocusEventArgs e)
-    {       
-        if(searchBar.Text == null || searchBar.Text == String.Empty)
-        {
-            resultsList.HeightRequest = 0;
-            return;
-        }
+    {
         resultsList.ItemsSource = null;
         resultsList.IsVisible = true;
         resultsList.HeightRequest = 200;
@@ -220,11 +215,17 @@ public partial class MainPage : ContentPage
 
     private void OnSearchTextChanged(object sender, EventArgs e)
     {
-
+        
         SearchBar searchBar = (SearchBar)sender;
 
-    
-        string searchText = searchBar.Text;
+        if (searchBar.Text == null || searchBar.Text == String.Empty)
+        {
+            resultsList.HeightRequest = 0;
+            return;
+        }
+        resultsList.HeightRequest = 200;
+
+        string searchText = searchBar.Text.ToLower();
 
    
         var searchResults = _searchPlaylist.Where(item =>
