@@ -27,7 +27,7 @@ using System.Reflection;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Dispatching;
 using System;
-
+using System.Diagnostics;
 
 public partial class MainPage : ContentPage
 {
@@ -51,6 +51,7 @@ public partial class MainPage : ContentPage
     private DateTime _previousClickTime = DateTime.MinValue;
     private bool _isRandom = false;
     private bool _isLoop = false;
+    private bool _firstTimeRun = true;
 
     List<PlaylistViewModel> trackViewModels = new List<PlaylistViewModel>();
     List<PlaylistViewModel> _searchPlaylist = new List<PlaylistViewModel>();
@@ -147,6 +148,13 @@ public partial class MainPage : ContentPage
         _searchPlaylist = PlaylistViewModel.CreatePlaylistViewModel(mainPlaylist);
         resultsList.ItemTapped += ResultsList_ItemTapped;
 
+        _firstTimeRun = _configuration.GetValue<bool>("FirstTimeRun");
+        if (_firstTimeRun)
+        {
+            ShowInstruction();
+            _firstTimeRun = false;
+            SaveToJson();
+        }
     }
 
     private void OnStringListMessageReceived(object recipient, StringListMessage message)
@@ -176,6 +184,21 @@ public partial class MainPage : ContentPage
         playlistListView.ItemsSource = _playlists;
     }
 
+    private void ShowInstruction()
+    {
+        try
+        {
+            var p = new Process();
+            string documentsDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string path = $@"{documentsDir}\GNOM\instrukcja.pdf";
+            p.StartInfo = new ProcessStartInfo(path) { UseShellExecute = true };
+            p.Start();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Failed to open the instuction, " + ex.ToString());
+        }
+    }
 
     private void SearchBar_SearchButtonPressed(object sender, EventArgs e)
     {
@@ -863,7 +886,8 @@ public partial class MainPage : ContentPage
         var foldersSettings = new Configuration
         {
             FolderList = _foldersList,
-            AudioPlaylists = _playlists
+            AudioPlaylists = _playlists,
+            FirstTimeRun = _firstTimeRun
         };
 
         var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
