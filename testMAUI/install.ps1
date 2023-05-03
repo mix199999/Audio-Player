@@ -10,6 +10,7 @@
 #   Na koniec struktura powinna wygladac tak:                                                                   #
 #                                                                                                               #
 #   GNOM_installation |                                                                                         #
+#                     |--- readme.txt                                                                           #
 #                     |--- install.exe                                                                          #
 #                     |--- data |                                                                               #
 #                               |--- <plik z certyfikatem>                                                      #
@@ -20,6 +21,13 @@
 #################################################################################################################
 
 # Installation script for GNOM Audio-Player project
+
+#Requires -RunAsAdministrator
+
+# Ask for permission for installing certificate
+# TODO 
+# Write that the program will install certificate to localmachine/root cert-dir
+# if the user does not want -> abort installation
 
 $data_path = ".\data"
 
