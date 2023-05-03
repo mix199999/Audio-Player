@@ -856,7 +856,9 @@ public partial class MainPage : ContentPage
     }
     private void SaveToJson()
     {
-        var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
+        // var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
+        var tmp = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GNOM");
+        var appSettingsPath = Path.Combine(tmp, "appSettings.json");
 
 
         var foldersSettings = new Configuration

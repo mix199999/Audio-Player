@@ -21,7 +21,8 @@ namespace testMAUI
         [JsonIgnore]
         public List<AudioFile> Tracks => _tracks;
         [JsonIgnore]
-        private static string _favoriteSongsListPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "favoritesongs.M3U");
+        // private static string _favoriteSongsListPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "favoritesongs.M3U");
+        private static string _favoriteSongsListPath = System.IO.Path.Combine(System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GNOM"), "favoritesongs.M3U");
 
         public string Name { get; set; }
         public string Path { get; set; }
