@@ -184,12 +184,12 @@ public partial class MainPage : ContentPage
         mainPlaylist = new AudioPlaylist();
         foreach (PlaylistViewModel result in resultsList.ItemsSource)
         {
-          
-               
-                mainPlaylist.AddTrack(new AudioFile(result.Path));
-               
-               
-            
+
+
+            mainPlaylist.AddTrack(new AudioFile(result.Path));
+
+
+
         }
 
         Task.Run(async () => {
@@ -218,7 +218,6 @@ public partial class MainPage : ContentPage
     {
         resultsList.ItemsSource = null;
         resultsList.IsVisible = true;
-        resultsList.HeightRequest = 200;
     }
 
     private void OnSearchBarUnfocused(object sender, FocusEventArgs e)
@@ -231,7 +230,7 @@ public partial class MainPage : ContentPage
 
     private void OnSearchTextChanged(object sender, EventArgs e)
     {
-        
+
         SearchBar searchBar = (SearchBar)sender;
 
         if (searchBar.Text == null || searchBar.Text == String.Empty)
@@ -243,13 +242,13 @@ public partial class MainPage : ContentPage
 
         string searchText = searchBar.Text.ToLower();
 
-   
+
         var searchResults = _searchPlaylist.Where(item =>
             item.Title.ToLower().Contains(searchText) ||
             item.Artist.ToLower().Contains(searchText) ||
             item.Album.ToLower().Contains(searchText)).ToList();
 
-       
+
         var searchResultsViewModels = searchResults.Select(item => new PlaylistViewModel
         {
             TitleAndArtist = $"{item.Title} - {item.Artist}",
@@ -257,9 +256,9 @@ public partial class MainPage : ContentPage
 
         }).ToList();
 
-     
+
         resultsList.ItemsSource = searchResultsViewModels;
-        
+
     }
 
 
@@ -277,7 +276,7 @@ public partial class MainPage : ContentPage
     }
     private async void PlaylistListView_ItemTapped(object sender, ItemTappedEventArgs e)
     {
-        await Dispatcher.DispatchAsync(async() =>
+        await Dispatcher.DispatchAsync(async () =>
         {
             var selectedTrack = (PlaylistViewModel)e.Item;
             var selectedIndex = e.ItemIndex;
@@ -300,8 +299,8 @@ public partial class MainPage : ContentPage
                         _playlists[0] = _favouriteSongsPlaylist;
                         AudioPlaylist.RemoveTrackFromM3U(mainPlaylist.Tracks[selectedIndex]);
                     }
-                   await LoadToListView();
-              
+                    await LoadToListView();
+
 
 
                 }
@@ -315,7 +314,7 @@ public partial class MainPage : ContentPage
 
     public async Task MarkFavoriteSongsInMainPlaylist()
     {
-        await Dispatcher.DispatchAsync(() => 
+        await Dispatcher.DispatchAsync(() =>
         {
             for (int i = 0; i < mainPlaylist.Tracks.Count; i++)
             {
@@ -332,10 +331,10 @@ public partial class MainPage : ContentPage
             }
 
         });
-        
 
 
-        
+
+
     }
 
 
@@ -378,7 +377,7 @@ public partial class MainPage : ContentPage
 
         await Task.Run(async () => { await LoadToListView(); });
 
-       
+
     }
 
 
@@ -386,7 +385,7 @@ public partial class MainPage : ContentPage
     {
         await Task.Delay(500);
 
-        await Dispatcher.DispatchAsync(async()=>
+        await Dispatcher.DispatchAsync(async () =>
         {
             AudioFile audioFile;
             currentTrackTime = TimeSpan.Zero;
@@ -394,10 +393,10 @@ public partial class MainPage : ContentPage
             {
                 case false:
 
-                    if (mainPlaylist.GetCurrentTrackIndex() != mainPlaylist.Tracks.Count-1)
+                    if (mainPlaylist.GetCurrentTrackIndex() != mainPlaylist.Tracks.Count - 1)
                     {
                         mainPlaylist.Next();
-                      
+
                         audioFile = mainPlaylist.GetCurrentTrack();
                         if (audioFile != null)
                         {
@@ -406,10 +405,10 @@ public partial class MainPage : ContentPage
                             await setCurrentTrackInfo();
                         }
                     }
-                    else if(mainPlaylist.GetCurrentTrackIndex() == mainPlaylist.Tracks.Count-1  && _isLoop)
+                    else if (mainPlaylist.GetCurrentTrackIndex() == mainPlaylist.Tracks.Count - 1 && _isLoop)
                     {
-                       
-                     await PlayInLoop();
+
+                        await PlayInLoop();
                     }
                     else
                     {
@@ -418,37 +417,37 @@ public partial class MainPage : ContentPage
                     }
                     break;
 
-                case true:                   
-                   
+                case true:
+
                     int index = await GenerateRandomIndex();
-                    while(index == mainPlaylist.GetCurrentTrackIndex())
+                    while (index == mainPlaylist.GetCurrentTrackIndex())
                     {
                         index = await GenerateRandomIndex();
-                    }                    
-                    mainPlaylist.SetCurrentTrack(index);            
-                    
-                    audioFile = mainPlaylist.GetCurrentTrack(); 
+                    }
+                    mainPlaylist.SetCurrentTrack(index);
+
+                    audioFile = mainPlaylist.GetCurrentTrack();
                     if (audioFile != null)
                     {
                         player.Load(audioFile.GetFilePath());
                         player.Play();
                         await setCurrentTrackInfo();
-                    }                  
+                    }
 
                     break;
 
-              
+
 
             }
         });
-         
 
-       
+
+
     }
 
 
 
-    private  void favImg_Clicked(object sender, TappedEventArgs e)
+    private void favImg_Clicked(object sender, TappedEventArgs e)
     {
 
         //    bool fav = mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()].GetFavourite();
@@ -477,7 +476,7 @@ public partial class MainPage : ContentPage
         //    }
         //}
 
-        
+
     }
 
     private void nextBtn_Clicked(object sender, EventArgs e) => nextTrack();
@@ -494,11 +493,11 @@ public partial class MainPage : ContentPage
     {
         playAudio();
         CurrentTimeLabel.Opacity = 1;
-        if(mainPlaylist.Tracks.Count == 0) { return; }
+        if (mainPlaylist.Tracks.Count == 0) { return; }
         AudioPlayingImageControl.Opacity = 1;
     }
 
-   
+
 
 
     private void prevBtn_Clicked(object sender, EventArgs e)
@@ -525,7 +524,7 @@ public partial class MainPage : ContentPage
 
 
         var list = new List<object>();
-        currentTrackTime = TimeSpan.Zero;       
+        currentTrackTime = TimeSpan.Zero;
         AudioPlayingImageControl.Opacity = 1;
 
         if (playlistView.ItemsSource is IEnumerable<object> enumerable)
@@ -540,7 +539,7 @@ public partial class MainPage : ContentPage
         playAudio();
         Task.Run(async () => { await setCurrentTrackInfo(); });
     }
-      
+
 
 
 
@@ -575,7 +574,7 @@ public partial class MainPage : ContentPage
                 Album = track.GetAlbum(),
                 Artist = track.GetArtist(),
                 Path = track.GetFilePath(),
-              
+
                 Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
             });
 
@@ -611,7 +610,7 @@ public partial class MainPage : ContentPage
         if (playlistView.SelectedItem != null)
         {
             trackTimer.Start();
-            await Dispatcher.DispatchAsync( () => {
+            await Dispatcher.DispatchAsync(() => {
 
 
                 string path = ((dynamic)playlistView.SelectedItem).Path;
@@ -624,11 +623,11 @@ public partial class MainPage : ContentPage
                 TrackProgressBarSlider.Maximum = audioFile.GetDuration().TotalSeconds;
 
             });
-            
+
             await Task.Delay(500);
             await setCurrentTrackInfo();
-            
-           
+
+
         }
 
 
@@ -663,7 +662,7 @@ public partial class MainPage : ContentPage
 
     private void HoverBegan(object sender, PointerEventArgs e)
     {
-        if(sender is Button button)
+        if (sender is Button button)
         {
             switch (App.Current.RequestedTheme)
             {
@@ -689,7 +688,7 @@ public partial class MainPage : ContentPage
     {
         await Dispatcher.DispatchAsync(() =>
         {
-            if(mainPlaylist.GetCurrentTrack() != null) 
+            if (mainPlaylist.GetCurrentTrack() != null)
             {
                 currentTrackTime += TimeSpan.FromSeconds(1);
                 TimeSpan durationTime = mainPlaylist.GetCurrentTrack().GetDuration();
@@ -705,7 +704,7 @@ public partial class MainPage : ContentPage
                     ValueChangedEnabled = true;
                 }
             }
-            
+
         });
     }
 
@@ -748,15 +747,15 @@ public partial class MainPage : ContentPage
 
     private bool ReplayPlaylist(object s)
     {
-        if(_isLoop)_isLoop = false;
+        if (_isLoop) _isLoop = false;
         else if (!_isLoop) { _isLoop = true; }
-   
-        if(s is Image)
+
+        if (s is Image)
         {
             Image img = (Image)s;
-            if(img.Opacity == 0.75) { img.Opacity = 0.4; } else { img.Opacity = 0.75; }
+            if (img.Opacity == 0.75) { img.Opacity = 0.4; } else { img.Opacity = 0.75; }
         }
-        return true; 
+        return true;
 
 
     }
@@ -770,7 +769,7 @@ public partial class MainPage : ContentPage
             AudioFile audioFile;
             currentTrackTime = TimeSpan.Zero;
 
-            if (_isLoop) 
+            if (_isLoop)
             {
                 mainPlaylist.SetCurrentTrack(0);
 
@@ -787,10 +786,10 @@ public partial class MainPage : ContentPage
     }
 
     private void PlayRandom(object s)
-    { 
+    {
 
-        if(_isRandom) { _isRandom = false; }
-        else if(!_isRandom) { _isRandom = true; }
+        if (_isRandom) { _isRandom = false; }
+        else if (!_isRandom) { _isRandom = true; }
 
         if (s is Image)
         {
@@ -798,15 +797,15 @@ public partial class MainPage : ContentPage
             if (img.Opacity == 0.75) { img.Opacity = 0.4; } else { img.Opacity = 0.75; }
         }
     }
-  
+
     private async Task<int> GenerateRandomIndex()
     {
         int index = 0;
         await Dispatcher.DispatchAsync(new Action(() =>
         {
             Random random = new Random();
-           index = random.Next(mainPlaylist.Tracks.Count-1);
-           
+            index = random.Next(mainPlaylist.Tracks.Count - 1);
+
         }));
 
         return index;
@@ -819,7 +818,7 @@ public partial class MainPage : ContentPage
 
     private void loadToListViewFromDirectory(string Path)
     {
-       
+
         mainPlaylist.LoadFromDirectory(Path);
         playlistView.ItemsSource = null;
         playlistView.ItemsSource = mainPlaylist.Tracks.Select(track => new
@@ -828,7 +827,7 @@ public partial class MainPage : ContentPage
             Duration = track.GetDuration().ToString("hh\\:mm\\:ss"),
             Album = track.GetAlbum(),
             Artist = track.GetArtist(),
-            Path = track.GetFilePath(),           
+            Path = track.GetFilePath(),
             Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
         });
     }
@@ -898,26 +897,26 @@ public partial class MainPage : ContentPage
 
     private async void showToastInfo()
     {
-           var toast = Toast.Make($"\n\r{((dynamic)mainPlaylist.GetCurrentTrack().GetTitle())}\n\r" +
-           $" Artist - {((dynamic)mainPlaylist.GetCurrentTrack().GetArtist())}\n\r" +
-           $" Album - {((dynamic)mainPlaylist.GetCurrentTrack().GetAlbum())}\n\r",
-           ToastDuration.Short );          
-           await toast.Show(cancellationToken);
+        var toast = Toast.Make($"\n\r{((dynamic)mainPlaylist.GetCurrentTrack().GetTitle())}\n\r" +
+        $" Artist - {((dynamic)mainPlaylist.GetCurrentTrack().GetArtist())}\n\r" +
+        $" Album - {((dynamic)mainPlaylist.GetCurrentTrack().GetAlbum())}\n\r",
+        ToastDuration.Short);
+        await toast.Show(cancellationToken);
     }
 
 
 
     private async void settingsButtonClicked(object sender, EventArgs e)
     {
-       // player.Pause();
-       // trackTimer.Stop();
-       await Navigation.PushAsync(new SettingsPage(_foldersList));
-        
+        // player.Pause();
+        // trackTimer.Stop();
+        await Navigation.PushAsync(new SettingsPage(_foldersList));
+
     }
-    
+
     private void OnPlaylistSelected(object sender, SelectedItemChangedEventArgs e)
     {
-        
+
 
     }
 
@@ -945,23 +944,23 @@ public partial class MainPage : ContentPage
     }
 
 
-    private void callPopup(object sender, FocusEventArgs e)=>
+    private void callPopup(object sender, FocusEventArgs e) =>
         _visibility = true;
-    
 
-    private void hidePopup(object sender, FocusEventArgs e)=>
+
+    private void hidePopup(object sender, FocusEventArgs e) =>
         _visibility = false;
 
 
 
     private async void SaveListBtn_Clicked(object sender, EventArgs e)
     {
-       await Dispatcher.DispatchAsync(() => {
+        await Dispatcher.DispatchAsync(() => {
             var popup = new PopupTrackInfo();
             popup.PlaylistSaved += OnPlaylistSaved;
             this.ShowPopup(popup);
         });
-      
+
     }
 
     private void PlaylistReturnBtn_Clicked(object sender, TappedEventArgs e)
@@ -995,7 +994,7 @@ public partial class MainPage : ContentPage
 
             }
             else
-             await Toast.Make("Playlist name cannot be blank", ToastDuration.Short, 14).Show();
+                await Toast.Make("Playlist name cannot be blank", ToastDuration.Short, 14).Show();
         });
     }
 
@@ -1003,7 +1002,7 @@ public partial class MainPage : ContentPage
     private async Task LoadToListView()
     {
         await Task.Delay(500);
-        await Dispatcher.DispatchAsync(async() => {
+        await Dispatcher.DispatchAsync(async () => {
 
             playlistView.ItemsSource = null;
             await MarkFavoriteSongsInMainPlaylist();
@@ -1028,7 +1027,7 @@ public partial class MainPage : ContentPage
             playlistView.ItemsSource = trackViewModels;
 
         });
-       
+
 
     }
 
@@ -1047,7 +1046,7 @@ public class PlaylistViewModel
     public string Duration { get; set; }
     public string Album { get; set; }
     public string Artist { get; set; }
-    public string Path { get; set; }   
+    public string Path { get; set; }
     public string Favourite { get; set; }
     public string TitleAndArtist { get; set; }
     public bool IsSelected { get; set; }
