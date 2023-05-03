@@ -6,6 +6,7 @@
 #   4. Zmienic nazwe paczki na "data"                                                                           #
 #   5. Uzyc programu PS2EXE aby zrobic .exe z tego skryptu (install.ps1)                                        #
 #   6. Wrzucic install.exe do folderu z punktu 1.                                                               #
+#   7. Wrzucic instrukcje do folderu data                                                                       #
 #   Na koniec struktura powinna wygladac tak:                                                                   #
 #                                                                                                               #
 #   GNOM_installation |                                                                                         #
@@ -13,6 +14,7 @@
 #                     |--- data |                                                                               #
 #                               |--- <plik z certyfikatem>                                                      #
 #                               |--- <plik .msix>                                                               #
+#                               |--- instrukcja.pdf                                                             #
 #                               |--- itp. itd.                                                                  #
 #                                                                                                               #
 #################################################################################################################
@@ -45,5 +47,13 @@ Import-Certificate -FilePath $data_path\$cert_path -CertStoreLocation Cert:\Loca
 # Run .msix installer
 $gui_installer_path = Get-ChildItem -Path $data_path -Filter *.msix -File -Name
 Invoke-Expression $data_path\$gui_installer_path
+
+# Copy the instruction
+$instruction_path = $data_path + "\instrukcja.pdf"
+if (Test-Path -Path $instruction_path -PathType Leaf) {
+    $aux_path = [Environment]::GetFolderPath("MyDocuments")
+    $aux_path += "\GNOM"
+    Copy-Item $instruction_path -Destination $aux_path
+}
 
 Set-Location $curr_loc
