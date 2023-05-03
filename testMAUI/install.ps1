@@ -48,11 +48,15 @@ Import-Certificate -FilePath $data_path\$cert_path -CertStoreLocation Cert:\Loca
 $gui_installer_path = Get-ChildItem -Path $data_path -Filter *.msix -File -Name
 Invoke-Expression $data_path\$gui_installer_path
 
+$aux_path = [Environment]::GetFolderPath("MyDocuments")
+$aux_path += "\GNOM"
+if (-not (Test-Path -Path $aux_path)) {
+    New-Item -Path $aux_path -ItemType Directory
+}
+
 # Copy the instruction
 $instruction_path = $data_path + "\instrukcja.pdf"
 if (Test-Path -Path $instruction_path -PathType Leaf) {
-    $aux_path = [Environment]::GetFolderPath("MyDocuments")
-    $aux_path += "\GNOM"
     Copy-Item $instruction_path -Destination $aux_path
 }
 
