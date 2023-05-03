@@ -51,7 +51,7 @@ public static class MauiProgram
             var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(appSettingsPath, json);
             
-            File.WriteAllText(favoriteSongsPath, "#EXTM3U");
+            File.WriteAllText(favoriteSongsPath, "#EXTM3U\n");
         }
 
         using var stream = File.Open(appSettingsPath, FileMode.Open);
