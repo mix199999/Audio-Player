@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace testMAUI;
 
@@ -28,9 +29,18 @@ public static class MauiProgram
         builder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
         builder.Services.AddTransient<MainPage>();
 
+        var config_path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GNOM");
 
-        var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
-        var favoriteSongsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "favoritesongs.M3U");
+        if (!Directory.Exists(config_path))
+        {
+            Directory.CreateDirectory(config_path);
+        }
+
+        // var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
+        var appSettingsPath = Path.Combine(config_path, "appSettings.json");
+        // var favoriteSongsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "favoritesongs.M3U");
+        var favoriteSongsPath = Path.Combine(config_path, "favoritesongs.M3U");
+
         if (!File.Exists(appSettingsPath))
         {
             var foldersSettings = new Configuration
