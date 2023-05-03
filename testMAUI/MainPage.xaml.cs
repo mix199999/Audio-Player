@@ -138,7 +138,7 @@ public partial class MainPage : ContentPage
         LoadFromDirectory();
 
         WeakReferenceMessenger.Default.Register<StringListMessage>(this, OnStringListMessageReceived);
-
+        WeakReferenceMessenger.Default.Register<AudioListMessage>(this, OnAudioListMessageReceived);
 
         searchBar.TextChanged += OnSearchTextChanged;
         searchBar.Focused += OnSearchBarFocused;
@@ -164,8 +164,24 @@ public partial class MainPage : ContentPage
         if (receivedFolders != null)
         {
             this._foldersList = receivedFolders;
-            SaveToJson();
+            SaveToJson();//chyba niepotrzebne
         }
+    }
+
+
+    private void OnAudioListMessageReceived(object recipient, AudioListMessage message)
+    {
+        List<AudioPlaylist> receivedPlaylists = message.Playlist;
+
+        if (receivedPlaylists != null)
+        {
+            this._playlists = receivedPlaylists;
+            SaveToJson();//chyba niepotrzebne
+
+        }
+
+        playlistListView.ItemsSource = null;
+        playlistListView.ItemsSource = _playlists;
     }
 
     private void ShowInstruction()
@@ -199,7 +215,9 @@ public partial class MainPage : ContentPage
 
         }
 
-
+        Task.Run(async () => {
+            await LoadToListView();
+        });
 
     }
 
@@ -1037,6 +1055,13 @@ public partial class MainPage : ContentPage
 
     }
 
+
+
+    private async void NewPlaylist_Clicked(object sender, EventArgs e) 
+    {
+        await Navigation.PushAsync(new PlaylistCreationPage(_foldersList, _playlists));
+    }
+
 }
 
 public class PlaylistViewModel
@@ -1047,8 +1072,10 @@ public class PlaylistViewModel
     public string Artist { get; set; }
     public string Path { get; set; }
     public string Favourite { get; set; }
-
     public string TitleAndArtist { get; set; }
+    public bool IsSelected { get; set; }
+    public string TrackInfo { get; set; }
+
     internal static List<PlaylistViewModel> CreatePlaylistViewModel(AudioPlaylist playlist)
     {
         var playlistViewModels = new List<PlaylistViewModel>();
@@ -1060,7 +1087,8 @@ public class PlaylistViewModel
                 Title = track.GetTitle(),
                 Album = track.GetAlbum(),
                 Artist = track.GetArtist(),
-                Path = track.GetFilePath()
+                Path = track.GetFilePath(),
+                IsSelected = false
             };
 
             playlistViewModels.Add(trackViewModel);
