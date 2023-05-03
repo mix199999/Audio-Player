@@ -1,7 +1,7 @@
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.Messaging;
-
+using System.Diagnostics;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace testMAUI;
@@ -95,11 +95,20 @@ public partial class SettingsPage : ContentPage
 		secondOption.IsVisible = false;
 		thirdOption.IsVisible = false;	
     }
-    public void showSecondOption(object sender, EventArgs e)
+    public void showInstruction(object sender, EventArgs e)
     {
-        pathOptions.IsVisible = false;
-        secondOption.IsVisible = true;
-        thirdOption.IsVisible = false;
+        try
+        {
+            var p = new Process();
+            string documentsDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string path = $@"{documentsDir}\GNOM\instrukcja.pdf";
+            p.StartInfo = new ProcessStartInfo(path) { UseShellExecute = true };
+            p.Start();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Failed to open the instuction, " + ex.ToString());
+        }
     }
     public void showThirdOption(object sender, EventArgs e)
     {
