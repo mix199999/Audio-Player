@@ -46,11 +46,12 @@ public static class MauiProgram
             var foldersSettings = new Configuration
             {
                 FolderList = new List<string> { Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) },
-                AudioPlaylists = new List<AudioPlaylist> { new AudioPlaylist { Name = "Favorite Songs", Path = favoriteSongsPath } }
+                AudioPlaylists = new List<AudioPlaylist> { new AudioPlaylist { Name = "Favorite Songs", Path = favoriteSongsPath } },
+                FirstTimeRun = true
             };
             var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(appSettingsPath, json);
-            
+
             File.WriteAllText(favoriteSongsPath, "#EXTM3U\n");
         }
 
