@@ -94,7 +94,6 @@ public partial class MainPage : ContentPage
 
         this.Unfocused += hidePopup;
         this.Focused += callPopup;
-        var test = AppDomain.CurrentDomain.BaseDirectory;
 
         //Ładowanie ikon w zależności od motywu aplikacji
         _favImgTheme = new List<string>();

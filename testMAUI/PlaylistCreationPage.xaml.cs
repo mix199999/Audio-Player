@@ -229,8 +229,8 @@ public partial class PlaylistCreationPage : ContentPage
 
     private void SaveToJson()
     {
-        var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
-
+        // var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
+        var appSettingsPath = System.IO.Path.Combine(System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GNOM"), "appSettings.json");
 
         var foldersSettings = new Configuration
         {
