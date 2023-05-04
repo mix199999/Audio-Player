@@ -135,7 +135,7 @@
                                     <PointerGestureRecognizer PointerEntered="HoverBegan" PointerExited="HoverEnded"/>
                                 </Button.GestureRecognizers>
                             </Button>
-                            <Button Text="Opcja 2" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Clicked="showSecondOption">
+                            <Button Text="Wyświetl instrukcję" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Clicked="showInstruction">
                                 <Button.GestureRecognizers>
                                     <PointerGestureRecognizer PointerEntered="HoverBegan" PointerExited="HoverEnded"/>
                                 </Button.GestureRecognizers>
