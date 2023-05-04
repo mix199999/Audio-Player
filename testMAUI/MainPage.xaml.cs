@@ -28,10 +28,11 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Dispatching;
 using System;
 using System.Diagnostics;
+using System.ComponentModel;
 
 public partial class MainPage : ContentPage
 {
-    //create file saver
+    
     IFileSaver fileSaver;
     private Player player;
     TimeSpan currentTrackTime = TimeSpan.Zero;
@@ -52,12 +53,8 @@ public partial class MainPage : ContentPage
     private bool _isRandom = false;
     private bool _isLoop = false;
     private bool _firstTimeRun = true;
-
     List<PlaylistViewModel> trackViewModels = new List<PlaylistViewModel>();
     List<PlaylistViewModel> _searchPlaylist = new List<PlaylistViewModel>();
-
-
-
 
 
     public MainPage(IFileSaver fileSaver, IConfiguration configuration)
@@ -67,20 +64,12 @@ public partial class MainPage : ContentPage
         _playlists = new List<AudioPlaylist>();
         _configuration.GetSection("FolderList").Bind(_foldersList);
         _playlists = _configuration.GetSection("AudioPlaylists").Get<List<AudioPlaylist>>();
-        //1 sza jest lista z ulubionymi
-
-
 
         InitializeComponent();
-
-
 
         player = new Player();
         player._status = playerStatus.IsNotPlaying;
         mainPlaylist = new AudioPlaylist();
-
-
-
 
         this.fileSaver = fileSaver;
 
@@ -155,7 +144,11 @@ public partial class MainPage : ContentPage
             SaveToJson();
         }
     }
-
+    /// <summary>
+    /// Metoda służąca do odbierania danych z innych stron, które są obiektem klasy StringListMessage
+    /// </summary>
+    /// <param name="recipient">odbiorca</param>
+    /// <param name="message">odebrana wiadomość </param>
     private void OnStringListMessageReceived(object recipient, StringListMessage message)
     {
         List<string> receivedFolders = message.Strings;
@@ -167,7 +160,10 @@ public partial class MainPage : ContentPage
         }
     }
 
-
+    /// <summary>
+    /// Metoda służąca do odbierania danych z innych stron, które są obiektem klasy AudioListMessage
+    /// </summary>
+ 
     private void OnAudioListMessageReceived(object recipient, AudioListMessage message)
     {
         List<AudioPlaylist> receivedPlaylists = message.Playlist;
@@ -199,6 +195,15 @@ public partial class MainPage : ContentPage
         }
     }
 
+    /// <summary>
+    /// Ta metoda jest wywoływana, gdy użytkownik naciska przycisk wyszukiwania lub enter.
+    /// Metoda ta zatrzymuje timer śledzenia utworu, zatrzymuje odtwarzacz audio,
+    /// tworzy nową playlistę audio i dodaje do niej utwory z listy wyników
+    /// Następnie uruchamia asynchronicznie metodę "LoadToListView".
+    /// </summary>
+    /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
+    /// <param name="e">Argumenty zdarzenia, zawierają informacje o wybranym elemencie.</param>
+
     private void SearchBar_SearchButtonPressed(object sender, EventArgs e)
     {
         trackTimer.Stop();
@@ -206,12 +211,7 @@ public partial class MainPage : ContentPage
         mainPlaylist = new AudioPlaylist();
         foreach (PlaylistViewModel result in resultsList.ItemsSource)
         {
-
-
             mainPlaylist.AddTrack(new AudioFile(result.Path));
-
-
-
         }
 
         Task.Run(async () => {
@@ -220,7 +220,12 @@ public partial class MainPage : ContentPage
 
     }
 
-
+    /// <summary>
+    /// Obsługuje zdarzenie "ItemTapped" wywoływane po naciśnięciu na element listy.
+    /// Tworzy nową playlistę z wybranym utworem oraz zatrzymuje odtwarzanie i licznik czasu.
+    /// </summary>
+    /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
+    /// <param name="e">Argumenty zdarzenia, zawierają informacje o wybranym elemencie.</param>
     private void ResultsList_ItemTapped(object sender, ItemTappedEventArgs e)
     {
         var selectedResult = (PlaylistViewModel)e.Item;
@@ -249,7 +254,11 @@ public partial class MainPage : ContentPage
         resultsList.HeightRequest = 0;
     }
 
-
+    /// <summary>
+    /// Metoda wywoływana po zmianie tekstu w SearchBarze, która aktualizuje wyniki wyszukiwania.
+    /// </summary>
+    /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
+    /// <param name="e">Argumenty zdarzenia.</param>
     private void OnSearchTextChanged(object sender, EventArgs e)
     {
 
@@ -283,9 +292,9 @@ public partial class MainPage : ContentPage
 
     }
 
-
-
-
+    /// <summary>
+    /// Ładuje ścieżki dźwiękowe z folderów na listę odtwarzania i wyświetla je w widoku listy.
+    /// </summary>    
     private void LoadFromDirectory()
     {
         mainPlaylist.Tracks.Clear();
@@ -296,6 +305,12 @@ public partial class MainPage : ContentPage
         }
         Task.Run(async () => { await LoadToListView(); });
     }
+
+    /// <summary>
+    /// Służy do dodawania utworów do playlisty ulubione użytkownika
+    /// </summary>
+    /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
+    /// <param name="e">Argumenty zdarzenia.</param>
     private async void PlaylistListView_ItemTapped(object sender, ItemTappedEventArgs e)
     {
         await Dispatcher.DispatchAsync(async () =>
@@ -306,12 +321,13 @@ public partial class MainPage : ContentPage
             {
                 if (_previousIndex == selectedIndex)
                 {
-                    //nie ulubiony fav[0]
+                   
                     if (selectedTrack.Favourite == _favImgTheme[0])
                     {
                         _favouriteSongsPlaylist.AddTrack(mainPlaylist.Tracks[selectedIndex]);
                         _playlists[0] = _favouriteSongsPlaylist;
                         AudioPlaylist.AppendTrackToFavoritelistFile(mainPlaylist.Tracks[selectedIndex]);
+                        selectedTrack.Favourite = _favImgTheme[1];
 
                     }
                     else if (selectedTrack.Favourite == _favImgTheme[1])
@@ -320,10 +336,9 @@ public partial class MainPage : ContentPage
                         _favouriteSongsPlaylist.RemoveTrack(mainPlaylist.Tracks[selectedIndex]);
                         _playlists[0] = _favouriteSongsPlaylist;
                         AudioPlaylist.RemoveTrackFromM3U(mainPlaylist.Tracks[selectedIndex]);
+                        selectedTrack.Favourite = _favImgTheme[0];
                     }
-                    await LoadToListView();
-
-
+                   
 
                 }
 
@@ -333,7 +348,11 @@ public partial class MainPage : ContentPage
         });
 
     }
-
+    /// <summary>
+    /// Oznacza ulubione utwory w głównej playliście. Porównuje utwory w głównej playliście z utworami na 
+    /// liście ulubionych i ustawia flagę "ulubiony" na true, jeśli są identyczne.
+    /// </summary>
+    /// <returns>Task</returns>
     public async Task MarkFavoriteSongsInMainPlaylist()
     {
         await Dispatcher.DispatchAsync(() =>
@@ -354,9 +373,6 @@ public partial class MainPage : ContentPage
 
         });
 
-
-
-
     }
 
 
@@ -364,17 +380,7 @@ public partial class MainPage : ContentPage
 
     private async void filesBtn_Clicked(object sender, EventArgs e)
     {
-        // var allowedExtensions = new[] { ".mp3", ".mp4", ".wave", ".flac" };
-        // var files = await FilePicker.PickMultipleAsync();
-
-        //await Dispatcher.DispatchAsync(() =>
-        //{
-        //    CurrentTrackAlbum.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetAlbum());
-        //    CurrentTrackArtist.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetArtist());
-        //    CurrentTrackTitle.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetTitle());
-        //    CurrentTrackCover.Source = (dynamic)mainPlaylist.GetCurrentTrack().GetCoverUrl();
-
-        //});
+      
 
         var m3uPicker = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
         {
@@ -468,38 +474,6 @@ public partial class MainPage : ContentPage
     }
 
 
-
-    private void favImg_Clicked(object sender, TappedEventArgs e)
-    {
-
-        //    bool fav = mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()].GetFavourite();
-        //    mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()].SetFavourite(!fav);
-        //if (sender is Image image)
-        //{
-        //    if (fav)
-        //    {
-
-        //        image.Source = _favImgTheme[1];
-        //        _favouriteSongsPlaylist.RemoveTrack(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
-        //        _playlists[0] = _favouriteSongsPlaylist;
-        //        // kłopoty trzeba jakoś usunąć z playlisty
-        //        AudioPlaylist.RemoveTrackFromM3U(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
-        //    }
-        //    else
-        //    {
-        //        image.Source = _favImgTheme[0];
-        //        //dodawanie do playlisty ulublionych
-        //        _favouriteSongsPlaylist.AddTrack(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
-        //        //update ulubionej playlisty
-        //        _playlists[0] = _favouriteSongsPlaylist;
-        //        // dopisanie
-        //        AudioPlaylist.AppendTrackToFavoritelistFile(mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()]);
-
-        //    }
-        //}
-
-
-    }
 
     private void nextBtn_Clicked(object sender, EventArgs e) => nextTrack();
 
@@ -1063,17 +1037,40 @@ public partial class MainPage : ContentPage
 
 }
 
-public class PlaylistViewModel
+public class PlaylistViewModel : BindableObject
 {
     public string Title { get; set; }
     public string Duration { get; set; }
     public string Album { get; set; }
     public string Artist { get; set; }
     public string Path { get; set; }
-    public string Favourite { get; set; }
+
     public string TitleAndArtist { get; set; }
     public bool IsSelected { get; set; }
     public string TrackInfo { get; set; }
+
+    private Color _bgColor;
+    public Color BgColor
+    {
+        get => _bgColor;
+        set
+        {
+            _bgColor = value;
+            OnPropertyChanged(nameof(BgColor));
+        }
+    }
+
+
+    private string _favourite;
+    public string Favourite
+    {
+        get => _favourite;
+        set
+        {
+            _favourite = value;
+            OnPropertyChanged(nameof(Favourite));
+        }
+    }
 
     internal static List<PlaylistViewModel> CreatePlaylistViewModel(AudioPlaylist playlist)
     {
@@ -1087,7 +1084,8 @@ public class PlaylistViewModel
                 Album = track.GetAlbum(),
                 Artist = track.GetArtist(),
                 Path = track.GetFilePath(),
-                IsSelected = false
+                IsSelected = false,
+                BgColor = null
             };
 
             playlistViewModels.Add(trackViewModel);
@@ -1096,9 +1094,9 @@ public class PlaylistViewModel
         return playlistViewModels;
     }
 
-
-
+   
 }
+
 
 
 

@@ -1,9 +1,11 @@
-using Bertuzzi.MAUI.MultiSelectListView;
+
+
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Messaging;
 using Newtonsoft.Json;
+using System.Globalization;
 using System.Text;
 using System.Windows.Input;
 
@@ -22,7 +24,7 @@ public partial class PlaylistCreationPage : ContentPage
 	private List<string> _folders = new List<string>();
    // List<PlaylistViewModel> trackViewModels = new List<PlaylistViewModel>();
     private AudioPlaylist mainPlaylist = new AudioPlaylist();
-    private MultiSelectObservableCollection<PlaylistViewModel> _trackViewModels;
+    private List<PlaylistViewModel> _trackViewModels;
     private List<AudioPlaylist> _playlists = new List<AudioPlaylist>();
 
 
@@ -81,29 +83,29 @@ public partial class PlaylistCreationPage : ContentPage
 	private void NewPlaylist_Clicked(object sender, EventArgs e)
 	{ }
 
-	private void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
-	{
-
-      try
+    private void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
+    {
+        if (e.SelectedItem == null)
         {
-            var item = _trackViewModels[e.SelectedItemIndex];
-
-            if (_selectedTracks.Contains(item.Data.Path))
-            {
-                _selectedTracks.Remove(item.Data.Path);
-            }
-            else if (!_selectedTracks.Contains(item.Data.Path))
-            {
-                _selectedTracks.Add(item.Data.Path);
-            }
+            return;
         }
-        catch(Exception ) 
-        { }
+        var item = (PlaylistViewModel)e.SelectedItem;
+        if (_selectedTracks.Contains(item.Path))
+        {
+            _selectedTracks.Remove(item.Path);
+            item.BgColor = null;
+        }
+        else if (!_selectedTracks.Contains(item.Path))
+        {
+            _selectedTracks.Add(item.Path);
+            item.BgColor = Color.FromArgb("3f48cc");
+        }
 
-
-
-
+      
+       
     }
+
+
 
     public async void mainButtonClicked(object sender, EventArgs e)
     {
@@ -121,7 +123,7 @@ public partial class PlaylistCreationPage : ContentPage
             playlistView.ItemsSource = null;
 
 
-            _trackViewModels = new MultiSelectObservableCollection<PlaylistViewModel>();
+            _trackViewModels = new List<PlaylistViewModel>();
             foreach (var track in mainPlaylist.Tracks)
             {
                 var trackViewModel = new PlaylistViewModel
@@ -130,9 +132,7 @@ public partial class PlaylistCreationPage : ContentPage
                     Duration = track.GetDuration().ToString("mm\\:ss"),
                     Album = track.GetAlbum(),
                     Artist = track.GetArtist(),
-                    Path = track.GetFilePath(),
-                    TrackInfo = $"{track.GetTitle()} - {track.GetArtist()}  [{track.GetAlbum()}]",
-
+                    Path = track.GetFilePath()                  
 
                 };
 
@@ -229,7 +229,7 @@ public partial class PlaylistCreationPage : ContentPage
 
     private void SaveToJson()
     {
-        // var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
+      
         var appSettingsPath = System.IO.Path.Combine(System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GNOM"), "appSettings.json");
 
         var foldersSettings = new Configuration
@@ -243,4 +243,12 @@ public partial class PlaylistCreationPage : ContentPage
         System.IO.File.WriteAllText(appSettingsPath, json);
       
     }
+
+
+    
+
+
+
+   
+
 }
