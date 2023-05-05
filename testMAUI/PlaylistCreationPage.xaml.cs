@@ -1,9 +1,11 @@
-using Bertuzzi.MAUI.MultiSelectListView;
+﻿
+
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Messaging;
 using Newtonsoft.Json;
+using System.Globalization;
 using System.Text;
 using System.Windows.Input;
 
@@ -22,7 +24,7 @@ public partial class PlaylistCreationPage : ContentPage
 	private List<string> _folders = new List<string>();
    // List<PlaylistViewModel> trackViewModels = new List<PlaylistViewModel>();
     private AudioPlaylist mainPlaylist = new AudioPlaylist();
-    private MultiSelectObservableCollection<PlaylistViewModel> _trackViewModels;
+    private List<PlaylistViewModel> _trackViewModels;
     private List<AudioPlaylist> _playlists = new List<AudioPlaylist>();
 
 
@@ -37,7 +39,7 @@ public partial class PlaylistCreationPage : ContentPage
         InitializeComponent();
         this.Disappearing += CreationPage_Disappearing;
         Task.Run(async () => { await LoadToListView(); });
-       // playlistView.ItemTapped += PlaylistView_ItemTapped;
+        playlistView.ItemTapped += PlaylistView_ItemTapped;
 
 
     }
@@ -57,54 +59,42 @@ public partial class PlaylistCreationPage : ContentPage
     private void PlaylistView_ItemTapped(object sender, ItemTappedEventArgs e)
     {
 
-        if (e.Item == null) return;
-
+        if (e.Item == null)
+        {
+            return;
+        }
         var item = (PlaylistViewModel)e.Item;
-
-
-        if(_selectedTracks.Contains(item.Path))
+        if (_selectedTracks.Contains(item.Path))
         {
             _selectedTracks.Remove(item.Path);
+            item.BgColor = null;
         }
-        else if(!_selectedTracks.Contains(item.Path))
+        else if (!_selectedTracks.Contains(item.Path))
         {
             _selectedTracks.Add(item.Path);
+            item.BgColor = Color.FromArgb("3f48cc");
         }
 
     }
 
-    private void settingsButtonClicked(object sender, EventArgs e)
+    private async void settingsButtonClicked(object sender, EventArgs e)
 	{
-
-	}
+       
+        await Navigation.PushAsync(new SettingsPage(_folders));
+        
+    }
 
 	private void NewPlaylist_Clicked(object sender, EventArgs e)
-	{ }
-
-	private void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
 	{
-
-      try
-        {
-            var item = _trackViewModels[e.SelectedItemIndex];
-
-            if (_selectedTracks.Contains(item.Data.Path))
-            {
-                _selectedTracks.Remove(item.Data.Path);
-            }
-            else if (!_selectedTracks.Contains(item.Data.Path))
-            {
-                _selectedTracks.Add(item.Data.Path);
-            }
-        }
-        catch(Exception ) 
-        { }
-
-
-
-
+    
     }
 
+
+    /// <summary>
+    /// Powraca do strony głównej programu
+    /// </summary>
+    /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
+    /// <param name="e">Argumenty zdarzenia.</param>
     public async void mainButtonClicked(object sender, EventArgs e)
     {
 
@@ -112,16 +102,19 @@ public partial class PlaylistCreationPage : ContentPage
 
     }
 
-
+    /// <summary>
+    /// Ładuje utwory do ListView używając modelu PlaylistViewModel
+    /// </summary>
+    /// <returns>Task</returns>
     private async Task LoadToListView()
     {
         await Task.Delay(500);
-        await Dispatcher.DispatchAsync(async () => {
+   
 
             playlistView.ItemsSource = null;
-
-
-            _trackViewModels = new MultiSelectObservableCollection<PlaylistViewModel>();
+        Dispatcher.Dispatch(async () => 
+        {
+            _trackViewModels = new List<PlaylistViewModel>();
             foreach (var track in mainPlaylist.Tracks)
             {
                 var trackViewModel = new PlaylistViewModel
@@ -130,9 +123,7 @@ public partial class PlaylistCreationPage : ContentPage
                     Duration = track.GetDuration().ToString("mm\\:ss"),
                     Album = track.GetAlbum(),
                     Artist = track.GetArtist(),
-                    Path = track.GetFilePath(),
-                    TrackInfo = $"{track.GetTitle()} - {track.GetArtist()}  [{track.GetAlbum()}]",
-
+                    Path = track.GetFilePath()
 
                 };
 
@@ -141,12 +132,16 @@ public partial class PlaylistCreationPage : ContentPage
             }
 
             playlistView.ItemsSource = _trackViewModels;
-
         });
+
+            
+
 
 
     }
-
+    /// <summary>
+    /// wczytuje pliki muzyczne z katalogu i ładuje je do ListView
+    /// </summary>
     private void LoadFromDirectory()
     {
         mainPlaylist.Tracks.Clear();
@@ -158,27 +153,29 @@ public partial class PlaylistCreationPage : ContentPage
         Task.Run(async () => { await LoadToListView(); });
     }
 
-
+    /// <summary>
+    /// Wywołuje popup-a w którym podaje się nazwę playlisty do zapisania 
+    /// </summary>
+    /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
+    /// <param name="e">Argumenty zdarzenia.</param>
     private async void SavePlaylist_Clicked(object sender, EventArgs e) 
     {
-        var test = _selectedTracks;
-
         await Dispatcher.DispatchAsync(() => {
             var popup = new PopupTrackInfo();
             popup.PlaylistSaved += OnPlaylistSaved;
             this.ShowPopup(popup);
         });
 
-
     }
 
-
+    /// <summary>
+    /// Zapisuje do playlistę do pliku M3U 
+    /// </summary>
+    /// <param name="sender">obiekt wywołujący zdarzenie</param>
+    /// <param name="playlistName">nazwa playlisty</param>
     private async void OnPlaylistSaved(object? sender, string playlistName)
     {
 
-        
-
-       
         await Dispatcher.DispatchAsync(async () => {
 
             if (playlistName != null || playlistName == "")
@@ -214,22 +211,12 @@ public partial class PlaylistCreationPage : ContentPage
         });
     }
 
-    public ICommand SaveSelectedItem => new Command<PlaylistViewModel>(filePath =>
-    {
-        if (_selectedTracks.Contains(filePath.Path))
-        {
-            _selectedTracks.Remove(filePath.Path);
-        }
-        else if (!_selectedTracks.Contains(filePath.Path))
-        {
-            _selectedTracks.Add(filePath.Path);
-        }
-    });
+
 
 
     private void SaveToJson()
     {
-        // var appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appSettings.json");
+      
         var appSettingsPath = System.IO.Path.Combine(System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GNOM"), "appSettings.json");
 
         var foldersSettings = new Configuration
@@ -243,4 +230,6 @@ public partial class PlaylistCreationPage : ContentPage
         System.IO.File.WriteAllText(appSettingsPath, json);
       
     }
+
+
 }

@@ -10,18 +10,24 @@ using System.Xml.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
+using NAudio.CoreAudioApi;
+
+
 namespace testMAUI
-{
+{   /// <summary>
+    /// Klasa która reprezentuje obiekt pliku dźwiękowego.
+    /// Zawiera właściwości i metody do pobierania i ustawiania metadanych pliku dźwiękowego,
+    /// takich jak tytuł, artysta, album, czas trwania i ścieżka pliku. 
+    /// Zawiera także metody do pobierania okładek albumów z interfejsu Deezer API.
+    /// </summary>
     internal class AudioFile
     {
 
-       
         private string _title;
         private string _artist;
         private string _album;
         private TimeSpan _duration;
-        private string _filePath;
-       
+        private string _filePath;       
         private string _coverUrl;
         private bool _favourite;
         
@@ -129,8 +135,6 @@ namespace testMAUI
 
             }
 
-
-
             catch (FileNotFoundException)
             {
                 Console.WriteLine($"File not found: {filePath}");
@@ -145,7 +149,14 @@ namespace testMAUI
             }
 
         }
-
+        /// <summary>
+        /// Asynchroniczna metoda, która służy do pobierania okładki albumu z API Deezer i ustawiania pola _coverUrl w obiekcie AudioFile na odpowiednią wartość.
+        ///  Do tego celu wykorzystuje bibliotekę HttpClient do wykonywania żądań HTTP do API Deezer.
+        ///  Na początku metoda składa zapytanie o okładkę albumu, używając artysty i tytułu albumu z pola _artist i _album w celu znalezienia najbardziej odpowiedniego wyniku.
+        ///  Następnie metoda pobiera szczegóły wybranego albumu i ustawia pole _coverUrl na adres URL okładki albumu.
+        /// Jeśli wystąpi błąd podczas pobierania okładki albumu, metoda przechwytuje wyjątek HttpRequestException i ustawia pole _coverUrl na wartość "note_icon.png".
+        /// </summary>
+        /// <returns></returns>
         public async Task SetAlbumArtFromDeezerApiAsync()
         {
             try
@@ -172,60 +183,6 @@ namespace testMAUI
             {
                 Console.WriteLine($"Error while retrieving album art: {e.Message}");
                 _coverUrl = "note_icon.png";
-            }
-        }
-
-
-        public void SetAlbumArtFromDeezerApi()
-        {
-            const int maxRetries = 3;
-            for (int i = 0; i < maxRetries; i++)
-            {
-                try
-                {
-                    using (var httpClient = new HttpClient())
-                    {
-                        var query = $"{_artist} {_album}".Replace(' ', '+');
-                        var requestUrl = $"https://api.deezer.com/search?q={query}&limit=1";
-                        var response = httpClient.GetAsync(requestUrl).Result;
-                        response.EnsureSuccessStatusCode();
-                        var responseBody = response.Content.ReadAsStringAsync().Result;
-                        var jsonResponse = System.Text.Json.JsonDocument.Parse(responseBody);
-                        var dataProperty = jsonResponse.RootElement.GetProperty("data");
-                        if (dataProperty.ValueKind == JsonValueKind.Array && dataProperty.GetArrayLength() > 0)
-                        {
-                            var albumIdProperty = dataProperty[0].GetProperty("album").GetProperty("id");
-                            if (albumIdProperty.ValueKind == JsonValueKind.Number)
-                            {
-                                var albumId = albumIdProperty.GetInt32();
-                                requestUrl = $"https://api.deezer.com/album/{albumId}";
-                                response = httpClient.GetAsync(requestUrl).Result;
-                                response.EnsureSuccessStatusCode();
-                                responseBody = response.Content.ReadAsStringAsync().Result;
-                                jsonResponse = System.Text.Json.JsonDocument.Parse(responseBody);
-                                _coverUrl = jsonResponse.RootElement.GetProperty("cover_xl").GetString();
-                                return;
-                            }
-                        }
-                        // Handle error case where album ID is not found
-                        _coverUrl = "note_icon.png";
-                        return;
-                    }
-                }
-                catch (HttpRequestException e)
-                {
-                    // Log error and retry if possible
-                    Console.WriteLine($"Error while retrieving album art: {e.Message}");
-                    if (i == maxRetries - 1)
-                    {
-                        // Handle error case where all retries failed
-                        _coverUrl = "note_icon.png";
-                    }
-                    else
-                    {
-                        System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1));
-                    }
-                }
             }
         }
 

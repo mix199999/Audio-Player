@@ -245,7 +245,7 @@
                                         <Label Text="{Binding Duration}" Grid.Column="3" VerticalOptions="Center" HorizontalOptions="End" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
                                         <Image Source="{Binding Favourite}" Grid.Column="4" HeightRequest="15" VerticalOptions="Center" HorizontalOptions="End" Margin="22,0" ToolTipProperties.Text="Favourite this song!" InputTransparent="False">
                                             <Image.GestureRecognizers>
-                                                <TapGestureRecognizer Tapped="favImg_Clicked" />
+                                              
                                             </Image.GestureRecognizers>
                                         </Image>
                                     </Grid>
