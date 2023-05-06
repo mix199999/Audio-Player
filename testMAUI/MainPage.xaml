@@ -152,12 +152,12 @@
                         <ScrollView Grid.Row="1" HeightRequest="210" Margin="5,0">
                             <StackLayout Orientation="Vertical"  HorizontalOptions="Fill" Spacing="8" Padding="3">
                                 <!-- lakies tam jabele -->
-                                <ListView x:Name="playlistListView" ItemsSource="{Binding _playlist}" SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay}" ItemSelected="OnPlaylistSelected">
+                                <ListView x:Name="playlistListView"  ItemSelected="OnPlaylistSelected">
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
                                             <ViewCell>
                                                 <StackLayout Orientation="Vertical" Padding="10">
-                                                    <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" TextColor="{Binding SecondaryColor}"/>
+                                                    <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" TextColor="{Binding SecondaryColor}" />
                                                 </StackLayout>
                                             </ViewCell>
                                         </DataTemplate>

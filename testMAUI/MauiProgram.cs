@@ -47,7 +47,7 @@ public static class MauiProgram
             {
                 FolderList = new List<string> { Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) },
                 AudioPlaylists = new List<AudioPlaylist> { new AudioPlaylist { Name = "Favorite Songs", Path = favoriteSongsPath } },
-                FirstTimeRun = false, // ------------------------- ZMIENIĆ !!!!! ------------------------------
+                FirstTimeRun = true, 
                 Theme = new Theme { Gradient = false, PrimaryColor = "ffffff", SecondaryColor = "000000", GradientColor = "ffffff", Flip = false, HtoV = false, DarkButtons = true }
             };
             var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);

@@ -102,15 +102,7 @@ public partial class MainPage : ContentPage
         this.Focused += callPopup;
 
         if (_foldersList.Count == 0) _foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
-        if (_playlists == null)
-        {
-            var emptyPlaylist = new AudioPlaylist()
-            {
-                Name = "",
-                Path = ""
-            };
-            _playlists.Add(emptyPlaylist);
-        }
+        
 
 
         foreach (var playlist in _playlists)
@@ -125,7 +117,7 @@ public partial class MainPage : ContentPage
         playlistView.ItemTapped += PlaylistListView_ItemTapped;
         playlistListView.ItemTapped += MultiplePlaylistView_ItemTapped;
 
-        playlistListView.ItemsSource = _playlists;
+        playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists);
 
         LoadFromDirectory();
 
@@ -182,8 +174,7 @@ public partial class MainPage : ContentPage
 
         }
 
-        playlistListView.ItemsSource = null;
-        playlistListView.ItemsSource = _playlists;
+         playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists);
     }
 
     private void ShowInstruction()
@@ -1049,8 +1040,7 @@ public partial class MainPage : ContentPage
         var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
 
         System.IO.File.WriteAllText(appSettingsPath, json);
-        playlistListView.ItemsSource = null;
-        playlistListView.ItemsSource = _playlists;
+        playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists);
     }
 
 
@@ -1120,7 +1110,7 @@ public partial class MainPage : ContentPage
             return;
         }
 
-        var selectedPlaylist = (AudioPlaylist)e.Item;
+        var selectedPlaylist = (MultiplePlaylistViewModel)e.Item;
 
         if (selectedPlaylist.Path != null)
         {
@@ -1237,12 +1227,7 @@ public partial class MainPage : ContentPage
 
             playlistView.ItemsSource = trackViewModels;
 
-            playlistListView.ItemsSource = null;
-        playlistListView.ItemsSource = _playlists.Select(x => new
-        {
-            SecondaryColor = Color.FromArgb(_theme.SecondaryColor),
-            Name = x.Name
-        });
+            playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists);
         });
 
 
@@ -1560,6 +1545,36 @@ public class PlaylistViewModel : BindableObject
     }
 
    
+}
+
+public class MultiplePlaylistViewModel : BindableObject
+{
+    
+    public string Path { get; set; }
+
+    public string Name { get; set; }
+
+
+ 
+    internal static List<MultiplePlaylistViewModel> CreatePlaylistViewModel(List<AudioPlaylist> playlists)
+    {
+        var playlistViewModels = new List<MultiplePlaylistViewModel>();
+
+        foreach (var playlist in playlists)
+        {
+            var trackViewModel = new MultiplePlaylistViewModel
+            {
+                Name = playlist.Name,
+                Path = playlist.Path,
+            };
+
+            playlistViewModels.Add(trackViewModel);
+        }
+
+        return playlistViewModels;
+    }
+
+
 }
 
 
