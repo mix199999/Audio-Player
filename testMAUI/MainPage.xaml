@@ -4,7 +4,7 @@
           x:Class="testMAUI.MainPage">
     <ContentPage.Resources>
         <Style x:Key="TrackProgressBar" TargetType="ProgressBar">
-            <Setter Property="ProgressColor" Value="DarkViolet"/>
+            <Setter Property="ProgressColor" Value="{Binding SecondaryColor}"/>
         </Style>
         <Style TargetType="Image">
             <Setter Property="Opacity" Value="0.75"/>
@@ -17,7 +17,7 @@
             <Setter Property="HeightRequest" Value="36"/>
             <Setter Property="CornerRadius" Value="0" />
             <Setter Property="BorderWidth" Value="0"/>
-            <Setter Property="TextColor" Value="{AppThemeBinding Light=Black, Dark=White}"/>
+            <Setter Property="TextColor" Value="{Binding SecondaryColor}"/>
             <Setter Property="BackgroundColor" Value="Transparent" />
             <Style.Triggers>
                 <Trigger TargetType="Button" Property="IsPressed" Value="True">
@@ -25,8 +25,11 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="Label">
+            <Setter Property="TextColor" Value="{Binding SecondaryColor}"/>
+        </Style>
     </ContentPage.Resources>
-    <Grid>
+    <Grid Background="{Binding PrimaryColor}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20*" />
             <ColumnDefinition Width="1" />
@@ -41,22 +44,20 @@
             </Grid.RowDefinitions>
             <StackLayout Grid.Row="0" Orientation="Vertical">
                 <!-- Wyszukiwarka -->
-                <SearchBar Placeholder="Szukaj" BackgroundColor="Transparent" PlaceholderColor="{AppThemeBinding Light=DarkGray, Dark=White}" x:Name="searchBar" Margin="0,0,0,10"/>
-                <Frame CornerRadius="5" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" >
-                    <ScrollView >
-                        <ListView  x:Name="resultsList">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <ViewCell>
-                                        <StackLayout Orientation="Vertical">
-                                            <Label Text="{Binding TitleAndArtist}" />
-                                        </StackLayout>
-                                    </ViewCell>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </ScrollView>
-                </Frame>
+                <SearchBar Placeholder="Szukaj" BackgroundColor="Transparent" TextColor="{Binding SecondaryColor}" PlaceholderColor="{Binding SecondaryColor}" x:Name="searchBar" Margin="0,0,0,10"/>
+                <ScrollView >
+                    <ListView  x:Name="resultsList">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <StackLayout Orientation="Vertical">
+                                        <Label Text="{Binding TitleAndArtist}" Padding="10,5" TextColor="{Binding SecondaryColor}"/>
+                                    </StackLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </ScrollView>
                 <!-- Linia pozioma -->
                 <Frame AbsoluteLayout.LayoutBounds="0,0,1,10" HeightRequest="1" CornerRadius="0" Padding="0,0,0,0" Margin="0,0,0,0"  VerticalOptions="End" BorderColor="{AppThemeBinding Light=Black, Dark=White}" Opacity="0.2" HasShadow="False"/>
 
@@ -81,7 +82,7 @@
                                 </Button.GestureRecognizers>
                             </Button>
                             <AbsoluteLayout>
-                                <Image AbsoluteLayout.LayoutBounds="0.1,0.5,30,30" AbsoluteLayout.LayoutFlags="PositionProportional" x:Name="HomeIcon" Grid.Column="0" Source="{AppThemeBinding Light=homesolid.png, Dark=homesolid_white.png}" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="20" WidthRequest="20"  />
+                                <Image AbsoluteLayout.LayoutBounds="0.1,0.5,30,30" AbsoluteLayout.LayoutFlags="PositionProportional" x:Name="HomeIcon" Grid.Column="0" Source="{Binding HomeSolid}" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="20" WidthRequest="20"  />
 
                             </AbsoluteLayout>
                         </Grid>
@@ -121,7 +122,7 @@
                                 </Button.GestureRecognizers>
                             </Button>
                             <AbsoluteLayout>
-                                <Image AbsoluteLayout.LayoutBounds="0.1,0.5,30,30" AbsoluteLayout.LayoutFlags="PositionProportional" x:Name="AddPlaylistIcon" Grid.Column="0" Source="{AppThemeBinding Light=plussolid.png, Dark=plussolid_white.png}" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="20" WidthRequest="20"  />
+                                <Image AbsoluteLayout.LayoutBounds="0.1,0.5,30,30" AbsoluteLayout.LayoutFlags="PositionProportional" x:Name="AddPlaylistIcon" Grid.Column="0" Source="{Binding PlusSolid}" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="20" WidthRequest="20"  />
                             </AbsoluteLayout>
                         </Grid>
 
@@ -141,8 +142,8 @@
                                 <ColumnDefinition Width="0.8*"/>
                                 <ColumnDefinition Width="0.2*"/>
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Text="Twoje składanki" FontSize="16" TextColor="{AppThemeBinding Light=Black, Dark=White}" HorizontalTextAlignment="Start"  Margin="10,0,0,0" />
-                            <Image Grid.Column="1" Source="{AppThemeBinding Light=playlistreturnsolid.png, Dark=playlistreturnsolidwhite.png}" HeightRequest="16" VerticalOptions="Center" HorizontalOptions="Center" ToolTipProperties.Text="Return to the main playlist">
+                            <Label Grid.Column="0" Text="Twoje składanki" FontSize="16" TextColor="{Binding SecondaryColor}" HorizontalTextAlignment="Start"  Margin="10,0,0,0" />
+                            <Image Grid.Column="1" Source="{Binding PlaylistReturnSolid}" HeightRequest="16" VerticalOptions="Center" HorizontalOptions="Center" ToolTipProperties.Text="Return to the main playlist">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="PlaylistReturnBtn_Clicked" />
                                 </Image.GestureRecognizers>
@@ -156,7 +157,7 @@
                                         <DataTemplate>
                                             <ViewCell>
                                                 <StackLayout Orientation="Vertical" Padding="10">
-                                                    <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" />
+                                                    <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" TextColor="{Binding SecondaryColor}"/>
                                                 </StackLayout>
                                             </ViewCell>
                                         </DataTemplate>
@@ -171,7 +172,7 @@
 
             <!-- track info -->
             <VerticalStackLayout Grid.Row="1" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand" HeightRequest="70">
-                <Frame HeightRequest="1" CornerRadius="0" Padding="0,0,0,0" Margin="0,-1,0,0"  VerticalOptions="End" BorderColor="{AppThemeBinding Light=Black, Dark=White}" Opacity="0.2" HasShadow="False"/>
+                <Frame HeightRequest="1" CornerRadius="0" Padding="0,0,0,0" Margin="0,-1,0,0"  VerticalOptions="End" BorderColor="Black" Opacity="0.2" HasShadow="False"/>
                 <Grid VerticalOptions="Center" HeightRequest="70">
 
                     <Grid.ColumnDefinitions>
@@ -185,9 +186,9 @@
                             <RowDefinition Height="0.25*"/>
                             <RowDefinition Height="0.4*"/>
                         </Grid.RowDefinitions>
-                        <Label x:Name="CurrentTrackTitle" Grid.Row="0" VerticalOptions="End" HorizontalOptions="StartAndExpand" FontSize="16"/>
-                        <Label x:Name="CurrentTrackArtist" Grid.Row="1" VerticalOptions="Start" HorizontalOptions="StartAndExpand" FontSize="12"/>
-                        <Label x:Name="CurrentTrackAlbum" Grid.Row="2" VerticalOptions="Start" HorizontalOptions="StartAndExpand" FontSize="12" Opacity="0.75"/>
+                        <Label x:Name="CurrentTrackTitle" Grid.Row="0" VerticalOptions="End" HorizontalOptions="StartAndExpand" FontSize="16" TextColor="{Binding SecondaryColor}"/>
+                        <Label x:Name="CurrentTrackArtist" Grid.Row="1" VerticalOptions="Start" HorizontalOptions="StartAndExpand" FontSize="12" TextColor="{Binding SecondaryColor}"/>
+                        <Label x:Name="CurrentTrackAlbum" Grid.Row="2" VerticalOptions="Start" HorizontalOptions="StartAndExpand" FontSize="12" Opacity="0.75" TextColor="{Binding SecondaryColor}"/>
                     </Grid>
                 </Grid>
             </VerticalStackLayout>
@@ -214,14 +215,52 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
-                <Label Text="Tytuł" Grid.Column="0" VerticalOptions="End" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                <Label Text="Artysta" Grid.Column="1" VerticalOptions="End" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                <Label Text="Album" Grid.Column="2" VerticalOptions="End" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                <Label Text="Czas trwania" Grid.Column="3" VerticalOptions="End" HorizontalOptions="End" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                <Label Text="Ulubiony" Grid.Column="4" VerticalOptions="End" HorizontalOptions="End" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                <Label Text="Tytuł" Grid.Column="0" VerticalOptions="End" HorizontalOptions="StartAndExpand" TextColor="{Binding SecondaryColor}"/>
+                <Label Text="Artysta" Grid.Column="1" VerticalOptions="End" HorizontalOptions="StartAndExpand" TextColor="{Binding SecondaryColor}"/>
+                <Label Text="Album" Grid.Column="2" VerticalOptions="End" HorizontalOptions="StartAndExpand" TextColor="{Binding SecondaryColor}" />
+                <Label Text="Czas trwania" Grid.Column="3" VerticalOptions="End" HorizontalOptions="End" TextColor="{Binding SecondaryColor}" />
+                <Label Text="Ulubiony" Grid.Column="4" VerticalOptions="End" HorizontalOptions="End" TextColor="{Binding SecondaryColor}" />
             </Grid>
 
-            <ScrollView Grid.Row="1" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" x:Name="test" Margin="0,10,0,0" >
+
+            <!--Grid do testowania podgladu playlisty, bedzie to usuwane pozniej-->
+
+            <!--<Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.9*"/>
+                    <RowDefinition Height="0.1*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Padding="0,10" Margin="20,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.25*"/>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="0.25*"/>
+                        <ColumnDefinition Width="0.15*"/>
+                        <ColumnDefinition Width="0.1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border>
+                        <Label Text="Abc" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    </Border>
+                    <Border Grid.Column="1">
+                        <Label Text="Abc" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                    </Border>
+                    <Border Grid.Column="2">
+                        <Label Text="Abcsgfggdgfgdgdgdgdgdfdfd" Grid.Column="2" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                    </Border>
+                    <Border Grid.Column="3">
+                        <Label Text="05:31" Grid.Column="3" VerticalOptions="Center" HorizontalOptions="End" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                    </Border>
+                    <Border Grid.Column="4">
+                        <ImageButton Source="favorite0solid.png" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="43" WidthRequest="20" />
+                    </Border>
+                </Grid>
+                <BoxView Grid.Row="1" BackgroundColor="Black" Opacity="0.05" HeightRequest="1" VerticalOptions="Start" Margin="15,0" />
+            </Grid>-->
+
+            <!--Koniec testowego grida-->
+
+            <ScrollView Grid.Row="1" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" x:Name="test" Margin="0,10,0,0">
+
                 <ListView x:Name="playlistView" SelectionMode="Single" ItemSelected="OnItemSelected"  SelectedItem="{Binding SelectedItem}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -239,10 +278,10 @@
                                             <ColumnDefinition Width="0.15*"/>
                                             <ColumnDefinition Width="0.1*"/>
                                         </Grid.ColumnDefinitions>
-                                        <Label Text="{Binding Title}" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                                        <Label Text="{Binding Artist}" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                                        <Label Text="{Binding Album}" Grid.Column="2" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                                        <Label Text="{Binding Duration}" Grid.Column="3" VerticalOptions="Center" HorizontalOptions="End" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                                        <Label Text="{Binding Title}" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{Binding SecondaryColor}"/>
+                                        <Label Text="{Binding Artist}" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{Binding SecondaryColor}"/>
+                                        <Label Text="{Binding Album}" Grid.Column="2" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{Binding SecondaryColor}"/>
+                                        <Label Text="{Binding Duration}" Grid.Column="3" VerticalOptions="Center" HorizontalOptions="End" TextColor="{Binding SecondaryColor}"/>
                                         <Image Source="{Binding Favourite}" Grid.Column="4" HeightRequest="15" VerticalOptions="Center" HorizontalOptions="End" Margin="22,0" ToolTipProperties.Text="Favourite this song!" InputTransparent="False">
                                             <Image.GestureRecognizers>
                                               
@@ -293,71 +332,71 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="1.5*"/>
                             </Grid.ColumnDefinitions>
-                            <Image Source="{AppThemeBinding Light=backwardsolid.png, Dark=backwardsolidwhite.png}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="1" ToolTipProperties.Text="Previous track">
+                            <Image Source="{Binding BackwardSolid}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="1" ToolTipProperties.Text="Previous track">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="prevBtn_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
-                            <Image Source="{AppThemeBinding Light=backward.png, Dark=backwardwhite.png}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="2" ToolTipProperties.Text="Skip backward for 15 seconds">
+                            <Image Source="{Binding Backward}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="2" ToolTipProperties.Text="Skip backward for 15 seconds">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="backwardBtn_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
-                            <Image Source="{AppThemeBinding Light=playsolid.png, Dark=playsolidwhite.png}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="3" ToolTipProperties.Text="Play track">
+                            <Image Source="{Binding PlaySolid}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="3" ToolTipProperties.Text="Play track">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="playBtn_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
-                            <Image Source="{AppThemeBinding Light=pausesolid.png, Dark=pausesolidwhite.png}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="4" ToolTipProperties.Text="Pause track">
+                            <Image Source="{Binding PauseSolid}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="4" ToolTipProperties.Text="Pause track">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="stopBtn_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
-                            <Image Source="{AppThemeBinding Light=forward.png, Dark=forwardwhite.png}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="5" ToolTipProperties.Text="Skip forward for 15 seconds">
+                            <Image Source="{Binding Forward}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="5" ToolTipProperties.Text="Skip forward for 15 seconds">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="forwardBtn_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
-                            <Image Source="{AppThemeBinding Light=forwardsolid.png, Dark=forwardsolidwhite.png}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="6" ToolTipProperties.Text="Next track">
+                            <Image Source="{Binding ForwardSolid}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="6" ToolTipProperties.Text="Next track">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="nextBtn_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
-                            <Image Source="{AppThemeBinding Light=plussolid.png, Dark=plussolidwhite.png}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="8" ToolTipProperties.Text="Add tracks">
+                            <Image Source="{Binding PlusSolid}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="8" ToolTipProperties.Text="Add tracks">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="filesBtn_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
-                            <Image Source="{AppThemeBinding Light=listsolid.png, Dark=listsolidwhite.png}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="9" ToolTipProperties.Text="Load playlist">
+                            <Image Source="{Binding ListSolid}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="9" ToolTipProperties.Text="Load playlist">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="loadListBtn_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
-                            <Image Source="{AppThemeBinding Light=downloadsolid.png, Dark=downloadsolidwhite.png}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="10" ToolTipProperties.Text="Save playlist">
+                            <Image Source="{Binding DownloadSolid}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="10" ToolTipProperties.Text="Save playlist">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="SaveListBtn_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
-                            <Image Source="{AppThemeBinding Light=replaysolid.png, Dark=replaysolidwhite.png}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="11" ToolTipProperties.Text="Repeat">
+                            <Image Source="{Binding ReplaySolid}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="11" ToolTipProperties.Text="Repeat">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="replayBtn_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
-                            <Image Source="{AppThemeBinding Light=shufflesolid.png, Dark=shufflesolidwhite.png}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="12" ToolTipProperties.Text="Shuffle the current playlist">
+                            <Image Source="{Binding ShuffleSolid}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="12" ToolTipProperties.Text="Shuffle the current playlist">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="shuffleBtn_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
                         </Grid>
                         <Grid Grid.Row="1">
-                            <Slider x:Name="TrackProgressBarSlider" Maximum="100" Minimum="0" ValueChanged="TrackProgressBarSlider_ValueChanged"  VerticalOptions="Start"  Grid.Column="1" ToolTipProperties.Text="Set the time" ThumbColor="{AppThemeBinding Light=DarkGray, Dark=White}" />
+                            <Slider x:Name="TrackProgressBarSlider" Maximum="100" Minimum="0" ValueChanged="TrackProgressBarSlider_ValueChanged"  VerticalOptions="Start"  Grid.Column="1" ToolTipProperties.Text="Set the time" ThumbColor="{Binding SecondaryColor}" MinimumTrackColor="{Binding SecondaryColor}"/>
 
                         </Grid>
 
                     </Grid>
 
 
-                    <Label x:Name="CurrentTimeLabel"  VerticalOptions="Center" HorizontalOptions="Center" Grid.Column="3"  />
+                    <Label x:Name="CurrentTimeLabel"  VerticalOptions="Center" HorizontalOptions="Center" Grid.Column="3" TextColor="{Binding SecondaryColor}"/>
                     <!--   <Label x:Name="testCurrentTimeLabel"  TextColor="White" Grid.Column="3"  /> -->
 
 

@@ -3,13 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="testMAUI.SettingsPage"
              Title="Settings Page"
-             
+             Background="{Binding PrimaryColor}"
              >
     <ContentPage.Resources>
         <Style TargetType="Button">
             <Setter Property="CornerRadius" Value="0" />
             <Setter Property="BorderWidth" Value="0"/>
-            <Setter Property="TextColor" Value="{AppThemeBinding Light=Black, Dark=White}"/>
+            <Setter Property="TextColor" Value="{Binding SecondaryColor}"/>
             <Setter Property="BackgroundColor" Value="Transparent" />
             <Style.Triggers>
                 <Trigger TargetType="Button" Property="IsPressed" Value="True">
@@ -18,7 +18,10 @@
             </Style.Triggers>
         </Style>
         <Style TargetType="Label">
-            <Setter Property="TextColor" Value="{AppThemeBinding Light=Black, Dark=White}"/>
+            <Setter Property="TextColor" Value="{Binding SecondaryColor}"/>
+        </Style>
+        <Style TargetType="Entry">
+            <Setter Property="PlaceholderColor" Value="{Binding SecondaryColor}"/>
         </Style>
     </ContentPage.Resources>
     <Grid>
@@ -37,10 +40,10 @@
             <!--Zostawiam tu StackLayout, pasuje-->
             <StackLayout Grid.Row="0" Orientation="Vertical" Spacing="10">
                 <!-- Wyszukiwarka -->
-                <Frame CornerRadius="10" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" >
-                    <SearchBar Placeholder="Szukaj" PlaceholderColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                <Frame CornerRadius="10" Padding="0" BorderColor="Transparent" BackgroundColor="Transparent" >
+                    <SearchBar Placeholder="Szukaj" PlaceholderColor="{Binding SecondaryColor}" Background="Transparent"/>
                 </Frame>
-                <Frame AbsoluteLayout.LayoutBounds="0,0,1,10" HeightRequest="1" CornerRadius="0" Padding="0,0,0,0" Margin="0,0,0,0"  VerticalOptions="End" BorderColor="{AppThemeBinding Light=Black, Dark=White}" Opacity="0.2" HasShadow="False"/>
+                <Frame AbsoluteLayout.LayoutBounds="0,0,1,10" HeightRequest="1" CornerRadius="0" Padding="0,0,0,0" Margin="0,0,0,0"  VerticalOptions="End" BorderColor="Transparent" Opacity="0.2" HasShadow="False"/>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -125,7 +128,7 @@
             </Grid.ColumnDefinitions>
             
             <!-- Panel lewy z przyciskami opcji -->
-            <Frame CornerRadius="10" Grid.Column="0" Padding="0" BorderColor="Transparent" Margin="2">
+            <Frame CornerRadius="10" Grid.Column="0" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" Margin="2">
                 <VerticalStackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" >
                     <!-- moze też to ListView się zrobi -->
                     <ScrollView HorizontalOptions="FillAndExpand">
@@ -152,7 +155,7 @@
             </Frame>
             <BoxView Grid.Column="1" Opacity="0.1"/>
             <!-- Panel prawy ze zmieniającymi się sekcjami ustawień -->
-            <Frame CornerRadius="10" Grid.Column="2" Padding="0" BorderColor="Transparent" Margin="2">
+            <Frame CornerRadius="10" Grid.Column="2" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" Margin="2">
                 <!--Opcja 1 - ściezki -->
                 <Grid VerticalOptions="FillAndExpand" x:Name="pathOptions" IsVisible="false">
                 <Grid.RowDefinitions>
@@ -161,7 +164,7 @@
                 </Grid.RowDefinitions>
                 
                 <!-- Pasek górny z dwoma przyciskami -->
-                <Grid Grid.Row="0" Opacity="0.7" Padding="10,0">
+                <Grid Grid.Row="0" Opacity="0.7" Padding="10,0" BackgroundColor="Transparent">
                     <HorizontalStackLayout HorizontalOptions="EndAndExpand">
                         
                         <!-- Dodaj button -->
@@ -214,9 +217,86 @@
                     <Label Text="opcja 2" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
                 </StackLayout>
             </Frame>
-            <Frame BackgroundColor="Gray" CornerRadius="10" Grid.Column="1" Padding="0" BorderColor="Transparent"  Margin="2" x:Name="thirdOption" IsVisible="false">
-                <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                    <Label Text="opcja 3" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+            <Frame CornerRadius="10" Grid.Column="2" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent"  Margin="15,0,0,0" x:Name="thirdOption" IsVisible="false">
+                <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Spacing="20" Margin="0,20">
+                    <Grid ColumnSpacing="0" HeightRequest="60">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox x:Name="GradientCheck" CheckedChanged="OnGradientCheckCheckedChanged" HeightRequest="20" HorizontalOptions="Start"/>
+                        <Label Text="Enable Gradient for Background?" VerticalOptions="Center" Margin="30,0"/>
+                        <Grid Grid.Column="1" x:Name="GradientOptions">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <CheckBox x:Name="GradientFlipCheckBox" CheckedChanged="OnGradientFlipCheckedChanged" Grid.Row="0"/>
+                            <Label Text="Flip the Gradient" VerticalOptions="Center" Margin="30,0"/>
+                            <CheckBox x:Name="GradientHtoVCheckBox" CheckedChanged="OnGradientHtoVCheckedChanged" Grid.Row="1"/>
+                            <Label Grid.Row="1" Text="Horizontal to Vertical" VerticalOptions="Center" Margin="30,0"/>
+                        </Grid>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="20"/>
+                            </Grid.RowDefinitions>
+                            <Entry Grid.Row="0" x:Name="PrimaryColorEntry" Completed="OnPrimaryColorEntryCompleted" MaxLength="6" Placeholder="Primary Color in Hex (text length 6)" FontSize="13" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30"/>
+                            <Label Grid.Row="1" x:Name="PrimaryEntryError" Text="Niepoprawnie wprowadzony kolor!" HeightRequest="0" TextColor="Red" VerticalOptions="Start" ZIndex="-1"/>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="20"/>
+                            </Grid.RowDefinitions>
+                            <Entry Grid.Row="0" x:Name="GradientEntry" Completed="OnGradientEntryCompleted" MaxLength="6" Placeholder="Gradient End Color in Hex (text length 6)" FontSize="13" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30"/>
+                            <Label Grid.Row="1" x:Name="GradientEntryError" Text="Niepoprawnie wprowadzony kolor!" HeightRequest="0" TextColor="Red" VerticalOptions="Start" ZIndex="-1"/>
+                        </Grid>
+                    </Grid>
+                    <Grid Margin="20,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="25"/>
+                        </Grid.RowDefinitions>
+                        <Entry Grid.Row="0" x:Name="SecondaryColorEntry" Completed="OnSecondaryColorEntryCompleted" MaxLength="6" Placeholder="Secondary Color in Hex (text length 6)" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30"/>
+                        <Label Grid.Row="1" x:Name="SecondaryEntryError" Text="Niepoprawnie wprowadzony kolor!" HeightRequest="0" TextColor="Red" VerticalOptions="Start" ZIndex="-1"/>
+                    </Grid>
+                    <Grid>
+                        <Label Text="Enable Dark Buttons?" VerticalOptions="Center" Padding="30, 0"/>
+                        <CheckBox x:Name="DarkButtonsCheckBox" CheckedChanged="OnDarkButtonsCheckedChanged"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Text="Exmaple Text" Padding="10"/>
+                        <Label Grid.Row="1" Text="Another Example Text" Padding="10" VerticalOptions="End" HorizontalOptions="End"/>
+                        <Grid Grid.Row="2" HeightRequest="40">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Source="{Binding BackwardSolid}" Grid.Column="1" HeightRequest="20"/>
+                            <Image Source="{Binding PlaySolid}" Grid.Column="2" HeightRequest="20"/>
+                            <Image Source="{Binding ForwardSolid}" Grid.Column="3" HeightRequest="20"/>
+                        </Grid>
+                    </Grid>
+                    <Button x:Name="SaveButton" Clicked="OnSaveButtonClicked" Text="Apply the theme" HeightRequest="40" BorderWidth="1" CornerRadius="5">
+                        <Button.GestureRecognizers>
+                            <PointerGestureRecognizer PointerEntered="HoverBegan" PointerExited="HoverEnded"/>
+                        </Button.GestureRecognizers>
+                    </Button>
                 </StackLayout>
             </Frame>
         </Grid>
