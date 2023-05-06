@@ -12,6 +12,11 @@ using TagLib.Matroska;
 
 namespace testMAUI
 {
+    /// <summary>
+    /// Reprezentuje listę odtwarzania plików audio. Klasa ta pozwala na dodawanie, usuwanie i przewijanie plików w liście odtwarzania.
+    /// Klasa ma również metody pozwalające na zapisanie listy odtwarzania do pliku w formacie M3U 
+    /// oraz załadowanie pliku z listą odtwarzania z tego formatu.
+    /// </summary>
     internal class AudioPlaylist
     {
         [JsonIgnore]
@@ -21,7 +26,7 @@ namespace testMAUI
         [JsonIgnore]
         public List<AudioFile> Tracks => _tracks;
         [JsonIgnore]
-        // private static string _favoriteSongsListPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "favoritesongs.M3U");
+      
         private static string _favoriteSongsListPath = System.IO.Path.Combine(System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GNOM"), "favoritesongs.M3U");
 
         public string Name { get; set; }
@@ -122,7 +127,12 @@ namespace testMAUI
 
            return sb.ToString();
         }
-
+        /// <summary>
+        /// Metoda służąca do dopisywania do pliku M3U informacji 
+        /// dotyczacych pojedynczego pliku audio
+        /// Wykorzystywana jest przy tworzeniu playlisty ulubione przez użytkownika
+        /// </summary>
+        /// <param name="track">obiekt klasy audiofile reprezentujący plik audio</param>
         public static void AppendTrackToFavoritelistFile(AudioFile track)
         {
             var sb = new StringBuilder();
@@ -131,6 +141,13 @@ namespace testMAUI
             sb.AppendLine();
             System.IO.File.AppendAllText(_favoriteSongsListPath, sb.ToString());
         }
+
+        /// <summary>
+        /// Metoda służąca do usuwania z pliku M3U informacji 
+        /// dotyczacych pojedynczego pliku audio
+        /// Wykorzystywana jest przy tworzeniu playlisty ulubione przez użytkownika
+        /// </summary>
+        /// <param name="track">obiekt klasy audiofile reprezentujący plik audio</param>
         public static void RemoveTrackFromM3U(AudioFile track)
         {
             var lines = System.IO.File.ReadAllLines(_favoriteSongsListPath);
@@ -156,7 +173,7 @@ namespace testMAUI
 
 
         /// <summary>
-        /// Funkcja służąca do sparsowania danych dotyczących playlisty zapisanych w pliku .M3U
+        /// Metoda służąca do sparsowania danych dotyczących playlisty zapisanych w pliku .M3U
         /// </summary>
         /// <param name="filePath">ścieżka do pliku z playlistą w formacie M3U</param>
         /// <returns>zwraca liczbę odczytanych utworów</returns>
@@ -197,7 +214,10 @@ namespace testMAUI
             else return 0;
         }
 
-
+        /// <summary>
+        /// Metoda służąca do odczytywania określonych plików audio z wybranego katalogu 
+        /// </summary>
+        /// <param name="directory">ścieżka do katalogu</param>
         public void LoadFromDirectory(string directory)
         {
             if (Directory.Exists(directory))

@@ -1,4 +1,4 @@
-using CommunityToolkit.Maui.Alerts;
+﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.Messaging;
 using Newtonsoft.Json;
@@ -279,7 +279,12 @@ public partial class SettingsPage : ContentPage
     {
         await PickFolder(cancellationToken);
     }
-
+    /// <summary>
+    /// Wywoływana po zamknięciu strony
+    /// przesyła listę folderów
+    /// </summary>
+    /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
+    /// <param name="e">Argumenty zdarzenia.</param>
     private void SettingsPage_Disappearing(object sender, EventArgs e)
     {
         if(countStart == countEnd) { _foldersList = null; }             
@@ -348,7 +353,11 @@ public partial class SettingsPage : ContentPage
         thirdOption.IsVisible = true;
     }
 
-
+    /// <summary>
+    /// Służy do wybrania i dodania katalogu(jeśli jest to możliwe)
+    /// </summary>
+    /// <param name="cancellationToken">token anulowania</param>
+    /// <returns></returns>
     async Task PickFolder(CancellationToken cancellationToken)
     {
         var result = await FolderPicker.Default.PickAsync(cancellationToken);
@@ -371,7 +380,12 @@ public partial class SettingsPage : ContentPage
             await Toast.Make($"The folder was not picked with error: {result.Exception.Message}").Show(cancellationToken);
         }
     }
-
+    /// <summary>
+    /// Obsługuje zdarzenie kliknecia przycisku "-"
+    /// usuwa ścieżkę do katalogu z listy
+    /// </summary>
+    /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
+    /// <param name="e">Argumenty zdarzenia.</param>
     private void RemoveFolderBt_Tapped(object sender, TappedEventArgs e)
     {
        
@@ -383,7 +397,9 @@ public partial class SettingsPage : ContentPage
 
         }
     }
-
+    /// <summary>
+    /// Wczytuje katalogi do ListView
+    /// </summary>
     private void LoadDataToPathView()
     {
         pathListView.ItemsSource = _foldersList.Select(directory => new

@@ -4,12 +4,15 @@ Desktop "Audio Player" type of an app for a university project
 ## Co jest zrobione
 
 Update #5
+- prototyp panelu do robienia nowych playlist
 - Zmieniono nazwe programu z "testMAUI na "GNOM"
 - dodano ikonke gnoma jako ikonke programu
 - zmieniono ścieżkę appSettings.json do ...\Documents\GNOM\appSettings.json
 - zmieniono ścieżkę favoritesongs.m3u do ...\Documents\GNOM\favoritesongs.m3u
 - usunieto BUG ze pierwsza dodana piosenka do playlisty ulubionych sie nie dodawala poprawnie
 - dodano do projektu skrypt instalujacy certyfikat + apke + instrukcje
+- odpalanie instrukcji przy pierwszym starcie
+- przycisk w Ustawieniach do odpalania instrukcji
 
 Update #4
 - Wyszukiwarka
