@@ -11,10 +11,12 @@ namespace testMAUI
         private List<string> folderList;
         private List<AudioPlaylist> audioPlaylists;
         private bool firstTimeRun;
+        private Theme theme;
 
         public List<string> FolderList { get => folderList; set => folderList = value; }
         public List<AudioPlaylist> AudioPlaylists { get => audioPlaylists; set => audioPlaylists = value; }
         public bool FirstTimeRun { get => firstTimeRun; set => firstTimeRun = value; }
+        public Theme Theme { get => theme; set => theme = value; }
     }
 
 
