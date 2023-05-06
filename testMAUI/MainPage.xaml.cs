@@ -1075,7 +1075,6 @@ public partial class MainPage : ContentPage
     /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
     /// <param name="e">Argumenty zdarzenia.</param>
     private async void settingsButtonClicked(object sender, EventArgs e)
-
     {
         // player.Pause();
         // trackTimer.Stop();
@@ -1083,7 +1082,7 @@ public partial class MainPage : ContentPage
         SettingsPage sp;
         await Navigation.PushAsync(sp = new SettingsPage(_foldersList, _theme));
         bool isPageClosed = await sp.WaitForPageClosedAsync();
-        if(isPageClosed)
+        if (isPageClosed)
         {
             var tmp = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GNOM");
             var appSettingsPath = Path.Combine(tmp, "appSettings.json");
@@ -1100,10 +1099,7 @@ public partial class MainPage : ContentPage
         }
 
         // no generalnie to nie dziala bo async (znalezc jakas metode ktoa jest callowana gdy sie wychodzi z settingsow?)
-        
 
-    {   
-        await Navigation.PushAsync(new SettingsPage(_foldersList));
 
     }
 
@@ -1470,7 +1466,8 @@ public partial class MainPage : ContentPage
             OnPropertyChanged(nameof(PlaylistReturnSolid));
         }
     }
-}
+
+
 
 
     /// <summary>
@@ -1481,11 +1478,16 @@ public partial class MainPage : ContentPage
     /// <param name="e">Argumenty zdarzenia.</param>
     private async void NewPlaylist_Clicked(object sender, EventArgs e)
     {
-        
+
         await Navigation.PushAsync(new PlaylistCreationPage(_foldersList, _playlists));
     }
 
+
+
 }
+
+
+
 /// <summary>
 /// ViewModel dla utworu na liście odtwarzania.
 /// </summary>
