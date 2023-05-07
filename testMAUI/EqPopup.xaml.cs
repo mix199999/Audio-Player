@@ -7,6 +7,8 @@ namespace GNOM;
 public partial class EqPopup : Popup
 {
     public event EventHandler<EqualizerBand[]> EqualizerSettingsSaved;
+    public event EventHandler<KeyValuePair<int,float>> SingleBandChanged;
+
     private Brush _primaryColor;
     private EqualizerBand[] CurrentEqualizerSettings;
     public Brush PrimaryColor
@@ -32,14 +34,18 @@ public partial class EqPopup : Popup
     }
 
     private Theme _theme;
-	internal EqPopup(Theme theme)
+	internal EqPopup(Theme theme, EqualizerBand[] equalizerBands)
 	{
-     InitializeComponent();
+
+        
+        InitializeComponent();
 		_theme = theme;
+        CurrentEqualizerSettings = equalizerBands;
+        AssignCurrentEqualizerSettingsToSliders();
         LoadColors();
         BindingContext = this;
         this.SecondaryColor = Color.FromArgb(theme.SecondaryColor);
-
+        
     }
 
 
@@ -66,7 +72,22 @@ public partial class EqPopup : Popup
 
          };
         OnEqualizerSettingsSaved(CurrentEqualizerSettings);
-        OnEqualizerSettingsSaved(CurrentEqualizerSettings);
+   
+    }
+
+
+    private void AssignCurrentEqualizerSettingsToSliders()
+    {
+        Slider1.Value = CurrentEqualizerSettings[0].Gain;
+        Slider2.Value = CurrentEqualizerSettings[1].Gain;
+        Slider3.Value = CurrentEqualizerSettings[2].Gain;
+        Slider4.Value = CurrentEqualizerSettings[3].Gain;
+        Slider5.Value = CurrentEqualizerSettings[4].Gain;
+        Slider6.Value = CurrentEqualizerSettings[5].Gain;
+        Slider7.Value = CurrentEqualizerSettings[6].Gain;
+        Slider8.Value = CurrentEqualizerSettings[7].Gain;
+        Slider9.Value = CurrentEqualizerSettings[8].Gain;
+        Slider10.Value = CurrentEqualizerSettings[9].Gain;
     }
     internal virtual void OnEqualizerSettingsSaved(EqualizerBand[] settings)
     {
@@ -74,5 +95,62 @@ public partial class EqPopup : Popup
     }
 
 
+    private void Slider1_ValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        OnSliderValueChanged(0, (float)e.NewValue);
+    }
+
+    private void Slider2_ValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        OnSliderValueChanged(1, (float)e.NewValue);
+    }
+
+    private void Slider3_ValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        OnSliderValueChanged(2, (float)e.NewValue);
+    }
+
+    private void Slider4_ValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        OnSliderValueChanged(3, (float)e.NewValue);
+    }
+
+    private void Slider5_ValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        OnSliderValueChanged(4, (float)e.NewValue);
+    }
+
+    private void Slider6_ValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        OnSliderValueChanged(5, (float)e.NewValue);
+    }
+
+    private void Slider7_ValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        OnSliderValueChanged(6, (float)e.NewValue);
+    }
+
+    private void Slider8_ValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        OnSliderValueChanged(7, (float)e.NewValue);
+    }
+
+    private void Slider9_ValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        OnSliderValueChanged(8, (float)e.NewValue);
+    }
+
+    private void Slider10_ValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        OnSliderValueChanged(9, (float)e.NewValue);
+    }
+
+    protected virtual void OnSliderValueChanged(int bandIndex, float newValue)
+    {
+        var band = new KeyValuePair<int, float>(bandIndex, newValue);
+     
+
+        SingleBandChanged?.Invoke(this, band);
+    }
 }
 

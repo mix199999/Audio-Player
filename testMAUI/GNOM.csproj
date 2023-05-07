@@ -62,6 +62,8 @@
 	  <None Remove="Resources\Images\backward-solid.svg" />
 	  <None Remove="Resources\Images\cover.png" />
 	  <None Remove="Resources\Images\downloadsolid.png" />
+	  <None Remove="Resources\Images\eqsolid.png" />
+	  <None Remove="Resources\Images\eqsolidwhite.png" />
 	  <None Remove="Resources\Images\forward-solid.svg" />
 	  <None Remove="Resources\Images\list-solid.svg" />
 	  <None Remove="Resources\Images\minus.png" />

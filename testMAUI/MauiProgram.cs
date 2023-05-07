@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Newtonsoft.Json;
 using System.IO;
+using NAudio.Extras;
 
 namespace testMAUI;
 
@@ -47,8 +48,9 @@ public static class MauiProgram
             {
                 FolderList = new List<string> { Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) },
                 AudioPlaylists = new List<AudioPlaylist> { new AudioPlaylist { Name = "Favorite Songs", Path = favoriteSongsPath } },
-                FirstTimeRun = true, 
-                Theme = new Theme { Gradient = true, PrimaryColor = "333333", SecondaryColor = "ffffff", GradientColor = "3a9eb9", Flip = false, HtoV = true, DarkButtons = false }
+                FirstTimeRun = true,
+                Theme = new Theme { Gradient = true, PrimaryColor = "333333", SecondaryColor = "ffffff", GradientColor = "3a9eb9", Flip = false, HtoV = true, DarkButtons = false },
+                EqualizerSettings = new List<EqualizerBand[]>()
             };
             var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(appSettingsPath, json);

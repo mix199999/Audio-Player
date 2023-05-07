@@ -34,12 +34,12 @@ namespace testMAUI
         public playerStatus _status { get; set; }
         public TimeSpan _totalTime { get; set; }
         public TimeSpan currentTime { get; set; }
+        public EqualizerBand[] Bands { get => _bands; set => _bands = value; }
 
         public event EventHandler StartedPlaying;
         public event EventHandler StoppedPlaying;
         public event EventHandler Paused;
-
-
+      
 
 
         public Player()
@@ -59,7 +59,7 @@ namespace testMAUI
                 new EqualizerBand { Frequency = 16000, Bandwidth = 0.8f, Gain = 0 }
 
             };
-
+           
         }
         public void Load(string filePath)
         {
@@ -81,8 +81,9 @@ namespace testMAUI
 
         public void ApplyEqualizerSettings(EqualizerBand[] settings)
         {
-            if (settings.Length != _bands.Length)
+            if (settings.Length != _bands.Length || _equalizer == null)
             {
+                _bands = settings;
                 return;
             }
 
@@ -91,6 +92,18 @@ namespace testMAUI
                 _bands[i].Gain = settings[i].Gain;
             }
 
+            _equalizer.Update();
+        }
+
+
+        public void ApplySingleBand(KeyValuePair<int, float> band)
+        {
+            if (_equalizer == null)   
+            {    
+                return;
+            }
+
+            _bands[band.Key].Gain = band.Value;
             _equalizer.Update();
         }
 
