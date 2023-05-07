@@ -28,7 +28,10 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Dispatching;
 using System;
 using System.Diagnostics;
-using System.ComponentModel;
+
+using Microsoft.VisualBasic;
+using Newtonsoft.Json.Linq;
+
 
 public partial class MainPage : ContentPage
 {
@@ -52,7 +55,14 @@ public partial class MainPage : ContentPage
     private DateTime _previousClickTime = DateTime.MinValue;
     private bool _isRandom = false;
     private bool _isLoop = false;
+    private bool _isAnimating = true;
+    private int _sbInputLength = 0;
     private bool _firstTimeRun = true;
+
+    internal Theme _theme = new();
+    private int _playAudioIndex = -1;
+
+
     List<PlaylistViewModel> trackViewModels = new List<PlaylistViewModel>();
     List<PlaylistViewModel> _searchPlaylist = new List<PlaylistViewModel>();
 
@@ -64,6 +74,13 @@ public partial class MainPage : ContentPage
         _playlists = new List<AudioPlaylist>();
         _configuration.GetSection("FolderList").Bind(_foldersList);
         _playlists = _configuration.GetSection("AudioPlaylists").Get<List<AudioPlaylist>>();
+
+        _firstTimeRun = _configuration.GetValue<bool>("FirstTimeRun");
+        _configuration.GetSection("Theme").Bind(_theme);
+        //1 sza jest lista z ulubionymi
+
+
+
 
         InitializeComponent();
 
@@ -84,29 +101,8 @@ public partial class MainPage : ContentPage
         this.Unfocused += hidePopup;
         this.Focused += callPopup;
 
-        //Ładowanie ikon w zależności od motywu aplikacji
-        _favImgTheme = new List<string>();
-        if ((AppTheme)Application.Current.RequestedTheme == AppTheme.Light)
-        {
-            _favImgTheme.Add("favorite0solid.png");
-            _favImgTheme.Add("favorite1solid.png");
-        }
-        else
-        {
-            _favImgTheme.Add("favorite0whitesolid.png");
-            _favImgTheme.Add("favorite1whitesolid.png");
-        }
-
         if (_foldersList.Count == 0) _foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
-        if (_playlists == null)
-        {
-            var emptyPlaylist = new AudioPlaylist()
-            {
-                Name = "",
-                Path = ""
-            };
-            _playlists.Add(emptyPlaylist);
-        }
+        
 
 
         foreach (var playlist in _playlists)
@@ -121,7 +117,7 @@ public partial class MainPage : ContentPage
         playlistView.ItemTapped += PlaylistListView_ItemTapped;
         playlistListView.ItemTapped += MultiplePlaylistView_ItemTapped;
 
-        playlistListView.ItemsSource = _playlists;
+        playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists,Color.FromArgb(_theme.SecondaryColor));
 
         LoadFromDirectory();
 
@@ -136,7 +132,10 @@ public partial class MainPage : ContentPage
         _searchPlaylist = PlaylistViewModel.CreatePlaylistViewModel(mainPlaylist);
         resultsList.ItemTapped += ResultsList_ItemTapped;
 
-        _firstTimeRun = _configuration.GetValue<bool>("FirstTimeRun");
+        LoadColors();
+        LoadThemedButtons();
+        BindingContext = this;
+
         if (_firstTimeRun)
         {
             ShowInstruction();
@@ -175,8 +174,7 @@ public partial class MainPage : ContentPage
 
         }
 
-        playlistListView.ItemsSource = null;
-        playlistListView.ItemsSource = _playlists;
+         playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists, Color.FromArgb(_theme.SecondaryColor));
     }
 
     private void ShowInstruction()
@@ -243,15 +241,28 @@ public partial class MainPage : ContentPage
 
     private void OnSearchBarFocused(object sender, FocusEventArgs e)
     {
-        resultsList.ItemsSource = null;
-        resultsList.IsVisible = true;
+        if (sender is SearchBar searchBar)
+        {
+            if (searchBar.Text == null)
+            {
+                searchBar.HeightRequest = 0;
+                return;
+            }
+            else
+            {
+                resultsList.ItemsSource = null;
+                resultsList.IsVisible = true;
+                _sbInputLength = searchBar.Text.Length;
+                resultsList.HeightRequest = 0;
+            }
+        }
+
     }
 
     private void OnSearchBarUnfocused(object sender, FocusEventArgs e)
     {
         resultsList.IsVisible = false;
         searchBar.Text = "";
-        resultsList.HeightRequest = 0;
     }
 
     /// <summary>
@@ -266,10 +277,13 @@ public partial class MainPage : ContentPage
 
         if (searchBar.Text == null || searchBar.Text == String.Empty)
         {
-            resultsList.HeightRequest = 0;
+            Task.Run(() => ShowResultsList(false));
+            //resultsList.HeightRequest = 0;
             return;
         }
-        resultsList.HeightRequest = 200;
+        if (_sbInputLength == 0)
+            Task.Run(() => ShowResultsList(true));
+        //resultsList.HeightRequest = 200;
 
         string searchText = searchBar.Text.ToLower();
 
@@ -284,6 +298,7 @@ public partial class MainPage : ContentPage
         {
             TitleAndArtist = $"{item.Title} - {item.Artist}",
             Path = item.Path,
+            SecondaryColor = Color.FromArgb(_theme.SecondaryColor)
 
         }).ToList();
 
@@ -292,9 +307,31 @@ public partial class MainPage : ContentPage
 
     }
 
+    private void ShowResultsList(bool showResults)
+    {
+        if (showResults)
+        {
+            var animation = new Microsoft.Maui.Controls.Animation(v => resultsList.HeightRequest = v, 0, 150, Easing.CubicInOut);
+            animation.Commit(resultsList, "HeightAnimation", 16, 500, Easing.CubicOut);
+
+            //await resultsSV.ScaleYTo(10, 500, Easing.CubicOut);
+        }
+        else if (!showResults)
+        {
+            var animation = new Microsoft.Maui.Controls.Animation(v => resultsList.HeightRequest = v, 150, 0, Easing.CubicInOut);
+            animation.Commit(resultsList, "HeightAnimation", 16, 500, Easing.CubicOut);
+
+            //await resultsSV.ScaleYTo(0, 500, Easing.CubicOut);
+        }
+        _sbInputLength = searchBar.Text.Length;
+    }
+
+
+
     /// <summary>
     /// Ładuje ścieżki dźwiękowe z folderów na listę odtwarzania i wyświetla je w widoku listy.
     /// </summary>    
+
     private void LoadFromDirectory()
     {
         mainPlaylist.Tracks.Clear();
@@ -495,6 +532,7 @@ public partial class MainPage : ContentPage
         CurrentTimeLabel.Opacity = 0.7;
         player.Pause();
         AudioPlayingImageControl.Opacity = 0;
+        Console.WriteLine(_theme.ToString());
     }
 
     /// <summary>
@@ -653,7 +691,11 @@ public partial class MainPage : ContentPage
             });
 
             await Task.Delay(500);
-            await setCurrentTrackInfo();
+            if (_previousIndex != _playAudioIndex)
+            {
+                await setCurrentTrackInfo();
+                _playAudioIndex = _previousIndex;
+            }
 
 
         }
@@ -772,16 +814,36 @@ public partial class MainPage : ContentPage
 
             if (mainPlaylist.GetCurrentTrack() != null)
             {
-                CurrentTrackAlbum.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetAlbum());
-                CurrentTrackArtist.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetArtist());
-                CurrentTrackTitle.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetTitle());
+                if (!_isAnimating)
+                {
+                    CurrentTrackAlbum.Opacity = 0;
+                    CurrentTrackAlbum.TranslationX = 100;
+                    CurrentTrackArtist.Opacity = 0;
+                    CurrentTrackArtist.TranslationX = 100;
+                    CurrentTrackTitle.Opacity = 0;
+                    CurrentTrackTitle.TranslationX = 100;
+
+                    CurrentTrackAlbum.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetAlbum());
+                    CurrentTrackArtist.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetArtist());
+                    CurrentTrackTitle.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetTitle());
+
+                    _isAnimating = true;
+                    await Task.Run(() => CurrentTrackAnimation());
+                }
+                _isAnimating = false;
 
                 while (mainPlaylist.GetCurrentTrack().GetCoverUrl() == null)
                 {
                     await mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()].SetCoverUrl();
                 }
                 await Task.Delay(TimeSpan.FromSeconds(1));
+                try { 
+                 
                 CurrentTrackCover.Source = mainPlaylist.GetCurrentTrack().GetCoverUrl();
+                }
+                catch (System.NullReferenceException) {
+                    CurrentTrackCover.Source = "note.png";
+                }
                 if (!_visibility) showToastInfo();
 
             }
@@ -790,11 +852,47 @@ public partial class MainPage : ContentPage
         });
 
     }
+
+
+    private async Task CurrentTrackAnimation()
+    {
+        //var tf = CurrentTrackTitle.FadeTo(1, 1000, Easing.CubicOut);
+        //var tp = CurrentTrackTitle.TranslateTo(0, 0, 1000, Easing.CubicOut);
+
+        var t1 = Task.WhenAll(
+            CurrentTrackTitle.FadeTo(1, 500, Easing.CubicOut),
+            CurrentTrackTitle.TranslateTo(0, 0, 500, Easing.CubicOut)
+        );
+
+        //var arf = CurrentTrackArtist.FadeTo(1, 1000, Easing.CubicOut);
+        //var arp = CurrentTrackArtist.TranslateTo(0, 0, 1000, Easing.CubicOut);
+
+        await Task.Delay(250);
+
+        var t2 = Task.WhenAll(
+            CurrentTrackArtist.FadeTo(1, 500, Easing.CubicOut),
+            CurrentTrackArtist.TranslateTo(0, 0, 500, Easing.CubicOut)
+        );
+
+        //var alf = CurrentTrackAlbum.FadeTo(1, 1000, Easing.CubicOut);
+        //var alp = CurrentTrackAlbum.TranslateTo(0, 0, 1000, Easing.CubicOut);
+
+        await Task.Delay(250);
+
+        var t3 = Task.WhenAll(
+            CurrentTrackAlbum.FadeTo(1, 500, Easing.CubicOut),
+            CurrentTrackAlbum.TranslateTo(0, 0, 500, Easing.CubicOut)
+        );
+
+        await Task.WhenAll(t1, t2, t3);
+    }
+
     /// <summary>
     /// Obsługuje zdarzenie przesunięcia suwaka czasu odtwarzania utworu
     /// </summary>
     /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
     /// <param name="e">Argumenty zdarzenia.</param>
+
     private void TrackProgressBarSlider_ValueChanged(object sender, ValueChangedEventArgs e)
     {
         if (ValueChangedEnabled && player._status == playerStatus.IsPlaying)
@@ -941,14 +1039,14 @@ public partial class MainPage : ContentPage
         {
             FolderList = _foldersList,
             AudioPlaylists = _playlists,
-            FirstTimeRun = _firstTimeRun
+            FirstTimeRun = _firstTimeRun,
+            Theme = _theme
         };
 
         var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
 
         System.IO.File.WriteAllText(appSettingsPath, json);
-        playlistListView.ItemsSource = null;
-        playlistListView.ItemsSource = _playlists;
+        playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists, Color.FromArgb(_theme.SecondaryColor));
     }
 
 
@@ -973,8 +1071,32 @@ public partial class MainPage : ContentPage
     /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
     /// <param name="e">Argumenty zdarzenia.</param>
     private async void settingsButtonClicked(object sender, EventArgs e)
-    {   
-        await Navigation.PushAsync(new SettingsPage(_foldersList));
+    {
+        // player.Pause();
+        // trackTimer.Stop();
+        var preChange = _theme;
+        SettingsPage sp;
+        await Navigation.PushAsync(sp = new SettingsPage(_foldersList, _theme));
+        bool isPageClosed = await sp.WaitForPageClosedAsync();
+        if (isPageClosed)
+        {
+            var tmp = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GNOM");
+            var appSettingsPath = Path.Combine(tmp, "appSettings.json");
+            string json = System.IO.File.ReadAllText(appSettingsPath);
+            dynamic jsonObj = JsonConvert.DeserializeObject(json);
+            var newTheme = jsonObj["Theme"];
+
+            if (!JsonConvert.Equals(preChange, jsonObj))
+            {
+                LoadColors();
+                LoadThemedButtons();
+            }
+
+        }
+
+        // no generalnie to nie dziala bo async (znalezc jakas metode ktoa jest callowana gdy sie wychodzi z settingsow?)
+
+
     }
 
     private void OnPlaylistSelected(object sender, SelectedItemChangedEventArgs e)
@@ -994,7 +1116,7 @@ public partial class MainPage : ContentPage
             return;
         }
 
-        var selectedPlaylist = (AudioPlaylist)e.Item;
+        var selectedPlaylist = (MultiplePlaylistViewModel)e.Item;
 
         if (selectedPlaylist.Path != null)
         {
@@ -1101,7 +1223,8 @@ public partial class MainPage : ContentPage
                     Album = track.GetAlbum(),
                     Artist = track.GetArtist(),
                     Path = track.GetFilePath(),
-                    Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0]
+                    Favourite = track.GetFavourite() ? _favImgTheme[1] : _favImgTheme[0],
+                    SecondaryColor = Color.FromArgb(_theme.SecondaryColor)
                 };
 
                 trackViewModels.Add(trackViewModel);
@@ -1110,10 +1233,232 @@ public partial class MainPage : ContentPage
 
             playlistView.ItemsSource = trackViewModels;
 
+            playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists, Color.FromArgb(_theme.SecondaryColor));
         });
 
 
     }
+
+    private void LoadColors()
+    {
+        if (_theme.Gradient) { PrimaryColor = _theme.GetGradient(); } else { PrimaryColor = new SolidColorBrush(Color.FromArgb(_theme.PrimaryColor)); }
+        SecondaryColor = Color.FromArgb(_theme.SecondaryColor);
+    }
+
+    private async void LoadThemedButtons()
+    {
+        List<string> buttons = _theme.GetButtons();
+        BackwardSolid = buttons[0];
+        Backward = buttons[1];
+        PlaySolid = buttons[2];
+        PauseSolid = buttons[3];
+        Forward = buttons[4];
+        ForwardSolid = buttons[5];
+        PlusSolid = buttons[6];
+        ListSolid = buttons[7];
+        DownloadSolid = buttons[8];
+        ReplaySolid = buttons[9];
+        ShuffleSolid = buttons[10];
+        HomeSolid = buttons[11];
+        PlaylistReturnSolid = buttons[12];
+
+        _favImgTheme = new();
+        if (_theme.DarkButtons)
+        {
+            _favImgTheme.Add("favorite0solid.png");
+            _favImgTheme.Add("favorite1solid.png");
+        }
+        else
+        {
+            _favImgTheme.Add("favorite0whitesolid.png");
+            _favImgTheme.Add("favorite1whitesolid.png");
+        }
+        
+        if(playlistView.ItemsSource == null) { return; }
+        await LoadToListView();
+    }
+
+
+    private Brush _primaryColor;
+    public Brush PrimaryColor
+    {
+        get => _primaryColor;
+        set
+        {
+            if (_primaryColor == value) { return; }
+            _primaryColor = value;
+            OnPropertyChanged(nameof(PrimaryColor));
+        }
+    }
+    private Color _secondaryColor;
+    public Color SecondaryColor
+    {
+        get => _secondaryColor;
+        set
+        {
+            if (_secondaryColor == value) { return; }
+            _secondaryColor = value;
+            OnPropertyChanged(nameof(SecondaryColor));
+        }
+    }
+
+    private string _backwardSolid;
+    public string BackwardSolid
+    {
+        get => _backwardSolid;
+        set
+        {
+            if (_backwardSolid == value) { return; }
+            _backwardSolid = value;
+            OnPropertyChanged(nameof(BackwardSolid));
+        }
+    }
+
+    private string _backward;
+    public string Backward
+    {
+        get => _backward;
+        set
+        {
+            if (_backward == value) { return; }
+            _backward= value;
+            OnPropertyChanged(nameof(Backward));
+        }
+    }
+
+    private string _playSolid;
+    public string PlaySolid
+    {
+        get => _playSolid;
+        set
+        {
+            if (_playSolid == value) { return; }
+            _playSolid = value;
+            OnPropertyChanged(nameof(PlaySolid));
+        }
+    }
+
+    private string _pauseSolid;
+    public string PauseSolid
+    {
+        get => _pauseSolid;
+        set
+        {
+            if (_pauseSolid == value) { return; }
+            _pauseSolid = value;
+            OnPropertyChanged(nameof(PauseSolid));
+        }
+    }
+
+    private string _forward;
+    public string Forward
+    {
+        get => _forward;
+        set
+        {
+            if (_forward == value) { return; }
+            _forward = value;
+            OnPropertyChanged(nameof(Forward));
+        }
+    }
+
+    private string _forwardSolid;
+    public string ForwardSolid
+    {
+        get => _forwardSolid;
+        set
+        {
+            if (_forwardSolid == value) { return; }
+            _forwardSolid = value;
+            OnPropertyChanged(nameof(ForwardSolid));
+        }
+    }
+
+    private string _plusSolid;
+    public string PlusSolid
+    {
+        get => _plusSolid;
+        set
+        {
+            if (_plusSolid == value) { return; }
+            _plusSolid = value;
+            OnPropertyChanged(nameof(PlusSolid));
+        }
+    }
+
+    private string _listSolid;
+    public string ListSolid
+    {
+        get => _listSolid;
+        set
+        {
+            if (_listSolid == value) { return; }
+            _listSolid = value;
+            OnPropertyChanged(nameof(ListSolid));
+        }
+    }
+
+    private string _downloadSolid;
+    public string DownloadSolid
+    {
+        get => _downloadSolid;
+        set
+        {
+            if (_downloadSolid == value) { return; }
+            _downloadSolid = value;
+            OnPropertyChanged(nameof(DownloadSolid));
+        }
+    }
+
+    private string _replaySolid;
+    public string ReplaySolid
+    {
+        get => _replaySolid;
+        set
+        {
+            if (_replaySolid == value) { return; }
+            _replaySolid = value;
+            OnPropertyChanged(nameof(ReplaySolid));
+        }
+    }
+
+    private string _shuffleSolid;
+    public string ShuffleSolid
+    {
+        get => _shuffleSolid;
+        set
+        {
+            if (_shuffleSolid == value) { return; }
+            _shuffleSolid = value;
+            OnPropertyChanged(nameof(ShuffleSolid));
+        }
+    }
+
+    private string _homeSolid;
+    public string HomeSolid
+    {
+        get => _homeSolid;
+        set
+        {
+            if (_homeSolid == value) { return; }
+            _homeSolid = value;
+            OnPropertyChanged(nameof(HomeSolid));
+        }
+    }
+
+    private string _playlistReturnSolid;
+    public string PlaylistReturnSolid
+    {
+        get => _playlistReturnSolid;
+        set
+        {
+            if (_playlistReturnSolid == value) { return; }
+            _playlistReturnSolid = value;
+            OnPropertyChanged(nameof(PlaylistReturnSolid));
+        }
+    }
+
+
 
 
     /// <summary>
@@ -1124,11 +1469,16 @@ public partial class MainPage : ContentPage
     /// <param name="e">Argumenty zdarzenia.</param>
     private async void NewPlaylist_Clicked(object sender, EventArgs e)
     {
-        
+
         await Navigation.PushAsync(new PlaylistCreationPage(_foldersList, _playlists));
     }
 
+
+
 }
+
+
+
 /// <summary>
 /// ViewModel dla utworu na liście odtwarzania.
 /// </summary>
@@ -1141,6 +1491,10 @@ public class PlaylistViewModel : BindableObject
     public string Path { get; set; }
 
     public string TitleAndArtist { get; set; }
+
+
+    public Color SecondaryColor { get; set; }
+
     public bool IsSelected { get; set; }
     public string TrackInfo { get; set; }
 
@@ -1171,6 +1525,7 @@ public class PlaylistViewModel : BindableObject
     /// </summary>
     /// <param name="playlist">Playlista, dla której tworzone są obiekty PlaylistViewModel.</param>
     /// <returns>Lista obiektów PlaylistViewModel.</returns>
+
     internal static List<PlaylistViewModel> CreatePlaylistViewModel(AudioPlaylist playlist)
     {
         var playlistViewModels = new List<PlaylistViewModel>();
@@ -1183,8 +1538,10 @@ public class PlaylistViewModel : BindableObject
                 Album = track.GetAlbum(),
                 Artist = track.GetArtist(),
                 Path = track.GetFilePath(),
+
                 IsSelected = false,
                 BgColor = null
+
             };
 
             playlistViewModels.Add(trackViewModel);
@@ -1194,6 +1551,37 @@ public class PlaylistViewModel : BindableObject
     }
 
    
+}
+
+public class MultiplePlaylistViewModel : BindableObject
+{
+    
+    public string Path { get; set; }
+
+    public string Name { get; set; }
+
+    public Color SecondaryColor { get; set; }
+
+    internal static List<MultiplePlaylistViewModel> CreatePlaylistViewModel(List<AudioPlaylist> playlists, Color color)
+    {
+        var playlistViewModels = new List<MultiplePlaylistViewModel>();
+
+        foreach (var playlist in playlists)
+        {
+            var trackViewModel = new MultiplePlaylistViewModel
+            {
+                Name = playlist.Name,
+                Path = playlist.Path,
+                SecondaryColor =color
+            };
+
+            playlistViewModels.Add(trackViewModel);
+        }
+
+        return playlistViewModels;
+    }
+
+
 }
 
 
