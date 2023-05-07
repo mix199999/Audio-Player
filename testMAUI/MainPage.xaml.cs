@@ -157,6 +157,7 @@ public partial class MainPage : ContentPage
         else
         {
             _equalizerList.Add(new EqualizerBand[0]);
+            _equalizerList[0]=player.Bands;
         }
     }
 
