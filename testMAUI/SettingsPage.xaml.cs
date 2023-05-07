@@ -88,6 +88,30 @@ public partial class SettingsPage : ContentPage
         }
     }
 
+    private string _plusSolid;
+    public string PlusSolid
+    {
+        get => _plusSolid;
+        set
+        {
+            if (_plusSolid == value) { return; }
+            _plusSolid = value;
+            OnPropertyChanged(nameof(PlusSolid));
+        }
+    }
+
+    private string _minus;
+    public string Minus
+    {
+        get => _minus;
+        set
+        {
+            if (_minus == value) { return; }
+            _minus = value;
+            OnPropertyChanged(nameof(Minus));
+        }
+    }
+
     private string _path;
     public string FolderPath
     {
@@ -145,6 +169,8 @@ public partial class SettingsPage : ContentPage
         BackwardSolid = buttons[0];
         PlaySolid = buttons[2];
         ForwardSolid = buttons[5];
+        PlusSolid = buttons[6];
+        Minus = buttons[14];
         if (grad.Gradient) { PrimaryColor = grad.GetGradient(); }
         else PrimaryColor = new SolidColorBrush(Color.FromArgb(grad.PrimaryColor));
         SecondaryColor = Color.FromArgb(grad.SecondaryColor);

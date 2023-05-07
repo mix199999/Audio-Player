@@ -94,6 +94,21 @@ public partial class EqPopup : Popup
         EqualizerSettingsSaved?.Invoke(this, settings);
     }
 
+    private void HoverBegan(object sender, PointerEventArgs e)
+    {
+        if (sender is Button button)
+        {
+            button.BackgroundColor = Color.FromRgba(0, 0, 0, 20);
+        }
+    }
+
+    private void HoverEnded(object sender, PointerEventArgs e)
+    {
+        if (sender is Button button)
+        {
+            button.BackgroundColor = Color.FromRgba(0, 0, 0, 0);
+        }
+    }
 
     private void Slider1_ValueChanged(object sender, ValueChangedEventArgs e)
     {

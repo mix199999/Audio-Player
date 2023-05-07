@@ -49,7 +49,7 @@ public static class MauiProgram
                 FolderList = new List<string> { Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) },
                 AudioPlaylists = new List<AudioPlaylist> { new AudioPlaylist { Name = "Favorite Songs", Path = favoriteSongsPath } },
                 FirstTimeRun = true,
-                Theme = new Theme { Gradient = true, PrimaryColor = "333333", SecondaryColor = "ffffff", GradientColor = "3a9eb9", Flip = false, HtoV = true, DarkButtons = false },
+                Theme = new Theme { Gradient = false, PrimaryColor = "ffffff", SecondaryColor = "000000", GradientColor = "bbbbbb", Flip = false, HtoV = true, DarkButtons = true },
                 EqualizerSettings = new List<EqualizerBand[]>()
             };
             var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
