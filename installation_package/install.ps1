@@ -25,9 +25,15 @@
 #Requires -RunAsAdministrator
 
 # Ask for permission for installing certificate
-# TODO 
 # Write that the program will install certificate to localmachine/root cert-dir
 # if the user does not want -> abort installation
+$wshell = New-Object -ComObject Wscript.Shell
+$pop_up_answer = $wshell.Popup("Instalowanie programu jest rownowazne z instalowaniem naszego certyfikatu, bez ktorego nie bedzie mozliwosci zainstalowania programu (zob. readme.txt). Czy chcesz kontynuowac instalacje?", 0, "Alert", 48+4)
+if ($pop_up_answer -eq 7) {
+    $aux_1 = New-Object -ComObject Wscript.Shell
+    $aux_2 = $aux_1.Popup("Przerwano instalacje", 0, "Alert", 16+0)
+    return
+}
 
 $data_path = ".\data"
 
@@ -44,9 +50,6 @@ if (-not (Test-Path -Path $data_path)) {
     Set-Location $curr_loc
     return
 }
-
-# Maybe check for all needed contents, like Install.ps1, the folders, .msix etc?
-# TODO
 
 # Install certificate
 $cert_path =  Get-ChildItem -Path $data_path -Filter *.cer -File -Name
