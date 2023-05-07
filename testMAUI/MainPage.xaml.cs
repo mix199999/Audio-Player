@@ -463,6 +463,7 @@ public partial class MainPage : ContentPage
         {
             AudioFile audioFile;
             currentTrackTime = TimeSpan.Zero;
+            TrackProgressBarSlider.Value = 0;
             switch (_isRandom)
             {
                 case false:
@@ -563,6 +564,7 @@ public partial class MainPage : ContentPage
     {
         mainPlaylist.Previous();
         currentTrackTime = TimeSpan.Zero;
+        TrackProgressBarSlider.Value = 0;
         AudioFile audioFile = mainPlaylist.GetCurrentTrack();
 
         if (audioFile != null)
