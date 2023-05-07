@@ -58,6 +58,7 @@ public partial class MainPage : ContentPage
     private bool _isAnimating = true;
     private int _sbInputLength = 0;
     private bool _firstTimeRun = true;
+    private bool _playedSongAlready = false;
 
     internal Theme _theme = new();
     private int _playAudioIndex = -1;
@@ -542,7 +543,10 @@ public partial class MainPage : ContentPage
     /// <param name="e">Argumenty zdarzenia.</param>
     private void playBtn_Clicked(object sender, EventArgs e)
     {
-        playAudio();
+        if (!_playedSongAlready) { return; }
+
+        player.Play();
+        trackTimer.Start();
         CurrentTimeLabel.Opacity = 1;
         if (mainPlaylist.Tracks.Count == 0) { return; }
         AudioPlayingImageControl.Opacity = 1;
@@ -684,6 +688,11 @@ public partial class MainPage : ContentPage
                 AudioFile audioFile = new AudioFile(path);
                 player.Load(audioFile.GetFilePath());
                 player.Play();
+
+                if (_playedSongAlready == false)
+                {
+                    _playedSongAlready = true;
+                }
 
                 player._totalTime = audioFile.GetDuration();
                 TrackProgressBarSlider.Maximum = audioFile.GetDuration().TotalSeconds;
