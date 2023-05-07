@@ -28,10 +28,10 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Dispatching;
 using System;
 using System.Diagnostics;
-
+using NAudio.Extras;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json.Linq;
-
+using GNOM;
 
 public partial class MainPage : ContentPage
 {
@@ -57,7 +57,9 @@ public partial class MainPage : ContentPage
     private bool _isAnimating = true;
     private int _sbInputLength = 0;
     private bool _firstTimeRun = true;
+
     private bool _playedSongAlready = false;
+   private List<EqualizerBand[]> _equalizerList = new List<EqualizerBand[]>();
 
     internal Theme _theme = new();
     private int _playAudioIndex = -1;
@@ -74,7 +76,6 @@ public partial class MainPage : ContentPage
         _playlists = new List<AudioPlaylist>();
         _configuration.GetSection("FolderList").Bind(_foldersList);
         _playlists = _configuration.GetSection("AudioPlaylists").Get<List<AudioPlaylist>>();
-
         _firstTimeRun = _configuration.GetValue<bool>("FirstTimeRun");
         _configuration.GetSection("Theme").Bind(_theme);
         //1 sza jest lista z ulubionymi
@@ -84,14 +85,16 @@ public partial class MainPage : ContentPage
 
         InitializeComponent();
 
+     
+
         player = new Player();
         player._status = playerStatus.IsNotPlaying;
         mainPlaylist = new AudioPlaylist();
 
         this.fileSaver = fileSaver;
 
-        VolumeSlider.Value = 0;
-        player.SetVolume(0);
+        VolumeSlider.Value = 50;
+        player.SetVolume(50);
 
         AudioPlayingImageControl.Opacity = 0;
         trackTimer.Interval = 1000;
@@ -142,8 +145,26 @@ public partial class MainPage : ContentPage
             _firstTimeRun = false;
             SaveToJson();
         }
+        LoadEq();
     }
-    
+
+
+    private void LoadEq()
+    {
+        if(_configuration.GetSection("EqualizerSettings").Get<List<EqualizerBand[]>>() != null) 
+        {
+        _equalizerList = _configuration.GetSection("EqualizerSettings").Get<List<EqualizerBand[]>>();
+            player.Bands = _equalizerList[0];
+        }
+        else
+        {
+            _equalizerList.Add(new EqualizerBand[0]);
+
+            _equalizerList[0]=player.Bands;
+
+        }
+    }
+
     /// <summary>
     /// Metoda służąca do odbierania danych z innych stron, które są obiektem klasy StringListMessage
     /// </summary>
@@ -665,16 +686,19 @@ public partial class MainPage : ContentPage
     /// <param name="e">Argumenty zdarzenia.</param>
     private async void saveListBtn_Clicked(object sender, TappedEventArgs e)
     {
-        using var stream = new MemoryStream(Encoding.Default.GetBytes(mainPlaylist.SaveToM3U()));
-        var path = await fileSaver.SaveAsync(".M3U", stream, cancellationTokenSource.Token);
+        //using var stream = new MemoryStream(Encoding.Default.GetBytes(mainPlaylist.SaveToM3U()));
+        //var path = await fileSaver.SaveAsync(".M3U", stream, cancellationTokenSource.Token);
 
-        var newPlaylist = new AudioPlaylist()
-        {
-            Name = Path.GetFileNameWithoutExtension(path.FilePath),
-            Path = path.FilePath
-        };
-        _playlists.Add(newPlaylist);
-        SaveToJson();
+        //var newPlaylist = new AudioPlaylist()
+        //{
+        //    Name = Path.GetFileNameWithoutExtension(path.FilePath),
+        //    Path = path.FilePath
+        //};
+        //_playlists.Add(newPlaylist);
+        //SaveToJson();
+       
+
+
     }
 
     /// <summary>
@@ -1061,7 +1085,8 @@ public partial class MainPage : ContentPage
             FolderList = _foldersList,
             AudioPlaylists = _playlists,
             FirstTimeRun = _firstTimeRun,
-            Theme = _theme
+            Theme = _theme,
+            EqualizerSettings =_equalizerList
         };
 
         var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
@@ -1164,12 +1189,43 @@ public partial class MainPage : ContentPage
     /// <param name="e">Argumenty zdarzenia.</param>
     private async void SaveListBtn_Clicked(object sender, EventArgs e)
     {
+        using var stream = new MemoryStream(Encoding.Default.GetBytes(mainPlaylist.SaveToM3U()));
+        var path = await fileSaver.SaveAsync(".M3U", stream, cancellationTokenSource.Token);
+
+        var newPlaylist = new AudioPlaylist()
+        {
+            Name = Path.GetFileNameWithoutExtension(path.FilePath),
+            Path = path.FilePath
+        };
+        _playlists.Add(newPlaylist);
+        SaveToJson();
+
+    }
+
+
+    private async void EqBtn_Clicked(object sender, EventArgs e)
+    {
         await Dispatcher.DispatchAsync(() => {
-            var popup = new PopupTrackInfo();
-            popup.PlaylistSaved += OnPlaylistSaved;
+            var popup = new EqPopup(_theme, player.Bands);
+
+            popup.EqualizerSettingsSaved += OnEqualizerSettingsSaved;
+            popup.SingleBandChanged += Popup_SingleBandChanged;
             this.ShowPopup(popup);
+
         });
 
+    }
+
+    private void Popup_SingleBandChanged(object sender, KeyValuePair<int, float> e)
+    {
+        player.ApplySingleBand(e);
+    }
+
+    private void OnEqualizerSettingsSaved(object sender, EqualizerBand[] settings)
+    {
+        player.ApplyEqualizerSettings(settings);
+        _equalizerList[0] = settings;
+        SaveToJson();
     }
 
     /// <summary>
@@ -1282,6 +1338,7 @@ public partial class MainPage : ContentPage
         ShuffleSolid = buttons[10];
         HomeSolid = buttons[11];
         PlaylistReturnSolid = buttons[12];
+        EqSolid = buttons[13];
 
         _favImgTheme = new();
         if (_theme.DarkButtons)
@@ -1452,6 +1509,18 @@ public partial class MainPage : ContentPage
             if (_shuffleSolid == value) { return; }
             _shuffleSolid = value;
             OnPropertyChanged(nameof(ShuffleSolid));
+        }
+    }
+
+    private string _eqSolid;
+    public string EqSolid
+    {
+        get => _eqSolid;
+        set
+        {
+            if (_eqSolid == value) { return; }
+            _eqSolid = value;
+            OnPropertyChanged(nameof(EqSolid));
         }
     }
 

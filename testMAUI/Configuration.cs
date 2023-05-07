@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Extras;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,10 +12,12 @@ namespace testMAUI
     /// </summary>
     internal class Configuration
     {
-        private List<string> folderList; //!< Lista ścieżek do folderów z których piosenki mają być czytane
-        private List<AudioPlaylist> audioPlaylists; //!< Lista playlist zapisanych w programie
-        private bool firstTimeRun; //!< Flaga czy aplikacja jest odpalana po raz pierwszy
-        private Theme theme; //!< Motyw aplikacji
+        private List<string> folderList;
+        private List<AudioPlaylist> audioPlaylists;
+        private bool firstTimeRun;
+        private Theme theme;
+        public List<EqualizerBand[]> EqualizerSettings { get; set; }
+
 
         public List<string> FolderList { get => folderList; set => folderList = value; }
         public List<AudioPlaylist> AudioPlaylists { get => audioPlaylists; set => audioPlaylists = value; }

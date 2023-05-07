@@ -51,7 +51,7 @@
                     </Grid.RowDefinitions>
                     <!-- linki do stronek -->
 
-                    <Frame  Grid.Row="0" Padding="0" Margin="0"  BackgroundColor="Transparent" BorderColor="Transparent" CornerRadius="0" >
+                    <Frame Grid.Row="0" Padding="0" Margin="0" BackgroundColor="Transparent" BorderColor="Transparent" CornerRadius="0" >
 
                         <Grid  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="0"  Padding="0">
                             <Grid.ColumnDefinitions>
@@ -143,7 +143,7 @@
                                     <PointerGestureRecognizer PointerEntered="HoverBegan" PointerExited="HoverEnded"/>
                                 </Button.GestureRecognizers>
                             </Button>
-                            <Button Text="Opcja 3" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Clicked="showThirdOption">
+                            <Button Text="Motyw" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Clicked="showThirdOption">
                                 <Button.GestureRecognizers>
                                     <PointerGestureRecognizer PointerEntered="HoverBegan" PointerExited="HoverEnded"/>
                                 </Button.GestureRecognizers>
@@ -168,14 +168,14 @@
                         <HorizontalStackLayout HorizontalOptions="EndAndExpand">
 
                             <!-- Dodaj button -->
-                            <Image Source="{AppThemeBinding Light=plussolid.png, Dark=plussolidwhite.png}" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="30" Grid.Column="8" ToolTipProperties.Text="Add path" x:Name="addFolderBt" >
+                            <Image Source="{Binding PlusSolid}" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="30" Grid.Column="8" ToolTipProperties.Text="Add path" x:Name="addFolderBt" >
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="Button_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
 
                             <!-- Usun button -->
-                            <Image Source="{AppThemeBinding Light=minus.png, Dark=minuswhite.png}" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="25" Grid.Column="8" ToolTipProperties.Text="Remove path" x:Name="RemoveFolderBt">
+                            <Image Source="{Binding Minus}" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="25" Grid.Column="8" ToolTipProperties.Text="Remove path" x:Name="RemoveFolderBt">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer  Tapped="RemoveFolderBt_Tapped"  />
                                 </Image.GestureRecognizers>
@@ -225,16 +225,16 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <CheckBox x:Name="GradientCheck" CheckedChanged="OnGradientCheckCheckedChanged" HeightRequest="20" HorizontalOptions="Start"/>
-                        <Label Text="Enable Gradient for Background?" VerticalOptions="Center" Margin="30,0"/>
+                        <Label Text="Włączyć gradient jako tło?" VerticalOptions="Center" Margin="30,0"/>
                         <Grid Grid.Column="1" x:Name="GradientOptions">
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
                             <CheckBox x:Name="GradientFlipCheckBox" CheckedChanged="OnGradientFlipCheckedChanged" Grid.Row="0"/>
-                            <Label Text="Flip the Gradient" VerticalOptions="Center" Margin="30,0"/>
+                            <Label Text="Obróć Gradient" VerticalOptions="Center" Margin="30,0"/>
                             <CheckBox x:Name="GradientHtoVCheckBox" CheckedChanged="OnGradientHtoVCheckedChanged" Grid.Row="1"/>
-                            <Label Grid.Row="1" Text="Horizontal to Vertical" VerticalOptions="Center" Margin="30,0"/>
+                            <Label Grid.Row="1" Text="Gradient Poziomy -> Pionowy" VerticalOptions="Center" Margin="30,0"/>
                         </Grid>
                     </Grid>
                     <Grid>
@@ -247,16 +247,16 @@
                                 <RowDefinition/>
                                 <RowDefinition Height="20"/>
                             </Grid.RowDefinitions>
-                            <Entry Grid.Row="0" x:Name="PrimaryColorEntry" Completed="OnPrimaryColorEntryCompleted" MaxLength="6" Placeholder="Primary Color in Hex (text length 6)" FontSize="13" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30"/>
-                            <Label Grid.Row="1" x:Name="PrimaryEntryError" Text="Niepoprawnie wprowadzony kolor!" HeightRequest="0" TextColor="Red" VerticalOptions="Start" ZIndex="-1"/>
+                            <Entry Grid.Row="0" x:Name="PrimaryColorEntry" Completed="OnPrimaryColorEntryCompleted" MaxLength="6" Placeholder="Primary Color in Hex (text length 6)" FontSize="13" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30" BackgroundColor="White"/>
+                            <Label Grid.Row="1" x:Name="PrimaryEntryError" Text="Niepoprawnie wprowadzony kolor!" HeightRequest="0" TextColor="{Binding SecondaryColor}" VerticalOptions="Start" ZIndex="-1"/>
                         </Grid>
                         <Grid Grid.Column="1">
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
                                 <RowDefinition Height="20"/>
                             </Grid.RowDefinitions>
-                            <Entry Grid.Row="0" x:Name="GradientEntry" Completed="OnGradientEntryCompleted" MaxLength="6" Placeholder="Gradient End Color in Hex (text length 6)" FontSize="13" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30"/>
-                            <Label Grid.Row="1" x:Name="GradientEntryError" Text="Niepoprawnie wprowadzony kolor!" HeightRequest="0" TextColor="Red" VerticalOptions="Start" ZIndex="-1"/>
+                            <Entry Grid.Row="0" x:Name="GradientEntry" Completed="OnGradientEntryCompleted" MaxLength="6" Placeholder="Gradient End Color in Hex (text length 6)" FontSize="13" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30" BackgroundColor="White"/>
+                            <Label Grid.Row="1" x:Name="GradientEntryError" Text="Niepoprawnie wprowadzony kolor!" HeightRequest="0" TextColor="{Binding SecondaryColor}" VerticalOptions="Start" ZIndex="-1"/>
                         </Grid>
                     </Grid>
                     <Grid Margin="20,0">
@@ -264,11 +264,11 @@
                             <RowDefinition Height="30"/>
                             <RowDefinition Height="25"/>
                         </Grid.RowDefinitions>
-                        <Entry Grid.Row="0" x:Name="SecondaryColorEntry" Completed="OnSecondaryColorEntryCompleted" MaxLength="6" Placeholder="Secondary Color in Hex (text length 6)" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30"/>
-                        <Label Grid.Row="1" x:Name="SecondaryEntryError" Text="Niepoprawnie wprowadzony kolor!" HeightRequest="0" TextColor="Red" VerticalOptions="Start" ZIndex="-1"/>
+                        <Entry Grid.Row="0" x:Name="SecondaryColorEntry" Completed="OnSecondaryColorEntryCompleted" MaxLength="6" Placeholder="Secondary Color in Hex (text length 6)" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30" BackgroundColor="White"/>
+                        <Label Grid.Row="1" x:Name="SecondaryEntryError" Text="Niepoprawnie wprowadzony kolor!" HeightRequest="0" TextColor="{Binding SecondaryColor}" VerticalOptions="Start" ZIndex="-1"/>
                     </Grid>
                     <Grid>
-                        <Label Text="Enable Dark Buttons?" VerticalOptions="Center" Padding="30, 0"/>
+                        <Label Text="Włączyć ciemne przyciski?" VerticalOptions="Center" Padding="30, 0"/>
                         <CheckBox x:Name="DarkButtonsCheckBox" CheckedChanged="OnDarkButtonsCheckedChanged"/>
                     </Grid>
                     <Grid>
@@ -277,8 +277,8 @@
                             <RowDefinition Height="30"/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Text="Exmaple Text" Padding="10"/>
-                        <Label Grid.Row="1" Text="Another Example Text" Padding="10" VerticalOptions="End" HorizontalOptions="End"/>
+                        <Label Grid.Row="0" Text="Przykłdowy tekst" Padding="10"/>
+                        <Label Grid.Row="1" Text="Kolejny przykładowy tekst" Padding="10" VerticalOptions="End" HorizontalOptions="End"/>
                         <Grid Grid.Row="2" HeightRequest="40">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>
@@ -292,7 +292,7 @@
                             <Image Source="{Binding ForwardSolid}" Grid.Column="3" HeightRequest="20"/>
                         </Grid>
                     </Grid>
-                    <Button x:Name="SaveButton" Clicked="OnSaveButtonClicked" Text="Apply the theme" HeightRequest="40" BorderWidth="1" CornerRadius="5">
+                    <Button x:Name="SaveButton" Clicked="OnSaveButtonClicked" Text="Zapisz motyw" HeightRequest="40" BorderWidth="1" CornerRadius="5">
                         <Button.GestureRecognizers>
                             <PointerGestureRecognizer PointerEntered="HoverBegan" PointerExited="HoverEnded"/>
                         </Button.GestureRecognizers>
