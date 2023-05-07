@@ -19,6 +19,7 @@ public class StringListMessage
     }
 }
 
+
 public partial class SettingsPage : ContentPage
 {
     private CancellationToken cancellationToken = new CancellationToken();
@@ -99,13 +100,6 @@ public partial class SettingsPage : ContentPage
             OnPropertyChanged(nameof(Path));
         }
     }
-
-
-
-
-
-
-
 
     internal SettingsPage(List<string> folderlist, Theme theme)
     {

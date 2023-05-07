@@ -144,6 +144,7 @@ public partial class MainPage : ContentPage
             SaveToJson();
         }
     }
+    
     /// <summary>
     /// Metoda służąca do odbierania danych z innych stron, które są obiektem klasy StringListMessage
     /// </summary>
@@ -163,7 +164,6 @@ public partial class MainPage : ContentPage
     /// <summary>
     /// Metoda służąca do odbierania danych z innych stron, które są obiektem klasy AudioListMessage
     /// </summary>
- 
     private void OnAudioListMessageReceived(object recipient, AudioListMessage message)
     {
         List<AudioPlaylist> receivedPlaylists = message.Playlist;
@@ -178,6 +178,9 @@ public partial class MainPage : ContentPage
          playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists, Color.FromArgb(_theme.SecondaryColor));
     }
 
+    /// <summary>
+    /// Metoda wyświetlająca instrukcję
+    /// </summary>
     private void ShowInstruction()
     {
         try
@@ -202,7 +205,6 @@ public partial class MainPage : ContentPage
     /// </summary>
     /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
     /// <param name="e">Argumenty zdarzenia, zawierają informacje o wybranym elemencie.</param>
-
     private void SearchBar_SearchButtonPressed(object sender, EventArgs e)
     {
         trackTimer.Stop();
@@ -240,6 +242,11 @@ public partial class MainPage : ContentPage
         }
     }
 
+    /// <summary>
+    /// Metoda wywoływana gdy kliknie się na pole do wyszukiwania
+    /// </summary>
+    /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
+    /// <param name="e">Argumenty zdarzenia, zawierają informacje o wybranym elemencie.</param>
     private void OnSearchBarFocused(object sender, FocusEventArgs e)
     {
         if (sender is SearchBar searchBar)
@@ -260,6 +267,11 @@ public partial class MainPage : ContentPage
 
     }
 
+    /// <summary>
+    /// Metoda wywoływana kiedy "odkliknie" się z pola wyszukiwania
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void OnSearchBarUnfocused(object sender, FocusEventArgs e)
     {
         resultsList.IsVisible = false;
@@ -308,6 +320,7 @@ public partial class MainPage : ContentPage
 
     }
 
+    
     private void ShowResultsList(bool showResults)
     {
         if (showResults)
@@ -332,7 +345,6 @@ public partial class MainPage : ContentPage
     /// <summary>
     /// Ładuje ścieżki dźwiękowe z folderów na listę odtwarzania i wyświetla je w widoku listy.
     /// </summary>    
-
     private void LoadFromDirectory()
     {
         mainPlaylist.Tracks.Clear();
@@ -386,6 +398,7 @@ public partial class MainPage : ContentPage
         });
 
     }
+    
     /// <summary>
     /// Oznacza ulubione utwory w głównej playliście. Porównuje utwory w głównej playliście z utworami na 
     /// liście ulubionych i ustawia flagę "ulubiony" na true, jeśli są identyczne.
@@ -413,8 +426,6 @@ public partial class MainPage : ContentPage
 
     }
 
-
-
     /// <summary>
     /// Metoda do wczytywania plików audio
     /// </summary>
@@ -422,7 +433,6 @@ public partial class MainPage : ContentPage
     /// <param name="e">Argumenty zdarzenia.</param>
     private async void filesBtn_Clicked(object sender, EventArgs e)
     {
-      
 
         var m3uPicker = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
         {
@@ -515,7 +525,6 @@ public partial class MainPage : ContentPage
         });
     }
 
-
     /// <summary>
     /// Obsługuje zdarzenie kliknięcia przycisku następnego utworu
     /// </summary>
@@ -553,8 +562,6 @@ public partial class MainPage : ContentPage
         AudioPlayingImageControl.Opacity = 1;
     }
 
-
-
     /// <summary>
     /// Obsługuje zdarzenie kliknięcia przycisku poprzedniego utworu
     /// </summary>
@@ -574,6 +581,7 @@ public partial class MainPage : ContentPage
             Task.Run(async () => { await setCurrentTrackInfo(); });
         }
     }
+    
     /// <summary>
     /// Obsługuje zdarzenie wybrania elementu na liście odtwarzania.
     /// </summary>
@@ -602,8 +610,6 @@ public partial class MainPage : ContentPage
         Task.Run(async () => { await setCurrentTrackInfo(); });
     }
 
-
-
     /// <summary>
     /// Obsługuje zdarzenie kliknięcia przycisku Load List - ładowania playlisty .m3u
     /// </summary>
@@ -611,8 +617,6 @@ public partial class MainPage : ContentPage
     /// <param name="e">Argumenty zdarzenia.</param>
     private async void loadListBtn_Clicked(object sender, TappedEventArgs e)
     {
-
-
         var m3uPicker = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
         {
             {DevicePlatform.WinUI, new[]{".m3u" } }
@@ -674,7 +678,6 @@ public partial class MainPage : ContentPage
         SaveToJson();
     }
 
-
     /// <summary>
     /// Rozpoczyna odtwarzanie audio
     /// </summary>
@@ -715,8 +718,6 @@ public partial class MainPage : ContentPage
 
     }
 
-
-
     /// <summary>
     /// Obsługuje zdarzenie przesunięcia suwaka głośności
     /// </summary>
@@ -726,6 +727,7 @@ public partial class MainPage : ContentPage
     {
         await Task.Run(() => player.SetVolume(e.NewValue));
     }
+
     /// <summary>
     /// Obsługuje kliknięcie przycisku "Backward" (Cofnij o 15 sekund).
     /// </summary>
@@ -737,6 +739,7 @@ public partial class MainPage : ContentPage
         player.SkipBackward();
         currentTrackProgress -= 15;
     }
+    
     /// <summary>
     /// Obsługuje kliknięcie przycisku "Forward" (Przewiń do przodu o 15 sekund).
     /// </summary>
@@ -756,12 +759,14 @@ public partial class MainPage : ContentPage
     /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
     /// <param name="e">Argumenty zdarzenia.</param>
     private void replayBtn_Clicked(object sender, TappedEventArgs e) => ReplayPlaylist(sender);
+    
     /// <summary>
     /// Obsługuje kliknięcie przycisku "Random" (Odtwarzanie losowe).
     /// </summary>
     /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
     /// <param name="e">Argumenty zdarzenia.</param>
     private void shuffleBtn_Clicked(Object sender, TappedEventArgs e) => PlayRandom(sender);
+
 
     private void HoverBegan(object sender, PointerEventArgs e)
     {
@@ -779,6 +784,7 @@ public partial class MainPage : ContentPage
         }
     }
 
+
     private void HoverEnded(object sender, PointerEventArgs e)
     {
         if (sender is Button button)
@@ -786,6 +792,7 @@ public partial class MainPage : ContentPage
             button.BackgroundColor = Color.FromRgba(0, 0, 0, 0);
         }
     }
+
     /// <summary>
     /// Obsługuje zdarzenie Tick timera trackTimer.
     /// </summary>
@@ -905,7 +912,6 @@ public partial class MainPage : ContentPage
     /// </summary>
     /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
     /// <param name="e">Argumenty zdarzenia.</param>
-
     private void TrackProgressBarSlider_ValueChanged(object sender, ValueChangedEventArgs e)
     {
         if (ValueChangedEnabled && player._status == playerStatus.IsPlaying)
@@ -927,9 +933,8 @@ public partial class MainPage : ContentPage
             if (img.Opacity == 0.75) { img.Opacity = 0.4; } else { img.Opacity = 0.75; }
         }
         return true;
-
-
     }
+
     /// <summary>
     /// Odtwarzanie w pętli playlisty
     /// </summary>
@@ -959,6 +964,7 @@ public partial class MainPage : ContentPage
         });
     }
 
+
     private void PlayRandom(object s)
     {
 
@@ -971,6 +977,7 @@ public partial class MainPage : ContentPage
             if (img.Opacity == 0.75) { img.Opacity = 0.4; } else { img.Opacity = 0.75; }
         }
     }
+
     /// <summary>
     /// Generuje losową liczbę w zakresie od 0 do długości obecnie załadowanej playlisty
     /// </summary>
@@ -987,6 +994,7 @@ public partial class MainPage : ContentPage
 
         return index;
     }
+
 
     private async void Button_Clicked(object sender, EventArgs e)
     {
@@ -1038,6 +1046,7 @@ public partial class MainPage : ContentPage
             await Toast.Make($"The folder was not picked with error: {result.Exception.Message}").Show(cancellationToken);
         }
     }
+    
     /// <summary>
     /// Zapisuje ustawienia do pliku konfiguracyjnego JSON
     /// </summary>
@@ -1062,8 +1071,6 @@ public partial class MainPage : ContentPage
         playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists, Color.FromArgb(_theme.SecondaryColor));
     }
 
-
-    
     /// <summary>
     /// Wyświetla toast o bieżącym utworze
     /// </summary>
@@ -1076,7 +1083,6 @@ public partial class MainPage : ContentPage
         ToastDuration.Short);
         await toast.Show(cancellationToken);
     }
-
 
     /// <summary>
     /// Przechwytuje zdarzenie kliknięcia przycisku Settings (Ustawienia)
@@ -1144,7 +1150,6 @@ public partial class MainPage : ContentPage
         }
     }
 
-
     private void callPopup(object sender, FocusEventArgs e) =>
         _visibility = true;
 
@@ -1179,6 +1184,7 @@ public partial class MainPage : ContentPage
         LoadFromDirectory();
 
     }
+
     /// <summary>
     /// Obsługuje zdarzenie zapisania playlisty
     /// Zapisuje ją w folderze systemowym MyMusic
@@ -1258,6 +1264,9 @@ public partial class MainPage : ContentPage
         SecondaryColor = Color.FromArgb(_theme.SecondaryColor);
     }
 
+    /// <summary>
+    /// Metoda zmieniająca wygląd przycisków ze względu na motyw
+    /// </summary>
     private async void LoadThemedButtons()
     {
         List<string> buttons = _theme.GetButtons();
@@ -1472,8 +1481,6 @@ public partial class MainPage : ContentPage
     }
 
 
-
-
     /// <summary>
     /// Obsługuje kliknięcie przycisku "Nowa playlista".
     /// Przechodzi do strony PlaylistCreationPage, przekazując listę folderów i listę playlist jako parametry.
@@ -1485,11 +1492,7 @@ public partial class MainPage : ContentPage
 
         await Navigation.PushAsync(new PlaylistCreationPage(_foldersList, _playlists));
     }
-
-
-
 }
-
 
 
 /// <summary>
@@ -1533,12 +1536,12 @@ public class PlaylistViewModel : BindableObject
             OnPropertyChanged(nameof(Favourite));
         }
     }
+
     /// <summary>
     /// Tworzy listę obiektów PlaylistViewModel na podstawie listy utworów AudioTrack z playlisty.
     /// </summary>
     /// <param name="playlist">Playlista, dla której tworzone są obiekty PlaylistViewModel.</param>
     /// <returns>Lista obiektów PlaylistViewModel.</returns>
-
     internal static List<PlaylistViewModel> CreatePlaylistViewModel(AudioPlaylist playlist)
     {
         var playlistViewModels = new List<PlaylistViewModel>();
@@ -1562,13 +1565,12 @@ public class PlaylistViewModel : BindableObject
 
         return playlistViewModels;
     }
-
    
 }
 
+
 public class MultiplePlaylistViewModel : BindableObject
 {
-    
     public string Path { get; set; }
 
     public string Name { get; set; }
@@ -1594,11 +1596,4 @@ public class MultiplePlaylistViewModel : BindableObject
         return playlistViewModels;
     }
 
-
 }
-
-
-
-
-
-
