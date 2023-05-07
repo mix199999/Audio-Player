@@ -1091,7 +1091,7 @@ public partial class MainPage : ContentPage
                 LoadColors();
                 LoadThemedButtons();
             }
-
+            SaveToJson();
         }
 
         // no generalnie to nie dziala bo async (znalezc jakas metode ktoa jest callowana gdy sie wychodzi z settingsow?)
