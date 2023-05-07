@@ -78,6 +78,7 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 		<PackageReference Include="NAudio" Version="2.1.0" />
+		<PackageReference Include="NAudio.Extras" Version="2.1.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
 	</ItemGroup>
@@ -95,6 +96,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="EqPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="SettingsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

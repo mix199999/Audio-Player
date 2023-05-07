@@ -28,10 +28,10 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Dispatching;
 using System;
 using System.Diagnostics;
-
+using NAudio.Extras;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json.Linq;
-
+using GNOM;
 
 public partial class MainPage : ContentPage
 {
@@ -655,16 +655,19 @@ public partial class MainPage : ContentPage
     /// <param name="e">Argumenty zdarzenia.</param>
     private async void saveListBtn_Clicked(object sender, TappedEventArgs e)
     {
-        using var stream = new MemoryStream(Encoding.Default.GetBytes(mainPlaylist.SaveToM3U()));
-        var path = await fileSaver.SaveAsync(".M3U", stream, cancellationTokenSource.Token);
+        //using var stream = new MemoryStream(Encoding.Default.GetBytes(mainPlaylist.SaveToM3U()));
+        //var path = await fileSaver.SaveAsync(".M3U", stream, cancellationTokenSource.Token);
 
-        var newPlaylist = new AudioPlaylist()
-        {
-            Name = Path.GetFileNameWithoutExtension(path.FilePath),
-            Path = path.FilePath
-        };
-        _playlists.Add(newPlaylist);
-        SaveToJson();
+        //var newPlaylist = new AudioPlaylist()
+        //{
+        //    Name = Path.GetFileNameWithoutExtension(path.FilePath),
+        //    Path = path.FilePath
+        //};
+        //_playlists.Add(newPlaylist);
+        //SaveToJson();
+       
+
+
     }
 
 
@@ -1148,11 +1151,18 @@ public partial class MainPage : ContentPage
     private async void SaveListBtn_Clicked(object sender, EventArgs e)
     {
         await Dispatcher.DispatchAsync(() => {
-            var popup = new PopupTrackInfo();
-            popup.PlaylistSaved += OnPlaylistSaved;
+            var popup = new EqPopup(_theme);
+
+            popup.EqualizerSettingsSaved += OnEqualizerSettingsSaved;
             this.ShowPopup(popup);
+
         });
 
+    }
+
+    private void OnEqualizerSettingsSaved(object sender, EqualizerBand[] settings)
+    {
+        player.ApplyEqualizerSettings(settings);
     }
 
     /// <summary>
