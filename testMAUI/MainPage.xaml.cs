@@ -594,6 +594,7 @@ public partial class MainPage : ContentPage
         int selectedIndex = list.IndexOf(e.SelectedItem);
 
         mainPlaylist.SetCurrentTrack(selectedIndex);
+        TrackProgressBarSlider.Value = 0;
 
         playAudio();
         Task.Run(async () => { await setCurrentTrackInfo(); });
@@ -835,6 +836,7 @@ public partial class MainPage : ContentPage
                     CurrentTrackAlbum.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetAlbum());
                     CurrentTrackArtist.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetArtist());
                     CurrentTrackTitle.Text = ((dynamic)mainPlaylist.GetCurrentTrack().GetTitle());
+                    TrackProgressBarSlider.Maximum = ((dynamic)mainPlaylist.GetCurrentTrack().GetDuration().TotalSeconds);
 
                     _isAnimating = true;
                     await Task.Run(() => CurrentTrackAnimation());
