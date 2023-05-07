@@ -70,6 +70,7 @@ namespace testMAUI
                     buttonsList.Add("shufflesolid.png");
                     buttonsList.Add("homesolid.png");
                     buttonsList.Add("playlistreturnsolid.png");
+                    buttonsList.Add("eqsolid.png");
                     break;
                 case false:
                     buttonsList.Add("backwardsolidwhite.png");
@@ -85,6 +86,7 @@ namespace testMAUI
                     buttonsList.Add("shufflesolidwhite.png");
                     buttonsList.Add("homesolid_white.png");
                     buttonsList.Add("playlistreturnsolidwhite.png");
+                    buttonsList.Add("eqsolidwhite.png");
                     break;
             }
 

@@ -28,10 +28,10 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Dispatching;
 using System;
 using System.Diagnostics;
-
+using NAudio.Extras;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json.Linq;
-
+using GNOM;
 
 public partial class MainPage : ContentPage
 {
@@ -58,7 +58,7 @@ public partial class MainPage : ContentPage
     private bool _isAnimating = true;
     private int _sbInputLength = 0;
     private bool _firstTimeRun = true;
-
+    private List<EqualizerBand[]> _equalizerList = new List<EqualizerBand[]>();
     internal Theme _theme = new();
     private int _playAudioIndex = -1;
 
@@ -74,7 +74,6 @@ public partial class MainPage : ContentPage
         _playlists = new List<AudioPlaylist>();
         _configuration.GetSection("FolderList").Bind(_foldersList);
         _playlists = _configuration.GetSection("AudioPlaylists").Get<List<AudioPlaylist>>();
-
         _firstTimeRun = _configuration.GetValue<bool>("FirstTimeRun");
         _configuration.GetSection("Theme").Bind(_theme);
         //1 sza jest lista z ulubionymi
@@ -84,14 +83,16 @@ public partial class MainPage : ContentPage
 
         InitializeComponent();
 
+     
+
         player = new Player();
         player._status = playerStatus.IsNotPlaying;
         mainPlaylist = new AudioPlaylist();
 
         this.fileSaver = fileSaver;
 
-        VolumeSlider.Value = 0;
-        player.SetVolume(0);
+        VolumeSlider.Value = 50;
+        player.SetVolume(50);
 
         AudioPlayingImageControl.Opacity = 0;
         trackTimer.Interval = 1000;
@@ -102,15 +103,7 @@ public partial class MainPage : ContentPage
         this.Focused += callPopup;
 
         if (_foldersList.Count == 0) _foldersList.Add(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
-        if (_playlists == null)
-        {
-            var emptyPlaylist = new AudioPlaylist()
-            {
-                Name = "",
-                Path = ""
-            };
-            _playlists.Add(emptyPlaylist);
-        }
+        
 
 
         foreach (var playlist in _playlists)
@@ -125,7 +118,7 @@ public partial class MainPage : ContentPage
         playlistView.ItemTapped += PlaylistListView_ItemTapped;
         playlistListView.ItemTapped += MultiplePlaylistView_ItemTapped;
 
-        playlistListView.ItemsSource = _playlists;
+        playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists,Color.FromArgb(_theme.SecondaryColor));
 
         LoadFromDirectory();
 
@@ -141,6 +134,7 @@ public partial class MainPage : ContentPage
         resultsList.ItemTapped += ResultsList_ItemTapped;
 
         LoadColors();
+        LoadEq();
         LoadThemedButtons();
         BindingContext = this;
 
@@ -151,6 +145,22 @@ public partial class MainPage : ContentPage
             SaveToJson();
         }
     }
+
+
+    private void LoadEq()
+    {
+        if(_configuration.GetSection("EqualizerSettings").Get<List<EqualizerBand[]>>() != null) 
+        {
+        _equalizerList = _configuration.GetSection("EqualizerSettings").Get<List<EqualizerBand[]>>();
+            player.Bands = _equalizerList[0];
+        }
+        else
+        {
+            _equalizerList.Add(new EqualizerBand[0]);
+        }
+    }
+
+
     /// <summary>
     /// Metoda służąca do odbierania danych z innych stron, które są obiektem klasy StringListMessage
     /// </summary>
@@ -182,8 +192,7 @@ public partial class MainPage : ContentPage
 
         }
 
-        playlistListView.ItemsSource = null;
-        playlistListView.ItemsSource = _playlists;
+         playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists, Color.FromArgb(_theme.SecondaryColor));
     }
 
     private void ShowInstruction()
@@ -664,16 +673,19 @@ public partial class MainPage : ContentPage
     /// <param name="e">Argumenty zdarzenia.</param>
     private async void saveListBtn_Clicked(object sender, TappedEventArgs e)
     {
-        using var stream = new MemoryStream(Encoding.Default.GetBytes(mainPlaylist.SaveToM3U()));
-        var path = await fileSaver.SaveAsync(".M3U", stream, cancellationTokenSource.Token);
+        //using var stream = new MemoryStream(Encoding.Default.GetBytes(mainPlaylist.SaveToM3U()));
+        //var path = await fileSaver.SaveAsync(".M3U", stream, cancellationTokenSource.Token);
 
-        var newPlaylist = new AudioPlaylist()
-        {
-            Name = Path.GetFileNameWithoutExtension(path.FilePath),
-            Path = path.FilePath
-        };
-        _playlists.Add(newPlaylist);
-        SaveToJson();
+        //var newPlaylist = new AudioPlaylist()
+        //{
+        //    Name = Path.GetFileNameWithoutExtension(path.FilePath),
+        //    Path = path.FilePath
+        //};
+        //_playlists.Add(newPlaylist);
+        //SaveToJson();
+       
+
+
     }
 
 
@@ -846,7 +858,13 @@ public partial class MainPage : ContentPage
                     await mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()].SetCoverUrl();
                 }
                 await Task.Delay(TimeSpan.FromSeconds(1));
+                try { 
+                 
                 CurrentTrackCover.Source = mainPlaylist.GetCurrentTrack().GetCoverUrl();
+                }
+                catch (System.NullReferenceException) {
+                    CurrentTrackCover.Source = "note.png";
+                }
                 if (!_visibility) showToastInfo();
 
             }
@@ -1043,14 +1061,14 @@ public partial class MainPage : ContentPage
             FolderList = _foldersList,
             AudioPlaylists = _playlists,
             FirstTimeRun = _firstTimeRun,
-            Theme = _theme
+            Theme = _theme,
+            EqualizerSettings =_equalizerList
         };
 
         var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
 
         System.IO.File.WriteAllText(appSettingsPath, json);
-        playlistListView.ItemsSource = null;
-        playlistListView.ItemsSource = _playlists;
+        playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists, Color.FromArgb(_theme.SecondaryColor));
     }
 
 
@@ -1075,7 +1093,6 @@ public partial class MainPage : ContentPage
     /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
     /// <param name="e">Argumenty zdarzenia.</param>
     private async void settingsButtonClicked(object sender, EventArgs e)
-
     {
         // player.Pause();
         // trackTimer.Stop();
@@ -1083,7 +1100,7 @@ public partial class MainPage : ContentPage
         SettingsPage sp;
         await Navigation.PushAsync(sp = new SettingsPage(_foldersList, _theme));
         bool isPageClosed = await sp.WaitForPageClosedAsync();
-        if(isPageClosed)
+        if (isPageClosed)
         {
             var tmp = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GNOM");
             var appSettingsPath = Path.Combine(tmp, "appSettings.json");
@@ -1100,10 +1117,7 @@ public partial class MainPage : ContentPage
         }
 
         // no generalnie to nie dziala bo async (znalezc jakas metode ktoa jest callowana gdy sie wychodzi z settingsow?)
-        
 
-    {   
-        await Navigation.PushAsync(new SettingsPage(_foldersList));
 
     }
 
@@ -1124,7 +1138,7 @@ public partial class MainPage : ContentPage
             return;
         }
 
-        var selectedPlaylist = (AudioPlaylist)e.Item;
+        var selectedPlaylist = (MultiplePlaylistViewModel)e.Item;
 
         if (selectedPlaylist.Path != null)
         {
@@ -1155,12 +1169,43 @@ public partial class MainPage : ContentPage
     /// <param name="e">Argumenty zdarzenia.</param>
     private async void SaveListBtn_Clicked(object sender, EventArgs e)
     {
+        using var stream = new MemoryStream(Encoding.Default.GetBytes(mainPlaylist.SaveToM3U()));
+        var path = await fileSaver.SaveAsync(".M3U", stream, cancellationTokenSource.Token);
+
+        var newPlaylist = new AudioPlaylist()
+        {
+            Name = Path.GetFileNameWithoutExtension(path.FilePath),
+            Path = path.FilePath
+        };
+        _playlists.Add(newPlaylist);
+        SaveToJson();
+
+    }
+
+
+    private async void EqBtn_Clicked(object sender, EventArgs e)
+    {
         await Dispatcher.DispatchAsync(() => {
-            var popup = new PopupTrackInfo();
-            popup.PlaylistSaved += OnPlaylistSaved;
+            var popup = new EqPopup(_theme, player.Bands);
+
+            popup.EqualizerSettingsSaved += OnEqualizerSettingsSaved;
+            popup.SingleBandChanged += Popup_SingleBandChanged;
             this.ShowPopup(popup);
+
         });
 
+    }
+
+    private void Popup_SingleBandChanged(object sender, KeyValuePair<int, float> e)
+    {
+        player.ApplySingleBand(e);
+    }
+
+    private void OnEqualizerSettingsSaved(object sender, EqualizerBand[] settings)
+    {
+        player.ApplyEqualizerSettings(settings);
+        _equalizerList[0] = settings;
+        SaveToJson();
     }
 
     /// <summary>
@@ -1241,12 +1286,7 @@ public partial class MainPage : ContentPage
 
             playlistView.ItemsSource = trackViewModels;
 
-            playlistListView.ItemsSource = null;
-        playlistListView.ItemsSource = _playlists.Select(x => new
-        {
-            SecondaryColor = Color.FromArgb(_theme.SecondaryColor),
-            Name = x.Name
-        });
+            playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists, Color.FromArgb(_theme.SecondaryColor));
         });
 
 
@@ -1274,6 +1314,7 @@ public partial class MainPage : ContentPage
         ShuffleSolid = buttons[10];
         HomeSolid = buttons[11];
         PlaylistReturnSolid = buttons[12];
+        EqSolid = buttons[13];
 
         _favImgTheme = new();
         if (_theme.DarkButtons)
@@ -1447,6 +1488,18 @@ public partial class MainPage : ContentPage
         }
     }
 
+    private string _eqSolid;
+    public string EqSolid
+    {
+        get => _eqSolid;
+        set
+        {
+            if (_eqSolid == value) { return; }
+            _eqSolid = value;
+            OnPropertyChanged(nameof(EqSolid));
+        }
+    }
+
     private string _homeSolid;
     public string HomeSolid
     {
@@ -1470,7 +1523,8 @@ public partial class MainPage : ContentPage
             OnPropertyChanged(nameof(PlaylistReturnSolid));
         }
     }
-}
+
+
 
 
     /// <summary>
@@ -1481,11 +1535,16 @@ public partial class MainPage : ContentPage
     /// <param name="e">Argumenty zdarzenia.</param>
     private async void NewPlaylist_Clicked(object sender, EventArgs e)
     {
-        
+
         await Navigation.PushAsync(new PlaylistCreationPage(_foldersList, _playlists));
     }
 
+
+
 }
+
+
+
 /// <summary>
 /// ViewModel dla utworu na liście odtwarzania.
 /// </summary>
@@ -1558,6 +1617,37 @@ public class PlaylistViewModel : BindableObject
     }
 
    
+}
+
+public class MultiplePlaylistViewModel : BindableObject
+{
+    
+    public string Path { get; set; }
+
+    public string Name { get; set; }
+
+    public Color SecondaryColor { get; set; }
+
+    internal static List<MultiplePlaylistViewModel> CreatePlaylistViewModel(List<AudioPlaylist> playlists, Color color)
+    {
+        var playlistViewModels = new List<MultiplePlaylistViewModel>();
+
+        foreach (var playlist in playlists)
+        {
+            var trackViewModel = new MultiplePlaylistViewModel
+            {
+                Name = playlist.Name,
+                Path = playlist.Path,
+                SecondaryColor =color
+            };
+
+            playlistViewModels.Add(trackViewModel);
+        }
+
+        return playlistViewModels;
+    }
+
+
 }
 
 

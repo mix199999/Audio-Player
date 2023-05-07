@@ -43,7 +43,11 @@ public partial class PlaylistCreationPage : ContentPage
 
 
     }
-
+    /// <summary>
+    /// Przesyła dane tj lista folderów i lista Playlist po zniknięciu strony
+    /// </summary>
+    /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
+    /// <param name="e">Argumenty zdarzenia.</param>
     private void CreationPage_Disappearing(object sender, EventArgs e)
     {
         StringListMessage folderMessage = new StringListMessage(_folders);
@@ -52,10 +56,14 @@ public partial class PlaylistCreationPage : ContentPage
         AudioListMessage playlistMessage = new AudioListMessage(_playlists);
         WeakReferenceMessenger.Default.Send(playlistMessage);
 
-
-
     }
-
+    /// <summary>
+    /// Przechwytuje zdarzenie kliknięcia na element z ListView
+    /// Zależnie od tego czy Path ("Ścieżka") znajduje się (lub nie)  na liście _selectedTracks
+    /// dodaje bądź ją usuwa 
+    /// </summary>
+    /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
+    /// <param name="e">Argumenty zdarzenia.</param>
     private void PlaylistView_ItemTapped(object sender, ItemTappedEventArgs e)
     {
 
@@ -76,11 +84,14 @@ public partial class PlaylistCreationPage : ContentPage
         }
 
     }
-
+    /// <summary>
+    /// przechodzi na stronę z ustawieniami 
+    /// </summary>
+    /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
+    /// <param name="e">Argumenty zdarzenia.</param>
     private async void settingsButtonClicked(object sender, EventArgs e)
 	{
-       
-        await Navigation.PushAsync(new SettingsPage(_folders));
+
         
     }
 

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace testMAUI;
@@ -21,7 +22,7 @@ public class StringListMessage
 public partial class SettingsPage : ContentPage
 {
     private CancellationToken cancellationToken = new CancellationToken();
-    private int _indexPath=-1;
+    private int _indexPath = -1;
     private int countStart;
     private int countEnd;
     List<string> _foldersList = new List<string>();
@@ -29,15 +30,15 @@ public partial class SettingsPage : ContentPage
     List<string> buttons = new();
 
     private Brush _primaryColor;
-    public Brush PrimaryColor 
-    { 
+    public Brush PrimaryColor
+    {
         get => _primaryColor;
-        set 
-        { 
+        set
+        {
             if (_primaryColor == value) { return; }
             _primaryColor = value;
             OnPropertyChanged(nameof(PrimaryColor));
-        } 
+        }
     }
     private Color _secondaryColor;
     public Color SecondaryColor
@@ -57,7 +58,7 @@ public partial class SettingsPage : ContentPage
         get => _backwardSolid;
         set
         {
-            if(_backwardSolid == value) { return; }
+            if (_backwardSolid == value) { return; }
             _backwardSolid = value;
             OnPropertyChanged(nameof(BackwardSolid));
         }
@@ -81,21 +82,43 @@ public partial class SettingsPage : ContentPage
         get => _forwardSolid;
         set
         {
-            if(_forwardSolid == value) { return; }
+            if (_forwardSolid == value) { return; }
             _forwardSolid = value;
             OnPropertyChanged(nameof(ForwardSolid));
         }
     }
 
-    internal SettingsPage(List<string> folderlist, Theme theme)
-	{
+    private string _path;
+    public string FolderPath
+    {
+        get => _path;
+        set
+        {
+            if (_path == value) { return; }
+            _path = value;
+            OnPropertyChanged(nameof(Path));
+        }
+    }
 
-        InitializeComponent();
-        this.Disappearing += SettingsPage_Disappearing;
+
+
+
+
+
+
+
+    internal SettingsPage(List<string> folderlist, Theme theme)
+    {
+
         this._foldersList = folderlist;
+       
+        InitializeComponent();
+      
+        this.Disappearing += SettingsPage_Disappearing;
+       
         countStart = _foldersList.Count;
         countEnd = countStart;
-        LoadDataToPathView();
+   
         pathListView.ItemTapped += PathListView_ItemTapped;
         grad = theme;
         GradientEntry.IsEnabled = grad.Gradient;
@@ -126,6 +149,7 @@ public partial class SettingsPage : ContentPage
         else PrimaryColor = new SolidColorBrush(Color.FromArgb(grad.PrimaryColor));
         SecondaryColor = Color.FromArgb(grad.SecondaryColor);
         BindingContext = this;
+        LoadDataToPathView();
     }
 
     private void OnGradientCheckCheckedChanged(object sender, CheckedChangedEventArgs e)
@@ -133,11 +157,14 @@ public partial class SettingsPage : ContentPage
         // aktualizacja gradientu przy checkchanged, tak jak flip i HtoV
         // usuniecie parametrow z GetGradient (bierze wszystko z obieku, samego siebie?)
         grad.Gradient = e.Value;
-        if(e.Value) {
+        if (e.Value)
+        {
             GradientEntry.IsEnabled = true;
             GradientOptions.IsVisible = true;
             PrimaryColor = grad.GetGradient();
-        } else { 
+        }
+        else
+        {
             GradientEntry.IsEnabled = false;
             GradientOptions.IsVisible = false;
             PrimaryColor = new SolidColorBrush(Color.FromArgb(grad.PrimaryColor));
@@ -164,13 +191,15 @@ public partial class SettingsPage : ContentPage
                 grad.PrimaryColor = entry.Text;
                 grad.GradientColor = GradientEntry.Text;
                 PrimaryColor = grad.GetGradient();
-            } else
+            }
+            else
             {
                 grad.PrimaryColor = entry.Text;
                 SolidColorBrush scb = new SolidColorBrush(Color.FromArgb(grad.PrimaryColor));
                 PrimaryColor = scb;
             }
-        } else
+        }
+        else
         {
             if (PrimaryEntryError.HeightRequest == 20) { return; }
             //var animation = new Microsoft.Maui.Controls.Animation(v => PrimaryEntryError.HeightRequest = v, 0, 20, Easing.CubicOut); // sometimes works, sometimes doesnt, cool
@@ -279,15 +308,10 @@ public partial class SettingsPage : ContentPage
     {
         await PickFolder(cancellationToken);
     }
-    /// <summary>
-    /// Wywoływana po zamknięciu strony
-    /// przesyła listę folderów
-    /// </summary>
-    /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
-    /// <param name="e">Argumenty zdarzenia.</param>
+
     private void SettingsPage_Disappearing(object sender, EventArgs e)
     {
-        if(countStart == countEnd) { _foldersList = null; }             
+        if (countStart == countEnd) { _foldersList = null; }
         StringListMessage message = new StringListMessage(_foldersList);
         WeakReferenceMessenger.Default.Send(message);
 
@@ -295,11 +319,11 @@ public partial class SettingsPage : ContentPage
     }
 
     public async void mainButtonClicked(object sender, EventArgs e)
-	{
+    {
 
-		await Navigation.PopAsync();
+        await Navigation.PopAsync();
 
-	}
+    }
 
     private void HoverBegan(object sender, PointerEventArgs e)
     {
@@ -328,8 +352,8 @@ public partial class SettingsPage : ContentPage
     public void showPathOptions(object sender, EventArgs e)
     {
         pathOptions.IsVisible = true;
-		secondOption.IsVisible = false;
-		thirdOption.IsVisible = false;	
+        secondOption.IsVisible = false;
+        thirdOption.IsVisible = false;
     }
     public void showInstruction(object sender, EventArgs e)
     {
@@ -353,11 +377,7 @@ public partial class SettingsPage : ContentPage
         thirdOption.IsVisible = true;
     }
 
-    /// <summary>
-    /// Służy do wybrania i dodania katalogu(jeśli jest to możliwe)
-    /// </summary>
-    /// <param name="cancellationToken">token anulowania</param>
-    /// <returns></returns>
+
     async Task PickFolder(CancellationToken cancellationToken)
     {
         var result = await FolderPicker.Default.PickAsync(cancellationToken);
@@ -372,7 +392,7 @@ public partial class SettingsPage : ContentPage
                 _foldersList.Add(result.Folder.Path);
                 LoadDataToPathView();
 
-               countEnd++;
+                countEnd++;
             }
         }
         else
@@ -380,30 +400,28 @@ public partial class SettingsPage : ContentPage
             await Toast.Make($"The folder was not picked with error: {result.Exception.Message}").Show(cancellationToken);
         }
     }
-    /// <summary>
-    /// Obsługuje zdarzenie kliknecia przycisku "-"
-    /// usuwa ścieżkę do katalogu z listy
-    /// </summary>
-    /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
-    /// <param name="e">Argumenty zdarzenia.</param>
+
     private void RemoveFolderBt_Tapped(object sender, TappedEventArgs e)
     {
-       
+
         var selectedItem = pathListView.SelectedItem;
-        if (selectedItem != null) 
+        if (selectedItem != null)
         {
             _foldersList.RemoveAt(_indexPath);
             LoadDataToPathView();
 
         }
     }
-    /// <summary>
-    /// Wczytuje katalogi do ListView
-    /// </summary>
-    private void LoadDataToPathView()
+
+    private  void LoadDataToPathView()
     {
-        pathListView.ItemsSource = _foldersList.Select(directory => new
-        {Path = directory.ToString() }) ;
+
+      
+           pathListView.ItemsSource= FolderlistViewModel.CreatePlaylistViewModel(_foldersList, Color.FromArgb(grad.SecondaryColor));
+     
+
+
+       
     }
 }
 
@@ -417,4 +435,37 @@ public static class ContentPageExtensions
 
         return completionSource.Task;
     }
+}
+
+
+public class FolderlistViewModel : BindableObject
+{
+
+
+
+    public Color SecondaryColor { get; set; }
+
+    public string FolderPath { get; set; }
+   
+
+    internal static List<FolderlistViewModel> CreatePlaylistViewModel(List<string> paths, Color color)
+    {
+        var pathsList = new List<FolderlistViewModel>();
+
+        foreach (var path in paths)
+        {
+            var pathViewModel = new FolderlistViewModel
+            {
+                FolderPath = path,
+                SecondaryColor = color
+               
+            };
+
+            pathsList.Add(pathViewModel);
+        }
+
+        return pathsList;
+    }
+
+
 }

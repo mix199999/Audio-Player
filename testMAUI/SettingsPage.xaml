@@ -120,13 +120,13 @@
         HorizontalOptions="FillAndExpand" 
         Padding="15"
             >
-            
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.3*"/>
                 <ColumnDefinition Width="1"/>
                 <ColumnDefinition Width="0.5*" />
             </Grid.ColumnDefinitions>
-            
+
             <!-- Panel lewy z przyciskami opcji -->
             <Frame CornerRadius="10" Grid.Column="0" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" Margin="2">
                 <VerticalStackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" >
@@ -158,35 +158,35 @@
             <Frame CornerRadius="10" Grid.Column="2" Padding="0" BackgroundColor="Transparent" BorderColor="Transparent" Margin="2">
                 <!--Opcja 1 - ściezki -->
                 <Grid VerticalOptions="FillAndExpand" x:Name="pathOptions" IsVisible="false">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="0.1*"/>
-                    <RowDefinition Height="0.8*"/>
-                </Grid.RowDefinitions>
-                
-                <!-- Pasek górny z dwoma przyciskami -->
-                <Grid Grid.Row="0" Opacity="0.7" Padding="10,0" BackgroundColor="Transparent">
-                    <HorizontalStackLayout HorizontalOptions="EndAndExpand">
-                        
-                        <!-- Dodaj button -->
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.1*"/>
+                        <RowDefinition Height="0.8*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Pasek górny z dwoma przyciskami -->
+                    <Grid Grid.Row="0" Opacity="0.7" Padding="10,0" BackgroundColor="Transparent">
+                        <HorizontalStackLayout HorizontalOptions="EndAndExpand">
+
+                            <!-- Dodaj button -->
                             <Image Source="{AppThemeBinding Light=plussolid.png, Dark=plussolidwhite.png}" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="30" Grid.Column="8" ToolTipProperties.Text="Add path" x:Name="addFolderBt" >
-                            <Image.GestureRecognizers>
+                                <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="Button_Clicked" />
-                            </Image.GestureRecognizers>
-                        </Image>
-                        
-                        <!-- Usun button -->
+                                </Image.GestureRecognizers>
+                            </Image>
+
+                            <!-- Usun button -->
                             <Image Source="{AppThemeBinding Light=minus.png, Dark=minuswhite.png}" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="30" HeightRequest="25" Grid.Column="8" ToolTipProperties.Text="Remove path" x:Name="RemoveFolderBt">
-                            <Image.GestureRecognizers>
+                                <Image.GestureRecognizers>
                                     <TapGestureRecognizer  Tapped="RemoveFolderBt_Tapped"  />
-                            </Image.GestureRecognizers>
-                        </Image>
-                        
-                    </HorizontalStackLayout>
-                </Grid>
-                
-                <!-- Lista ścieżek -->
+                                </Image.GestureRecognizers>
+                            </Image>
+
+                        </HorizontalStackLayout>
+                    </Grid>
+
+                    <!-- Lista ścieżek -->
                     <ScrollView Grid.Row="1" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" x:Name="test">
-                        <ListView x:Name="pathListView" SelectionMode="Single" SelectedItem="{Binding SelectedItem} ">
+                        <ListView x:Name="pathListView" SelectionMode="Single">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <ViewCell>
@@ -199,7 +199,7 @@
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Label Text="{Binding Path}" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                                                <Label Text="{Binding  FolderPath}" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{Binding SecondaryColor}" />
                                             </Grid>
                                             <BoxView Grid.Row="1" BackgroundColor="Black" Opacity="0.05" HeightRequest="1" VerticalOptions="Start" Margin="15,0" />
                                         </Grid>
@@ -210,7 +210,7 @@
                     </ScrollView>
 
                 </Grid>
-               
+
             </Frame>
             <Frame BackgroundColor="Gray" CornerRadius="10" Grid.Column="1" Padding="0" BorderColor="Transparent"  Margin="2" x:Name="secondOption" IsVisible="false">
                 <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">

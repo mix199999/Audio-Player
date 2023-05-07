@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Extras;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace testMAUI
         private List<AudioPlaylist> audioPlaylists;
         private bool firstTimeRun;
         private Theme theme;
+        public List<EqualizerBand[]> EqualizerSettings { get; set; }
 
         public List<string> FolderList { get => folderList; set => folderList = value; }
         public List<AudioPlaylist> AudioPlaylists { get => audioPlaylists; set => audioPlaylists = value; }

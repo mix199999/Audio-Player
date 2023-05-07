@@ -152,12 +152,12 @@
                         <ScrollView Grid.Row="1" HeightRequest="210" Margin="5,0">
                             <StackLayout Orientation="Vertical"  HorizontalOptions="Fill" Spacing="8" Padding="3">
                                 <!-- lakies tam jabele -->
-                                <ListView x:Name="playlistListView" ItemsSource="{Binding _playlist}" SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay}" ItemSelected="OnPlaylistSelected">
+                                <ListView x:Name="playlistListView"  ItemSelected="OnPlaylistSelected">
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
                                             <ViewCell>
                                                 <StackLayout Orientation="Vertical" Padding="10">
-                                                    <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" TextColor="{Binding SecondaryColor}"/>
+                                                    <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" TextColor="{Binding SecondaryColor}" />
                                                 </StackLayout>
                                             </ViewCell>
                                         </DataTemplate>
@@ -331,6 +331,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="1.5*"/>
                             </Grid.ColumnDefinitions>
                             <Image Source="{Binding BackwardSolid}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="1" ToolTipProperties.Text="Previous track">
                                 <Image.GestureRecognizers>
@@ -385,6 +386,11 @@
                             <Image Source="{Binding ShuffleSolid}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="12" ToolTipProperties.Text="Shuffle the current playlist">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="shuffleBtn_Clicked" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <Image Source="{Binding EqSolid}" VerticalOptions="End" HorizontalOptions="Center" WidthRequest="20" HeightRequest="20" Grid.Column="13" ToolTipProperties.Text="Adjust the equalizer">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="EqBtn_Clicked" />
                                 </Image.GestureRecognizers>
                             </Image>
                         </Grid>
