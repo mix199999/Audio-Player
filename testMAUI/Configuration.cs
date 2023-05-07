@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 namespace testMAUI
 {
+    /// <summary>
+    /// Klasa reprezentująca sparsowany plik konfiguracyjny JSON'a appSettings.json
+    /// </summary>
     internal class Configuration
     {
-        private List<string> folderList;
-        private List<AudioPlaylist> audioPlaylists;
-        private bool firstTimeRun;
-        private Theme theme;
+        private List<string> folderList; //!< Lista ścieżek do folderów z których piosenki mają być czytane
+        private List<AudioPlaylist> audioPlaylists; //!< Lista playlist zapisanych w programie
+        private bool firstTimeRun; //!< Flaga czy aplikacja jest odpalana po raz pierwszy
+        private Theme theme; //!< Motyw aplikacji
 
         public List<string> FolderList { get => folderList; set => folderList = value; }
         public List<AudioPlaylist> AudioPlaylists { get => audioPlaylists; set => audioPlaylists = value; }
