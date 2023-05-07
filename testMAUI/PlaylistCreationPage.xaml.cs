@@ -41,11 +41,10 @@ public partial class PlaylistCreationPage : ContentPage
         Task.Run(async () => { await LoadToListView(); });
         playlistView.ItemTapped += PlaylistView_ItemTapped;
 
-
     }
 
     /// <summary>
-    /// Przesyła dane tj lista folderów i lista Playlist po zniknięciu strony
+    /// Przesyła dane: lista folderów i lista Playlist po zniknięciu strony
     /// </summary>
     /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
     /// <param name="e">Argumenty zdarzenia.</param>
@@ -176,7 +175,7 @@ public partial class PlaylistCreationPage : ContentPage
     }
 
     /// <summary>
-    /// Zapisuje do playlistę do pliku M3U 
+    /// Zapisuje playlistę do pliku M3U 
     /// </summary>
     /// <param name="sender">obiekt wywołujący zdarzenie</param>
     /// <param name="playlistName">nazwa playlisty</param>
