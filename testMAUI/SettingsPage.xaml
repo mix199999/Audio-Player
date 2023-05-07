@@ -199,7 +199,7 @@
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Label Text="{Binding  FolderPath}" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{Binding SeconadryColor}" />
+                                                <Label Text="{Binding  FolderPath}" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{Binding SecondaryColor}" />
                                             </Grid>
                                             <BoxView Grid.Row="1" BackgroundColor="Black" Opacity="0.05" HeightRequest="1" VerticalOptions="Start" Margin="15,0" />
                                         </Grid>

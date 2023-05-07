@@ -413,15 +413,12 @@ public partial class SettingsPage : ContentPage
         }
     }
 
-    private async void LoadDataToPathView()
+    private  void LoadDataToPathView()
     {
 
-        await Task.Delay(500);       
-
-       await  Dispatcher.DispatchAsync(() =>
-        {
-           pathListView.ItemsSource= FolderlistViewModel.CreatePlaylistViewModel(_foldersList, grad);
-        });
+      
+           pathListView.ItemsSource= FolderlistViewModel.CreatePlaylistViewModel(_foldersList, Color.FromArgb(grad.SecondaryColor));
+     
 
 
        
@@ -445,22 +442,13 @@ public class FolderlistViewModel : BindableObject
 {
 
 
-    private Color _secondaryColor;
-    public Color SecondaryColor
-    {
-        get => _secondaryColor;
-        set
-        {
-            if (_secondaryColor == value) { return; }
-            _secondaryColor = value;
-            OnPropertyChanged(nameof(SecondaryColor));
-        }
-    }
+
+    public Color SecondaryColor { get; set; }
 
     public string FolderPath { get; set; }
    
 
-    internal static List<FolderlistViewModel> CreatePlaylistViewModel(List<string> paths, Theme theme)
+    internal static List<FolderlistViewModel> CreatePlaylistViewModel(List<string> paths, Color color)
     {
         var pathsList = new List<FolderlistViewModel>();
 
@@ -469,7 +457,7 @@ public class FolderlistViewModel : BindableObject
             var pathViewModel = new FolderlistViewModel
             {
                 FolderPath = path,
-                SecondaryColor = Color.FromArgb(theme.SecondaryColor)
+                SecondaryColor = color
                
             };
 

@@ -117,7 +117,7 @@ public partial class MainPage : ContentPage
         playlistView.ItemTapped += PlaylistListView_ItemTapped;
         playlistListView.ItemTapped += MultiplePlaylistView_ItemTapped;
 
-        playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists);
+        playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists,Color.FromArgb(_theme.SecondaryColor));
 
         LoadFromDirectory();
 
@@ -174,7 +174,7 @@ public partial class MainPage : ContentPage
 
         }
 
-         playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists);
+         playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists, Color.FromArgb(_theme.SecondaryColor));
     }
 
     private void ShowInstruction()
@@ -1040,7 +1040,7 @@ public partial class MainPage : ContentPage
         var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
 
         System.IO.File.WriteAllText(appSettingsPath, json);
-        playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists);
+        playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists, Color.FromArgb(_theme.SecondaryColor));
     }
 
 
@@ -1227,7 +1227,7 @@ public partial class MainPage : ContentPage
 
             playlistView.ItemsSource = trackViewModels;
 
-            playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists);
+            playlistListView.ItemsSource = MultiplePlaylistViewModel.CreatePlaylistViewModel(_playlists, Color.FromArgb(_theme.SecondaryColor));
         });
 
 
@@ -1554,9 +1554,9 @@ public class MultiplePlaylistViewModel : BindableObject
 
     public string Name { get; set; }
 
+    public Color SecondaryColor { get; set; }
 
- 
-    internal static List<MultiplePlaylistViewModel> CreatePlaylistViewModel(List<AudioPlaylist> playlists)
+    internal static List<MultiplePlaylistViewModel> CreatePlaylistViewModel(List<AudioPlaylist> playlists, Color color)
     {
         var playlistViewModels = new List<MultiplePlaylistViewModel>();
 
@@ -1566,6 +1566,7 @@ public class MultiplePlaylistViewModel : BindableObject
             {
                 Name = playlist.Name,
                 Path = playlist.Path,
+                SecondaryColor =color
             };
 
             playlistViewModels.Add(trackViewModel);
