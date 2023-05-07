@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace testMAUI
 {
+    /// <summary>
+    /// Klasa reprezentująca motyw aplikacji
+    /// </summary>
     internal class Theme
     {
         public bool Gradient { get; set; }

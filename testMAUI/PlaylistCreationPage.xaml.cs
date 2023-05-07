@@ -10,6 +10,7 @@ using System.Text;
 using System.Windows.Input;
 
 namespace testMAUI;
+
 internal class AudioListMessage
 {
     public List<AudioPlaylist> Playlist { get; set; }
@@ -19,15 +20,14 @@ internal class AudioListMessage
         Playlist = playlist; 
     }
 }
+
 public partial class PlaylistCreationPage : ContentPage
 {
-	private List<string> _folders = new List<string>();
-   // List<PlaylistViewModel> trackViewModels = new List<PlaylistViewModel>();
-    private AudioPlaylist mainPlaylist = new AudioPlaylist();
+	private List<string> _folders = new List<string>(); //!< Lista ścieżek do folderó z pliku konfiguracyjnego
+    // List<PlaylistViewModel> trackViewModels = new List<PlaylistViewModel>();
+    private AudioPlaylist mainPlaylist = new AudioPlaylist(); //!< Lista wszystkich piosenek
     private List<PlaylistViewModel> _trackViewModels;
     private List<AudioPlaylist> _playlists = new List<AudioPlaylist>();
-
-
 
     public IList<string> _selectedTracks { get; set; } = new List<string>();
     internal PlaylistCreationPage(List<string> Folders, List<AudioPlaylist> AudioPlaylists)
@@ -41,10 +41,10 @@ public partial class PlaylistCreationPage : ContentPage
         Task.Run(async () => { await LoadToListView(); });
         playlistView.ItemTapped += PlaylistView_ItemTapped;
 
-
     }
+
     /// <summary>
-    /// Przesyła dane tj lista folderów i lista Playlist po zniknięciu strony
+    /// Przesyła dane: lista folderów i lista Playlist po zniknięciu strony
     /// </summary>
     /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
     /// <param name="e">Argumenty zdarzenia.</param>
@@ -57,6 +57,7 @@ public partial class PlaylistCreationPage : ContentPage
         WeakReferenceMessenger.Default.Send(playlistMessage);
 
     }
+
     /// <summary>
     /// Przechwytuje zdarzenie kliknięcia na element z ListView
     /// Zależnie od tego czy Path ("Ścieżka") znajduje się (lub nie)  na liście _selectedTracks
@@ -84,6 +85,7 @@ public partial class PlaylistCreationPage : ContentPage
         }
 
     }
+
     /// <summary>
     /// przechodzi na stronę z ustawieniami 
     /// </summary>
@@ -91,7 +93,6 @@ public partial class PlaylistCreationPage : ContentPage
     /// <param name="e">Argumenty zdarzenia.</param>
     private async void settingsButtonClicked(object sender, EventArgs e)
 	{
-
         
     }
 
@@ -100,7 +101,6 @@ public partial class PlaylistCreationPage : ContentPage
     
     }
 
-
     /// <summary>
     /// Powraca do strony głównej programu
     /// </summary>
@@ -108,9 +108,7 @@ public partial class PlaylistCreationPage : ContentPage
     /// <param name="e">Argumenty zdarzenia.</param>
     public async void mainButtonClicked(object sender, EventArgs e)
     {
-
         await Navigation.PopAsync();
-
     }
 
     /// <summary>
@@ -122,7 +120,7 @@ public partial class PlaylistCreationPage : ContentPage
         await Task.Delay(500);
    
 
-            playlistView.ItemsSource = null;
+        playlistView.ItemsSource = null;
         Dispatcher.Dispatch(async () => 
         {
             _trackViewModels = new List<PlaylistViewModel>();
@@ -145,11 +143,8 @@ public partial class PlaylistCreationPage : ContentPage
             playlistView.ItemsSource = _trackViewModels;
         });
 
-            
-
-
-
     }
+
     /// <summary>
     /// wczytuje pliki muzyczne z katalogu i ładuje je do ListView
     /// </summary>
@@ -180,7 +175,7 @@ public partial class PlaylistCreationPage : ContentPage
     }
 
     /// <summary>
-    /// Zapisuje do playlistę do pliku M3U 
+    /// Zapisuje playlistę do pliku M3U 
     /// </summary>
     /// <param name="sender">obiekt wywołujący zdarzenie</param>
     /// <param name="playlistName">nazwa playlisty</param>
@@ -222,9 +217,9 @@ public partial class PlaylistCreationPage : ContentPage
         });
     }
 
-
-
-
+    /// <summary>
+    /// Zapisuje playlistę do pliku konfiguracyjnego appSettings.json
+    /// </summary>
     private void SaveToJson()
     {
       
@@ -241,6 +236,5 @@ public partial class PlaylistCreationPage : ContentPage
         System.IO.File.WriteAllText(appSettingsPath, json);
       
     }
-
 
 }

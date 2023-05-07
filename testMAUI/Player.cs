@@ -39,8 +39,6 @@ namespace testMAUI
         public event EventHandler StartedPlaying;
         public event EventHandler StoppedPlaying;
         public event EventHandler Paused;
-      
-
 
         public Player()
         {
@@ -61,6 +59,13 @@ namespace testMAUI
             };
            
         }
+
+
+        /// <summary>
+        /// Metoda ładująca piosenkę daną ścieżką
+        /// </summary>
+        /// <param name="filePath">Ścieżka do aplikacji</param>
+
         public void Load(string filePath)
         {
             if (_audioFile != null)
@@ -107,6 +112,9 @@ namespace testMAUI
             _equalizer.Update();
         }
 
+        /// <summary>
+        /// Metoda odtwarzająca aktualną piosenkę
+        /// </summary>
         public void Play()
         {
             _waveOut.Play();
@@ -119,29 +127,32 @@ namespace testMAUI
                 {
                     currentTime = _audioFile.CurrentTime;
                     Task.Delay(1000).Wait();
-
                    
                 }
             });
-            
         }
 
+        /// <summary>
+        /// Metoda zatrzymująca odtwarzanie piosenki
+        /// </summary>
         public void Stop()
         {
             _waveOut.Stop();
             _audioFile.Position = 0;
             OnStoppedPlaying(EventArgs.Empty);
             _status = playerStatus.IsNotPlaying;
-
         }
 
+        /// <summary>
+        /// Metoda pauzująca odtwarzanie piosenki
+        /// </summary>
         public void Pause()
         {
             _waveOut.Pause();
             OnPaused(EventArgs.Empty);
             _status = playerStatus.IsNotPlaying;
-
         }
+
 
         protected virtual void OnStartedPlaying(EventArgs e)
         {
@@ -158,9 +169,9 @@ namespace testMAUI
             Paused?.Invoke(this, e);
         }
 
-        //od 0.0 do 1.0
         public void SetVolume(double volume)
         {
+            //od 0.0 do 1.0
             _waveOut.Volume = (float)volume/100;
         }
 

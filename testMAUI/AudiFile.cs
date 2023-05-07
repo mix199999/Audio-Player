@@ -27,84 +27,136 @@ namespace testMAUI
         private string _artist;
         private string _album;
         private TimeSpan _duration;
-        private string _filePath;       
+        private string _filePath;
         private string _coverUrl;
         private bool _favourite;
-        
+
+        /// <summary>
+        /// Pobierz link URL z okładką piosenki
+        /// </summary>
+        /// <returns>link URL z okładką piosenki</returns>
         public string GetCoverUrl()
         { return _coverUrl; }
+
+        /// <summary>
+        /// Ustawia okładkę za pomocą funkcji SetAlbumArtFromDeezerApiAsync 
+        /// </summary>
         public async Task SetCoverUrl()
-        { await SetAlbumArtFromDeezerApiAsync();  }
-
-
-        
+        { await SetAlbumArtFromDeezerApiAsync(); }
 
         public AudioFile()
         {
 
         }
-       
 
+        /// <summary>
+        /// Pobierz długość piosenki
+        /// </summary>
+        /// <returns>Długość piosneki</returns>
         public string GetDurationString()
         {
             string temp = _duration.ToString("hh\\:mm\\:ss");
             return temp;
         }
 
+        /// <summary>
+        /// Pobierz tytuł piosenki
+        /// </summary>
+        /// <returns>Tytuł piosneki</returns>
         public string GetTitle()
         {
             return _title;
         }
 
+        /// <summary>
+        /// Ustaw tytuł piosenki
+        /// </summary>
+        /// <param name="title">Tytuł do ustawienia</param>
         public void SetTitle(string title)
         {
             _title = title;
         }
 
+        /// <summary>
+        /// Pobierz wykonawcę piosenki
+        /// </summary>
+        /// <returns>Wykonawca piosenki</returns>
         public string GetArtist()
         {
             return _artist;
         }
 
+        /// <summary>
+        /// Ustaw wykonawcę piosenki
+        /// </summary>
+        /// <param name="artist">Nazwa wykonawcy do ustawienia</param>
         public void SetArtist(string artist)
         {
             _artist = artist;
         }
 
+        /// <summary>
+        /// Pobierz nazwę albumu piosenki
+        /// </summary>
         public string GetAlbum()
         {
             return _album;
         }
 
+        /// <summary>
+        /// Ustaw nazwę albumu piosenki
+        /// </summary>
+        /// <param name="album">Nazwa albumu do ustawienia</param>
         public void SetAlbum(string album)
         {
             _album = album;
         }
 
+        /// <summary>
+        /// Pobierz długość trwania piosenki
+        /// </summary>
         public TimeSpan GetDuration()
         {
             return _duration;
         }
 
+        /// <summary>
+        /// Ustaw długość trwania piosenki
+        /// </summary>
+        /// <param name="duration">Długość do ustawienia</param>
         public void SetDuration(TimeSpan duration)
         {
             _duration = duration;
         }
+
+        /// <summary>
+        /// Pobierz ścieżkę do pliku z piosenką
+        /// </summary>
         public string GetFilePath()
         {
             return _filePath;
         }
 
+        /// <summary>
+        /// Ustaw ścieżkę do pliku z piosenką
+        /// </summary>
+        /// <param name="filePath">Ścieżka do ustawienia</param>
         public void SetFilePatch(string filePath)
         {
             _filePath = filePath.Trim();
         }
 
+        /// <summary>
+        /// Zwraca czy piosenka jest "polubiona"
+        /// </summary>
         public bool GetFavourite()
         {
             return _favourite;
         }
 
+        /// <summary>
+        /// Ustawia czy piosenka jest polubiona
+        /// </summary>
         public bool SetFavourite(bool favourite) => _favourite = favourite;
 
         /// <summary>
@@ -112,7 +164,7 @@ namespace testMAUI
         /// do pozyskania informacji dotyczących danego utworu
         /// </summary>
         /// <param name="filePath">ścieżka do pliku audio </param>
-        public  AudioFile(string filePath)
+        public AudioFile(string filePath)
         {
             _filePath = filePath;
 
@@ -126,12 +178,12 @@ namespace testMAUI
                 _album = Regex.Replace(_album, @"\s*\[.*?\]\s*", "");
                 _duration = tagFile.Properties.Duration.TotalSeconds <= 0 ? TimeSpan.Zero : tagFile.Properties.Duration;
                 _favourite = false;
-                
-                if(_title ==  "unknown" && _album == "unknown" && _artist == "unknown") 
+
+                if (_title == "unknown" && _album == "unknown" && _artist == "unknown")
                 {
                     _coverUrl = "note_icon.png";
                 }
-              
+
 
             }
 
@@ -176,7 +228,7 @@ namespace testMAUI
                     responseBody = await response.Content.ReadAsStringAsync();
                     jsonResponse = System.Text.Json.JsonDocument.Parse(responseBody);
                     _coverUrl = jsonResponse.RootElement.GetProperty("cover_xl").GetString();
-                    
+
                 }
             }
             catch (HttpRequestException e)
@@ -186,11 +238,6 @@ namespace testMAUI
             }
         }
 
-
-
     }
-
-
-
 
 }

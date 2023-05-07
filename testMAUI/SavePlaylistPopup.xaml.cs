@@ -2,6 +2,7 @@ using CommunityToolkit.Maui.Views;
 
 namespace testMAUI;
 
+
 public partial class PopupTrackInfo : Popup
 {
     public event EventHandler<string>? PlaylistSaved;
@@ -11,8 +12,6 @@ public partial class PopupTrackInfo : Popup
 		InitializeComponent();
         this.Size = new Size(500, 100);
     }
-
-
 
     private void SavePlaylistButton_Clicked(object sender, EventArgs e)
     {

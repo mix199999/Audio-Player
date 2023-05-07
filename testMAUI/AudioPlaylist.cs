@@ -20,21 +20,17 @@ namespace testMAUI
     internal class AudioPlaylist
     {
         [JsonIgnore]
-        private List<AudioFile> _tracks;
+        private List<AudioFile> _tracks; //!< Lista piosenek w playliście
         [JsonIgnore]
-        private int _currentIndex;
+        private int _currentIndex; //!< Index aktualnej piosenki w playlisćie
         [JsonIgnore]
         public List<AudioFile> Tracks => _tracks;
         [JsonIgnore]
       
-        private static string _favoriteSongsListPath = System.IO.Path.Combine(System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GNOM"), "favoritesongs.M3U");
+        private static string _favoriteSongsListPath = System.IO.Path.Combine(System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GNOM"), "favoritesongs.M3U"); //!< Ścieżka do pliku .m3u z ulubionymi piosenkami
 
         public string Name { get; set; }
         public string Path { get; set; }
-
-
-
-
 
         public AudioPlaylist()
         {
@@ -42,10 +38,19 @@ namespace testMAUI
             _currentIndex = -1;
         }
 
+        /// <summary>
+        /// Dodaj piosenkę do playlisty
+        /// </summary>
+        /// <param name="track"></param>
         public void AddTrack(AudioFile track)
         {
             _tracks.Add(track);
         }
+
+        /// <summary>
+        /// Usuń piosenkę z playlisty
+        /// </summary>
+        /// <param name="track"></param>
         public void RemoveTrack(AudioFile track)
         {
             var trackToRemove = _tracks.FirstOrDefault(t => t.GetFilePath() == track.GetFilePath());
@@ -59,11 +64,16 @@ namespace testMAUI
         public int GetCurrentTrackIndex()
         { return _currentIndex; }
 
+        /// <summary>
+        /// Nadpisz aktualną listę piosenek nową listą
+        /// </summary>
+        /// <param name="tracks">Lista piosenek do ustawienia</param>
         public void SetTracks(List<AudioFile> tracks)
         { _tracks = tracks; }
 
-       
-
+        /// <summary>
+        /// Pobierz aktualną piosenkę
+        /// </summary>
         public AudioFile GetCurrentTrack()
         {
             if (_currentIndex >= 0 && _currentIndex < _tracks.Count)
@@ -76,11 +86,18 @@ namespace testMAUI
             }
         }
 
+        /// <summary>
+        /// Wyczyść playlistę z piosenek
+        /// </summary>
         public void clearList()
         {
             this._tracks.Clear();
         }
 
+        /// <summary>
+        /// Ustaw aktualną piosenkę
+        /// </summary>
+        /// <param name="index">Index piosenki do ustawienia</param>
         public void SetCurrentTrack(int index)
         {
             if (index >= 0 && index < _tracks.Count)
@@ -90,8 +107,9 @@ namespace testMAUI
             }
         }
 
-
-
+        /// <summary>
+        /// Ustaw aktualną piosenkę na następną
+        /// </summary>
         public void Next()
         {
             if (_currentIndex < _tracks.Count - 1)
@@ -100,6 +118,9 @@ namespace testMAUI
             }
         }
 
+        /// <summary>
+        /// Ustaw aktualną piosenkę na poprzednią
+        /// </summary>
         public void Previous()
         {
             if (_currentIndex > 0)
