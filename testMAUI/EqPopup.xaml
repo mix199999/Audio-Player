@@ -6,64 +6,86 @@
            CanBeDismissedByTappingOutsideOfPopup="True"
           Color="Transparent"
            >
-    
-        
-         <Grid  Background="{Binding PrimaryColor}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="0"  Padding="0">
+    <Border>
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="5"/>
+        </Border.StrokeShape>
+        <Grid Background="{Binding PrimaryColor}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="0" Padding="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="20*"/>
             <RowDefinition Height="60*"/>
+            <RowDefinition Height="10*"/>
             <RowDefinition Height="20*"/>
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" Text="Equalizer" FontSize="Large" HorizontalOptions="Center" />
-        <Grid Grid.Row="1" x:Name="SliderGrid"  >
+        <Label Grid.Row="0" Text="Equalizer" FontSize="Large" HorizontalOptions="Center" VerticalOptions="Center"/>
+        <Grid Grid.Row="1" x:Name="SliderGrid" >
             <Grid.ColumnDefinitions>
-              
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="55"/>
 
             </Grid.ColumnDefinitions>
 
-        
-            <!-- Sliders -->
-            <Slider Grid.Column="1" x:Name="Slider1" Minimum="-12" Maximum="12" Value="0" Rotation="270" VerticalOptions="CenterAndExpand"  MinimumTrackColor="{Binding SecondaryColor}" ValueChanged="Slider1_ValueChanged"/>
-            <Slider Grid.Column="2" x:Name="Slider2" Minimum="-12" Maximum="12" Value="0" Rotation="270"  VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ValueChanged="Slider2_ValueChanged"/>
-            <Slider Grid.Column="3" x:Name="Slider3" Minimum="-12" Maximum="12" Value="0" Rotation="270"  VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ValueChanged="Slider3_ValueChanged"/>
-            <Slider Grid.Column="4" x:Name="Slider4" Minimum="-12" Maximum="12" Value="0" Rotation="270" VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}"  ValueChanged="Slider4_ValueChanged"/>
-            <Slider Grid.Column="5" x:Name="Slider5" Minimum="-12" Maximum="12" Value="0" Rotation="270"  VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ValueChanged="Slider5_ValueChanged"/>
-            <Slider Grid.Column="6" x:Name="Slider6" Minimum="-12" Maximum="12" Value="0" Rotation="270"  VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ValueChanged="Slider6_ValueChanged"/>
-            <Slider Grid.Column="7" x:Name="Slider7" Minimum="-12" Maximum="12" Value="0" Rotation="270"  VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ValueChanged="Slider7_ValueChanged"/>
-            <Slider Grid.Column="8" x:Name="Slider8" Minimum="-12" Maximum="12" Value="0" Rotation="270" VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ValueChanged="Slider8_ValueChanged"/>
-            <Slider Grid.Column="9" x:Name="Slider9" Minimum="-12" Maximum="12" Value="0" Rotation="270"  VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ValueChanged="Slider9_ValueChanged"/>
-            <Slider Grid.Column="10" x:Name="Slider10" Minimum="-12" Maximum="12" Value="0" Rotation="270"  VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ValueChanged="Slider10_ValueChanged"/>
 
-            <!-- Frequency labels -->
-            <Label Grid.Column="1" Text="32 Hz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
-            <Label Grid.Column="2" Text="64 Hz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
-            <Label Grid.Column="3" Text="125 Hz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
-            <Label Grid.Column="4" Text="250 Hz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
-            <Label Grid.Column="5" Text="500 Hz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
-            <Label Grid.Column="6" Text="1 kHz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
-            <Label Grid.Column="7" Text="2 kHz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
-            <Label Grid.Column="8" Text="4 kHz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
-            <Label Grid.Column="9" Text="8 kHz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
-            <Label Grid.Column="10" Text="16 kHz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
-            
+            <!-- Sliders -->
+                <Slider Grid.Column="1" x:Name="Slider1" Minimum="-12" Maximum="12" Value="0" Rotation="270" VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ThumbColor="{Binding SecondaryColor}" WidthRequest="160" ValueChanged="Slider1_ValueChanged"/>
+                <Slider Grid.Column="2" x:Name="Slider2" Minimum="-12" Maximum="12" Value="0" Rotation="270" VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ThumbColor="{Binding SecondaryColor}" WidthRequest="160" ValueChanged="Slider2_ValueChanged"/>
+                <Slider Grid.Column="3" x:Name="Slider3" Minimum="-12" Maximum="12" Value="0" Rotation="270" VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ThumbColor="{Binding SecondaryColor}" WidthRequest="160" ValueChanged="Slider3_ValueChanged"/>
+                <Slider Grid.Column="4" x:Name="Slider4" Minimum="-12" Maximum="12" Value="0" Rotation="270" VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ThumbColor="{Binding SecondaryColor}" WidthRequest="160" ValueChanged="Slider4_ValueChanged"/>
+                <Slider Grid.Column="5" x:Name="Slider5" Minimum="-12" Maximum="12" Value="0" Rotation="270" VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ThumbColor="{Binding SecondaryColor}" WidthRequest="160" ValueChanged="Slider5_ValueChanged"/>
+                <Slider Grid.Column="6" x:Name="Slider6" Minimum="-12" Maximum="12" Value="0" Rotation="270" VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ThumbColor="{Binding SecondaryColor}" WidthRequest="160" ValueChanged="Slider6_ValueChanged"/>
+                <Slider Grid.Column="7" x:Name="Slider7" Minimum="-12" Maximum="12" Value="0" Rotation="270" VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ThumbColor="{Binding SecondaryColor}" WidthRequest="160" ValueChanged="Slider7_ValueChanged"/>
+                <Slider Grid.Column="8" x:Name="Slider8" Minimum="-12" Maximum="12" Value="0" Rotation="270" VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ThumbColor="{Binding SecondaryColor}" WidthRequest="160" ValueChanged="Slider8_ValueChanged"/>
+                <Slider Grid.Column="9" x:Name="Slider9" Minimum="-12" Maximum="12" Value="0" Rotation="270" VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ThumbColor="{Binding SecondaryColor}" WidthRequest="160" ValueChanged="Slider9_ValueChanged"/>
+                <Slider Grid.Column="10" x:Name="Slider10" Minimum="-12" Maximum="12" Value="0" Rotation="270" VerticalOptions="CenterAndExpand" MinimumTrackColor="{Binding SecondaryColor}" ThumbColor="{Binding SecondaryColor}" WidthRequest="160" ValueChanged="Slider10_ValueChanged"/>
+
             <!-- Values Labels-->
             <Label Grid.Column="0" Text="+12 dB" HorizontalOptions="Center" VerticalOptions="Start" TextColor="{Binding SecondaryColor}" />
             <Label Grid.Column="0" Text="0 dB" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{Binding SecondaryColor}"/>
             <Label Grid.Column="0" Text="-12 dB" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
         </Grid>
-            <Button x:Name="SaveEqualizerButton" Grid.Row="2" Text="Save Equalizer Settings" Clicked="SaveEqualizerButton_Clicked" VerticalOptions="End" HorizontalOptions="Center" />
-    </Grid>
+            <!-- Frequency labels -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="1" Text="32 Hz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
+                <Label Grid.Column="2" Text="64 Hz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
+                <Label Grid.Column="3" Text="125 Hz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
+                <Label Grid.Column="4" Text="250 Hz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
+                <Label Grid.Column="5" Text="500 Hz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
+                <Label Grid.Column="6" Text="1 kHz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
+                <Label Grid.Column="7" Text="2 kHz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
+                <Label Grid.Column="8" Text="4 kHz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
+                <Label Grid.Column="9" Text="8 kHz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
+                <Label Grid.Column="10" Text="16 kHz" HorizontalOptions="Center" VerticalOptions="End" TextColor="{Binding SecondaryColor}"/>
+            </Grid>
+            <Button x:Name="SaveEqualizerButton" Grid.Row="3" Text="Zapisz ustawienia Equalizera" Clicked="SaveEqualizerButton_Clicked" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" >
+                <Button.GestureRecognizers>
+                    <PointerGestureRecognizer PointerEntered="HoverBegan" PointerExited="HoverEnded"/>
+                </Button.GestureRecognizers>
+            </Button>
+        </Grid>
+    </Border>
 
-   
+
 </mct:Popup>
