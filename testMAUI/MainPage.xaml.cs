@@ -837,7 +837,13 @@ public partial class MainPage : ContentPage
                     await mainPlaylist.Tracks[mainPlaylist.GetCurrentTrackIndex()].SetCoverUrl();
                 }
                 await Task.Delay(TimeSpan.FromSeconds(1));
+                try { 
+                 
                 CurrentTrackCover.Source = mainPlaylist.GetCurrentTrack().GetCoverUrl();
+                }
+                catch (System.NullReferenceException) {
+                    CurrentTrackCover.Source = "note.png";
+                }
                 if (!_visibility) showToastInfo();
 
             }
