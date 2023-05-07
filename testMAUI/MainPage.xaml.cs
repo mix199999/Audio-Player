@@ -35,7 +35,6 @@ using Newtonsoft.Json.Linq;
 
 public partial class MainPage : ContentPage
 {
-    
     IFileSaver fileSaver;
     private Player player;
     TimeSpan currentTrackTime = TimeSpan.Zero;
