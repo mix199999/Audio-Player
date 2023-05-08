@@ -14,33 +14,84 @@ namespace testMAUI;
 internal class AudioListMessage
 {
     public List<AudioPlaylist> Playlist { get; set; }
-
-    internal AudioListMessage(List<AudioPlaylist> playlist)
+    public string Name { get; set; }
+    internal AudioListMessage(List<AudioPlaylist> playlist, string name)
     {
-        Playlist = playlist; 
+        Playlist = playlist;
+        Name = name;
+
     }
 }
 
+
+
+
 public partial class PlaylistCreationPage : ContentPage
 {
-	private List<string> _folders = new List<string>(); //!< Lista ścieżek do folderó z pliku konfiguracyjnego
+    private Brush _primaryColor;
+    public Brush PrimaryColor
+    {
+        get => _primaryColor;
+        set
+        {
+            if (_primaryColor == value) { return; }
+            _primaryColor = value;
+            OnPropertyChanged(nameof(PrimaryColor));
+        }
+    }
+    private Color _secondaryColor;
+    public Color SecondaryColor
+    {
+        get => _secondaryColor;
+        set
+        {
+            if (_secondaryColor == value) { return; }
+            _secondaryColor = value;
+            OnPropertyChanged(nameof(SecondaryColor));
+        }
+    }
+
+
+    private string _homeSolid;
+    public string HomeSolid
+    {
+        get => _homeSolid;
+        set
+        {
+            if (_homeSolid == value) { return; }
+            _homeSolid = value;
+            OnPropertyChanged(nameof(HomeSolid));
+        }
+    }
+
+
+
+
+    private List<string> _folders = new List<string>(); //!< Lista ścieżek do folderó z pliku konfiguracyjnego
     // List<PlaylistViewModel> trackViewModels = new List<PlaylistViewModel>();
     private AudioPlaylist mainPlaylist = new AudioPlaylist(); //!< Lista wszystkich piosenek
     private List<PlaylistViewModel> _trackViewModels;
     private List<AudioPlaylist> _playlists = new List<AudioPlaylist>();
+    private Theme _theme;
 
     public IList<string> _selectedTracks { get; set; } = new List<string>();
-    internal PlaylistCreationPage(List<string> Folders, List<AudioPlaylist> AudioPlaylists)
+    internal PlaylistCreationPage(List<string> Folders, List<AudioPlaylist> AudioPlaylists, Theme theme)
 	{
 
 		_folders = Folders;
         _playlists = AudioPlaylists;
+        _theme = theme;
         LoadFromDirectory();
         InitializeComponent();
         this.Disappearing += CreationPage_Disappearing;
         Task.Run(async () => { await LoadToListView(); });
         playlistView.ItemTapped += PlaylistView_ItemTapped;
+       
+        this.SecondaryColor = Color.FromArgb(theme.SecondaryColor);
+        this.PrimaryColor = Color.FromArgb(theme.PrimaryColor);
+        LoadColors();
 
+        BindingContext = this;
     }
 
     /// <summary>
@@ -50,11 +101,7 @@ public partial class PlaylistCreationPage : ContentPage
     /// <param name="e">Argumenty zdarzenia.</param>
     private void CreationPage_Disappearing(object sender, EventArgs e)
     {
-        StringListMessage folderMessage = new StringListMessage(_folders);
-        WeakReferenceMessenger.Default.Send(folderMessage);
-
-        AudioListMessage playlistMessage = new AudioListMessage(_playlists);
-        WeakReferenceMessenger.Default.Send(playlistMessage);
+       
 
     }
 
@@ -81,7 +128,7 @@ public partial class PlaylistCreationPage : ContentPage
         else if (!_selectedTracks.Contains(item.Path))
         {
             _selectedTracks.Add(item.Path);
-            item.BgColor = Color.FromArgb("3f48cc");
+            item.BgColor = Color.FromArgb(_theme.PrimaryColor);
         }
 
     }
@@ -91,22 +138,14 @@ public partial class PlaylistCreationPage : ContentPage
     /// </summary>
     /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
     /// <param name="e">Argumenty zdarzenia.</param>
-    private async void settingsButtonClicked(object sender, EventArgs e)
-	{
-        
-    }
-
-	private void NewPlaylist_Clicked(object sender, EventArgs e)
-	{
-    
-    }
+  
 
     /// <summary>
     /// Powraca do strony głównej programu
     /// </summary>
     /// <param name="sender">Obiekt wywołujący zdarzenie.</param>
     /// <param name="e">Argumenty zdarzenia.</param>
-    public async void mainButtonClicked(object sender, EventArgs e)
+    public async void MainButtonClicked(object sender, EventArgs e)
     {
         await Navigation.PopAsync();
     }
@@ -202,14 +241,13 @@ public partial class PlaylistCreationPage : ContentPage
 
                     newPlaylist.AddTrack(new AudioFile(trackPath));
                 }
-
-
-                using var stream = new MemoryStream(Encoding.Default.GetBytes(newPlaylist.SaveToM3U()));
-                await using var fileStream = System.IO.File.Create(fullPath);
-                await stream.CopyToAsync(fileStream);
+               
                 _playlists.Add(newPlaylist);
-                SaveToJson();
 
+                AudioListMessage playlistMessage = new AudioListMessage(_playlists, playlistName);
+                WeakReferenceMessenger.Default.Send(playlistMessage);
+
+             
 
             }
             else
@@ -220,21 +258,41 @@ public partial class PlaylistCreationPage : ContentPage
     /// <summary>
     /// Zapisuje playlistę do pliku konfiguracyjnego appSettings.json
     /// </summary>
-    private void SaveToJson()
+    
+
+
+
+    private void LoadColors()
     {
-      
-        var appSettingsPath = System.IO.Path.Combine(System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GNOM"), "appSettings.json");
+        HomeSolid = _theme.GetButtons()[11];
+        if (_theme.Gradient) { PrimaryColor = _theme.GetGradient(); } else { PrimaryColor = new SolidColorBrush(Color.FromArgb(_theme.PrimaryColor)); }
+        SecondaryColor = Color.FromArgb(_theme.SecondaryColor);
 
-        var foldersSettings = new Configuration
+    }
+
+    private void HoverBegan(object sender, PointerEventArgs e)
+    {
+        if (sender is Button button)
         {
-            FolderList = _folders,
-            AudioPlaylists = _playlists
-        };
+            switch (App.Current.RequestedTheme)
+            {
+                case AppTheme.Light:
+                    button.BackgroundColor = Color.FromRgba(0, 0, 0, 20);
+                    break;
+                case AppTheme.Dark:
+                    button.BackgroundColor = Color.FromRgba(255, 255, 255, 20);
+                    break;
+            }
+        }
+    }
 
-        var json = JsonConvert.SerializeObject(foldersSettings, Newtonsoft.Json.Formatting.Indented);
 
-        System.IO.File.WriteAllText(appSettingsPath, json);
-      
+    private void HoverEnded(object sender, PointerEventArgs e)
+    {
+        if (sender is Button button)
+        {
+            button.BackgroundColor = Color.FromRgba(0, 0, 0, 0);
+        }
     }
 
 }

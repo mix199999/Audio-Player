@@ -1558,7 +1558,7 @@ public partial class MainPage : ContentPage
     private async void NewPlaylist_Clicked(object sender, EventArgs e)
     {
 
-        await Navigation.PushAsync(new PlaylistCreationPage(_foldersList, _playlists));
+        await Navigation.PushAsync(new PlaylistCreationPage(_foldersList, _playlists, _theme));
     }
 }
 
