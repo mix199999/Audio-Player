@@ -223,42 +223,6 @@
             </Grid>
 
 
-            <!--Grid do testowania podgladu playlisty, bedzie to usuwane pozniej-->
-
-            <!--<Grid Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="0.9*"/>
-                    <RowDefinition Height="0.1*"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Padding="0,10" Margin="20,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.25*"/>
-                        <ColumnDefinition Width="0.2*"/>
-                        <ColumnDefinition Width="0.25*"/>
-                        <ColumnDefinition Width="0.15*"/>
-                        <ColumnDefinition Width="0.1*"/>
-                    </Grid.ColumnDefinitions>
-                    <Border>
-                        <Label Text="Abc" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                    </Border>
-                    <Border Grid.Column="1">
-                        <Label Text="Abc" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                    </Border>
-                    <Border Grid.Column="2">
-                        <Label Text="Abcsgfggdgfgdgdgdgdgdfdfd" Grid.Column="2" VerticalOptions="Center" HorizontalOptions="StartAndExpand" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                    </Border>
-                    <Border Grid.Column="3">
-                        <Label Text="05:31" Grid.Column="3" VerticalOptions="Center" HorizontalOptions="End" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                    </Border>
-                    <Border Grid.Column="4">
-                        <ImageButton Source="favorite0solid.png" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="43" WidthRequest="20" />
-                    </Border>
-                </Grid>
-                <BoxView Grid.Row="1" BackgroundColor="Black" Opacity="0.05" HeightRequest="1" VerticalOptions="Start" Margin="15,0" />
-            </Grid>-->
-
-            <!--Koniec testowego grida-->
-
             <ScrollView Grid.Row="1" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" x:Name="test" Margin="0,10,0,0">
 
                 <ListView x:Name="playlistView" SelectionMode="Single" ItemSelected="OnItemSelected"  SelectedItem="{Binding SelectedItem}">
