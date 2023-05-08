@@ -247,7 +247,7 @@
                                 <RowDefinition/>
                                 <RowDefinition Height="20"/>
                             </Grid.RowDefinitions>
-                            <Entry Grid.Row="0" x:Name="PrimaryColorEntry" Completed="OnPrimaryColorEntryCompleted" MaxLength="6" Placeholder="Primary Color in Hex (text length 6)" FontSize="13" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30" BackgroundColor="White"/>
+                            <Entry Grid.Row="0" x:Name="PrimaryColorEntry" Completed="OnPrimaryColorEntryCompleted" MaxLength="6" Placeholder="Primary Color in Hex (text length 6)" FontSize="13" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30" BackgroundColor="White" TextColor="#000000"/>
                             <Label Grid.Row="1" x:Name="PrimaryEntryError" Text="Niepoprawnie wprowadzony kolor!" HeightRequest="0" TextColor="{Binding SecondaryColor}" VerticalOptions="Start" ZIndex="-1"/>
                         </Grid>
                         <Grid Grid.Column="1">
@@ -255,7 +255,7 @@
                                 <RowDefinition/>
                                 <RowDefinition Height="20"/>
                             </Grid.RowDefinitions>
-                            <Entry Grid.Row="0" x:Name="GradientEntry" Completed="OnGradientEntryCompleted" MaxLength="6" Placeholder="Gradient End Color in Hex (text length 6)" FontSize="13" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30" BackgroundColor="White"/>
+                            <Entry Grid.Row="0" x:Name="GradientEntry" Completed="OnGradientEntryCompleted" MaxLength="6" Placeholder="Gradient End Color in Hex (text length 6)" FontSize="13" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30" BackgroundColor="White" TextColor="#000000"/>
                             <Label Grid.Row="1" x:Name="GradientEntryError" Text="Niepoprawnie wprowadzony kolor!" HeightRequest="0" TextColor="{Binding SecondaryColor}" VerticalOptions="Start" ZIndex="-1"/>
                         </Grid>
                     </Grid>
@@ -264,7 +264,7 @@
                             <RowDefinition Height="30"/>
                             <RowDefinition Height="25"/>
                         </Grid.RowDefinitions>
-                        <Entry Grid.Row="0" x:Name="SecondaryColorEntry" Completed="OnSecondaryColorEntryCompleted" MaxLength="6" Placeholder="Secondary Color in Hex (text length 6)" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30" BackgroundColor="White"/>
+                        <Entry Grid.Row="0" x:Name="SecondaryColorEntry" Completed="OnSecondaryColorEntryCompleted" MaxLength="6" Placeholder="Secondary Color in Hex (text length 6)" VerticalTextAlignment="Center" MinimumHeightRequest="0" HeightRequest="30" BackgroundColor="White" TextColor="#000000"/>
                         <Label Grid.Row="1" x:Name="SecondaryEntryError" Text="Niepoprawnie wprowadzony kolor!" HeightRequest="0" TextColor="{Binding SecondaryColor}" VerticalOptions="Start" ZIndex="-1"/>
                     </Grid>
                     <Grid>
