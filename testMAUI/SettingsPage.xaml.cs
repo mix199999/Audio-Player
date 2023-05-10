@@ -22,6 +22,45 @@ public class StringListMessage
 
 public partial class SettingsPage : ContentPage
 {
+
+    
+
+        private Color _frameBackground;
+    public Color FrameBackground
+    {
+        get => _frameBackground;
+        set
+        {
+            if (_frameBackground == value) { return; }
+            _frameBackground = value;
+            OnPropertyChanged(nameof(FrameBackground));
+        }
+    }
+    private Color _inputBackground;
+    public Color InputBackground
+    {
+        get => _inputBackground;
+        set
+        {
+            if (_inputBackground == value) { return; }
+            _inputBackground = value;
+            OnPropertyChanged(nameof(InputBackground));
+        }
+    }
+    private Color _inputColor;
+    public Color InputColor
+    {
+        get => _inputColor;
+        set
+        {
+            if (_inputColor == value) { return; }
+            _inputColor = value;
+            OnPropertyChanged(nameof(InputColor));
+        }
+    }
+
+
+   
     private CancellationToken cancellationToken = new CancellationToken();
     private int _indexPath = -1;
     private int countStart;
@@ -170,6 +209,10 @@ public partial class SettingsPage : ContentPage
         SecondaryColor = Color.FromArgb(grad.SecondaryColor);
         BindingContext = this;
         LoadDataToPathView();
+
+        InputBackground = Color.FromArgb("ffffff");
+        InputColor = Color.FromArgb("000000");
+        FrameBackground = Color.FromArgb(grad.GradientColor);
     }
 
     private void OnGradientCheckCheckedChanged(object sender, CheckedChangedEventArgs e)
@@ -197,7 +240,7 @@ public partial class SettingsPage : ContentPage
         if (entry.Text == null) { return; }
         bool isValidHexColorCode = Regex.IsMatch(entry.Text, "^[0-9A-Fa-f]{6}$");
 
-        if (isValidHexColorCode)
+        if (isValidHexColorCode && entry.Text != grad.SecondaryColor)
         {
             if (PrimaryEntryError.HeightRequest == 20)
             {
@@ -283,7 +326,7 @@ public partial class SettingsPage : ContentPage
         if (entry.Text == null) { return; }
         bool isValidHexColorCode = Regex.IsMatch(entry.Text, "^[0-9A-Fa-f]{6}$");
 
-        if (isValidHexColorCode)
+        if (isValidHexColorCode && entry.Text != grad.PrimaryColor)
         {
             if (SecondaryEntryError.HeightRequest == 20)
             {

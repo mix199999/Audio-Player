@@ -243,7 +243,7 @@ public partial class PlaylistCreationPage : ContentPage
                 }
                
                 _playlists.Add(newPlaylist);
-
+                await File.WriteAllTextAsync(fullPath, newPlaylist.SaveToM3U());
                 AudioListMessage playlistMessage = new AudioListMessage(_playlists, playlistName);
                 WeakReferenceMessenger.Default.Send(playlistMessage);
 
